@@ -1,12 +1,12 @@
 package com.e_swipe.e_swipe;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,20 +16,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(isAuth()){
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(i);
+    }
 
-        } else {
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
 
     }
 
-    /**
-     *
-     * @return true if user is authentified by Mail/Pass , FB , Twitter
-     */
-    public boolean isAuth(){
-        return false;
+    @Override
+    public void onStop() {
+        super.onStop();
     }
+
 }

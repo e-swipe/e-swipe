@@ -1,8 +1,7 @@
-package com.e_swipe.e_swipe.com.e_swipe.e_swipe.firebase;
+package com.e_swipe.e_swipe.firebase;
 
 import android.util.Log;
 
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
