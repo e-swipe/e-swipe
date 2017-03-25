@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.e_swipe.e_swipe.objects.Chat;
+import com.e_swipe.e_swipe.objects.Event;
+import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.Person;
 import com.e_swipe.e_swipe.fragments.ChatFragment;
 import com.e_swipe.e_swipe.fragments.EventsFragment;
@@ -21,6 +23,7 @@ import com.e_swipe.e_swipe.fragments.ProfilFragment;
 import com.e_swipe.e_swipe.fragments.SwipeFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TabbedActivity extends AppCompatActivity
         implements ProfilFragment.OnFragmentInteractionListener, SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener {
@@ -105,9 +108,10 @@ public class TabbedActivity extends AppCompatActivity
                 case 0:
                     return new ProfilFragment();
                 case 1:
-                    return new SwipeFragment();
+                    return SwipeFragment.newInstance(getApplicationContext());
                 case 2:
-                    return new EventsFragment();
+                    List<Event> events = JsonLoader.loadEvents(getApplicationContext());
+                    return EventsFragment.newInstance(getApplicationContext(),events);
                 case 3:
                     ArrayList<Chat> chats = new ArrayList<Chat>();
                     chats.add(new Chat("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
