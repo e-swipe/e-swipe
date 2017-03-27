@@ -6,53 +6,64 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.objects.Chat;
 
+import java.util.List;
+
 /**
- * Created by Anthonny on 20/03/2017.
+ * Adapter class linked to Chat list View in the Chat fragment layout related to
  */
 public class ChatAdapter extends BaseAdapter implements View.OnClickListener {
-
-    Chat [] chats;
+    /**
+     * List of every chatRooms
+     */
+    List<Chat> chats;
+    /**
+     * Context of the Activity/App
+     */
     Context context;
-    int ressource;
 
 
-    public ChatAdapter(Context context, int ressource, Chat[] chats){
+    public ChatAdapter(Context context, List<Chat> chats){
         this.chats = chats;
         this.context = context;
-        this.ressource = ressource;
     }
 
     @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
+    /**
+     * @return size of chatList
+     */
     public int getCount() {
-        return chats.length;
+        return chats.size();
     }
 
     @Override
+    /**
+     * @return Chat at position
+     */
     public Chat getItem(int position) {
-        return chats[position];
+        return chats.get(position);
     }
 
     @Override
+    /**
+     * @return id of item at position
+     */
     public long getItemId(int position) {
         return position;
     }
 
     @Override
+    /**
+     * @return the view inflated with subviews
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if( convertView == null ){
             //We must create a View:
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(ressource, parent, false);
+            convertView = inflater.inflate(R.layout.row_chat, parent, false);
             //Init subViews
             TextView chatName = (TextView) convertView.findViewById(R.id.chat_name);
             chatName.setText(getItem(position).getChatName());
@@ -61,5 +72,11 @@ public class ChatAdapter extends BaseAdapter implements View.OnClickListener {
 
         }
         return convertView;
+    }
+
+    @Override
+    // TODO: 27/03/2017
+    public void onClick(View v) {
+
     }
 }

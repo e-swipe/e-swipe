@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Anthonny on 24/03/2017.
+ * Class related to Profile in tinderCard, expose attributs to gson Parsing
  */
 public class Profile {
 
@@ -24,6 +24,9 @@ public class Profile {
     @Expose
     private String location;
 
+    /**
+     *Getters And Setters
+     */
     public String getName() {
         return name;
     }

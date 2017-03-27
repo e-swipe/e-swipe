@@ -24,15 +24,28 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Activity related to every SignIn options (Email / FB)
+ */
 public class LoginActivity extends Activity {
 
+    /**
+     * Callback Manager that will handle result from facebook login
+     */
     CallbackManager mCallbackManager;
+    /*
+     * Firebase Authentifier and Listener
+     */
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    /*
+     *Subviews
+     */
     EditText editMail;
     EditText editPassword;
     Button signin;
+
     String mail;
     String password;
 
@@ -45,42 +58,48 @@ public class LoginActivity extends Activity {
         editMail = (EditText) findViewById(R.id.mail);
         editPassword = (EditText) findViewById(R.id.password);
         signin = (Button) findViewById(R.id.signin);
-
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mail = editMail.getText().toString();
-                password = editPassword.getText().toString();
-                //Initialise Mail/Password
-                handleEmailPassordConnexion();
-            }
-        });
-
-        // Initialize Facebook Login button
-        mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d("SUCCESS", "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("CANCEL", "facebook:onCancel");
-                mAuth.signOut();
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("ERROR", "facebook:onError", error);
-            }
-        });
-
-        //Initialize Firebase Listener
         mAuth = FirebaseAuth.getInstance();
+
+        //If user is already connected, go to TabbedActivity else initialise Mail/FB authentification Listeners
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
+            startActivity(intent);
+        }
+        else {
+            //Initialise signIn with Email/Password
+            signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mail = editMail.getText().toString();
+                    password = editPassword.getText().toString();
+                    //Initialise Mail/Password
+                    handleEmailPassordConnexion();
+                }
+            });
+            // Initialize Facebook Login button
+            mCallbackManager = CallbackManager.Factory.create();
+            LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+            loginButton.setReadPermissions("email", "public_profile");
+            loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    Log.d("SUCCESS", "facebook:onSuccess:" + loginResult);
+                    handleFacebookAccessToken(loginResult.getAccessToken());
+                }
+
+                @Override
+                public void onCancel() {
+                    Log.d("CANCEL", "facebook:onCancel");
+                    mAuth.signOut();
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Log.d("ERROR", "facebook:onError", error);
+                }
+            });
+        }
+        //Initialize Firebase Listener
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -98,46 +117,55 @@ public class LoginActivity extends Activity {
     }
 
     @Override
+    /**
+     * On Activity Start add the Authentification Listener
+     */
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
+    /**
+     * On Activity Stop remove the Authentification Listener
+     */
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+    /**
+     * Method that handle the connexion with Email and Password
+     */
     private void handleEmailPassordConnexion(){
         //Initialise Mail/Password
         mAuth.signInWithEmailAndPassword(mail, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("ON COMPLETE" , "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w("!Successful", "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentification  Failed",
-                                    Toast.LENGTH_SHORT).show();
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    Log.d("ON COMPLETE" , "signInWithEmail:onComplete:" + task.isSuccessful());
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    if (!task.isSuccessful()) {
+                        Log.w("!Successful", "signInWithEmail:failed", task.getException());
+                        Toast.makeText(LoginActivity.this, "Authentification  Failed", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        //Authentification successful
+                        Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
+                        startActivity(intent);
                         }
-                        else {
-                            //Authentification successful
-                            Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
-                            startActivity(intent);
-                        }
-
                     }
                 });
     }
+    /**
+     * Method that handle the connexion with Facebook Authentification
+     */
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d("HANDLE Facebook", "handleFacebookAccessToken:" + token);
 
+        Log.d("HANDLE Facebook", "handleFacebookAccessToken:" + token);
         final AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -160,7 +188,9 @@ public class LoginActivity extends Activity {
                 });
     }
 
-
+    /*
+     * onActivityResult that call the callbackManager with the result of the authentification
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

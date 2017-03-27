@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Anthonny on 25/03/2017.
+ * Class related to Events, expose attributs to gson Parsing
  */
 public class Event {
 
@@ -20,6 +20,9 @@ public class Event {
     @Expose
     private String location;
 
+    /**
+     *Getters And Setters
+     */
     public String getName() {
         return nameEvent;
     }

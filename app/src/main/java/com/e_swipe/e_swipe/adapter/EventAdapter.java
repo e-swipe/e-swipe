@@ -15,34 +15,57 @@ import com.e_swipe.e_swipe.objects.Event;
 import java.util.List;
 
 /**
- * Created by Anthonny on 25/03/2017.
+ * Adapter class linked to Event list View in the event fragment layout related to
  */
 public class EventAdapter extends BaseAdapter implements View.OnClickListener {
 
+    /**
+     * List of every event to display
+     */
     List<Event> eventList;
+    /**
+     * Context related to the activity/Application
+     */
     Context mContext;
 
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param eventList List of events
+     */
     public EventAdapter(Context context, List<Event> eventList){
         this.eventList = eventList;
         this.mContext = context;
     }
 
     @Override
+    /**
+     * @return size of eventList
+     */
     public int getCount() {
         return eventList.size();
     }
 
     @Override
+    /**
+     *  @return event at position
+     */
     public Event getItem(int position) {
         return eventList.get(position);
     }
 
     @Override
+    /**
+     * @return itemId/Position
+     */
     public long getItemId(int position) {
         return position;
     }
 
     @Override
+    /**
+     * @return the view inflated with subviews
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if( convertView == null ){
@@ -55,12 +78,14 @@ public class EventAdapter extends BaseAdapter implements View.OnClickListener {
             TextView eventLocalisation = (TextView) convertView.findViewById(R.id.event_localisation);
             eventLocalisation.setText(getItem(position).getLocation());
             ImageView imageView =  (ImageView) convertView.findViewById(R.id.event_image);
+            //Ask Glide to load the image from url into imageView
             Glide.with(mContext).load(getItem(position).getImageUrl()).into(imageView);
         }
         return convertView;
     }
 
     @Override
+    // TODO: 27/03/2017
     public void onClick(View v) {
 
     }

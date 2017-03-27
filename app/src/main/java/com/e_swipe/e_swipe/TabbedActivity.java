@@ -25,19 +25,16 @@ import com.e_swipe.e_swipe.fragments.SwipeFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity related to the creation of fragments (Profil , Swipe , Events ..)
+ */
 public class TabbedActivity extends AppCompatActivity
         implements ProfilFragment.OnFragmentInteractionListener, SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener {
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * Adapter that will handle fragments/Pages
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -50,8 +47,7 @@ public class TabbedActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the fourth
-        // primary sections of the activity.
+        // Create the adapter that will return a fragment for each of the fourth primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -64,24 +60,26 @@ public class TabbedActivity extends AppCompatActivity
     }
 
     @Override
+    /**
+     * Meethod that inflate the menu; this adds items to the action bar if it is present.
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tabbed, menu);
         return true;
     }
 
     @Override
+    /**
+     * Method that handle action bar item clicks here.
+     * The action bar will automatically handle clicks on the Home/Up button,
+     * so long as you specify a parent activity in AndroidManifest.xml.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -95,18 +93,23 @@ public class TabbedActivity extends AppCompatActivity
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
+        /*
+         * Constructor
+         */
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
+        /**
+         * Return fragment depending of the position (Profil , Swipe ...)
+         */
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return new ProfilFragment();
+                    return ProfilFragment.newInstance(getApplicationContext());
                 case 1:
                     return SwipeFragment.newInstance(getApplicationContext());
                 case 2:
@@ -117,17 +120,23 @@ public class TabbedActivity extends AppCompatActivity
                     chats.add(new Chat("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
                     return ChatFragment.newInstance(chats);
                 default:
-                    return new ProfilFragment();
+                    return ProfilFragment.newInstance(getApplicationContext());
             }
         }
 
         @Override
+        /**
+         * @return max number of fragments to create
+         */
         public int getCount() {
             // Show 4 total pages.
             return 4;
         }
 
         @Override
+        /**
+         * @return Title of every fragments depending of the position
+         */
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:

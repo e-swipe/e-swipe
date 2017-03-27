@@ -17,24 +17,39 @@ import com.e_swipe.e_swipe.objects.JsonLoader;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EventsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EventsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Class that represent the EventFragment
  */
 public class EventsFragment extends Fragment {
 
+    /**
+     * Listener over interaction that occurs over the fragment
+     */
     private OnFragmentInteractionListener mListener;
+    /**
+     * Application Context
+     */
     private static Context mContext;
-    ListView listEvent;
+    /**
+     * List of events to display
+     */
     private static List<Event> eventList;
+    /**
+     * Subviews
+     */
+    ListView listEvent;
 
+    /**
+     * Empty constructor
+     */
     public EventsFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * @param context Application context
+     * @param events List of events to display
+     * @return a new instance of the eventFragment
+     */
     public static EventsFragment newInstance(Context context,List<Event> events) {
         EventsFragment fragment = new EventsFragment();
         mContext = context;
@@ -43,15 +58,20 @@ public class EventsFragment extends Fragment {
     }
 
     @Override
+    /**
+     * onCreate Method
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
+    /**
+     * @return view inflated with subviews
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_events, container, false);
         listEvent = (ListView) view.findViewById(R.id.event_list);
         listEvent.setAdapter(new EventAdapter(mContext,eventList));

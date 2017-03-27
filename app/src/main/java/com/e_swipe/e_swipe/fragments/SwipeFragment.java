@@ -17,38 +17,61 @@ import com.mindorks.placeholderview.SwipePlaceHolderView;
 
 import java.util.List;
 
+/**
+ * Class related to the swipe fragment
+ */
 public class SwipeFragment extends Fragment {
 
 
+    /**
+     * Attribute related to listen interaction on fragment
+     */
     private OnFragmentInteractionListener mListener;
+    /**
+     * Application Context
+     */
     static Context mContext;
+    /**
+     * Holder of every tinderCards
+     */
     SwipePlaceHolderView mSwipeView;
 
+    /**
+     * Empty Constructor
+     */
     public SwipeFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     *
+     * @param context Application Context
+     * @return a new instance of the SwipeFragment
+     */
     public static SwipeFragment newInstance(Context context) {
         SwipeFragment fragment = new SwipeFragment();
         mContext = context;
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
+    /**
+     * onCreateMethod
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
+    /**
+     * @return view inflated with subviews
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View v = inflater.inflate(R.layout.fragment_swipe, container, false);
 
+        //Initialise the SwipePlaceHolderView
         mSwipeView = (SwipePlaceHolderView)v.findViewById(R.id.swipeView);
 
         mSwipeView.getBuilder()
@@ -59,11 +82,12 @@ public class SwipeFragment extends Fragment {
                         .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
-
+        //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
         for(Profile profile : JsonLoader.loadProfiles(mContext)){
             mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
         }
 
+        //Init buttons that will handle accept and reject of a tinderCard
         v.findViewById(R.id.rejectBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,16 +129,6 @@ public class SwipeFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

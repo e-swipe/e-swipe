@@ -10,10 +10,9 @@
         android:supportsRtl="true">
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,7 +32,8 @@
         <!-- [END firebase_iid_service] -->
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -44,6 +44,7 @@
             android:label="@string/title_activity_tabbed"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
     </application>
 
 </manifest>

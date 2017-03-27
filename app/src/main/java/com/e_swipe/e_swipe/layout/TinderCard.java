@@ -19,11 +19,13 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
 
 /**
- * Created by Anthonny on 24/03/2017.
+ * Class that represent a tinder card view
  */
 @Layout(R.layout.tinder_card_view)
 public class TinderCard {
-
+    /**
+     * Subviews
+     */
     @View(R.id.profileImageView)
     private ImageView profileImageView;
 
@@ -33,10 +35,26 @@ public class TinderCard {
     @View(R.id.locationNameTxt)
     private TextView locationNameTxt;
 
+    /**
+     * Profile related
+     */
     private Profile mProfile;
+    /**
+     * Application Context
+     */
     private Context mContext;
+
+    /**
+     * View that will handle the swap events
+     */
     private SwipePlaceHolderView mSwipeView;
 
+    /**
+     * Constructor
+     * @param context Application Context
+     * @param profile Profile displayed in tinderCard
+     * @param swipeView Holder related to swipe events
+     */
     public TinderCard(Context context, Profile profile, SwipePlaceHolderView swipeView) {
         mContext = context;
         mProfile = profile;
@@ -44,12 +62,18 @@ public class TinderCard {
     }
 
     @Resolve
+    /**
+     * onResolved set the subviews to there values in profile
+     */
     private void onResolved(){
         Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
         nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
         locationNameTxt.setText(mProfile.getLocation());
     }
 
+    /**
+     * Listeners to swipe events
+     */
     @SwipeOut
     private void onSwipedOut(){
         Log.d("EVENT", "onSwipedOut");

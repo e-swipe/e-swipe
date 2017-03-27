@@ -16,12 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Anthonny on 24/03/2017.
+ * Class related to Json loading, it will load profiles from "profiles.json", "events.json"
  */
 public class JsonLoader {
 
     private static final String TAG = "Utils";
 
+    /**
+     * Load profiles.json file to extract the profiles
+     * @param context Context of the App
+     * @return the list of profiles in profiles.json
+     */
     public static List<Profile> loadProfiles(Context context){
         try{
             GsonBuilder builder = new GsonBuilder();
@@ -38,7 +43,11 @@ public class JsonLoader {
             return null;
         }
     }
-
+    /**
+     * Load events.json file to extract the profiles
+     * @param context Context of the App
+     * @return the list of events in events.json
+     */
     public static List<Event> loadEvents(Context context){
         try{
             GsonBuilder builder = new GsonBuilder();
@@ -56,6 +65,12 @@ public class JsonLoader {
         }
     }
 
+    /**
+     * Read in assets folder the file at jsonFileName and return the array of objects related
+     * @param context Application Context
+     * @param jsonFileName the name if the file to read
+     * @return String that represent the JsonArray
+     */
     private static String loadJSONFromAsset(Context context, String jsonFileName) {
         String json = null;
         InputStream is=null;

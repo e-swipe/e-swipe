@@ -14,44 +14,57 @@ import com.e_swipe.e_swipe.adapter.ChatAdapter;
 import com.e_swipe.e_swipe.objects.Chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChatFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChatFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Class that represents the fragment related to chats rooms
  */
 public class ChatFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    /**
+     * Listener on even that occurs over the fragment
+     */
     private OnFragmentInteractionListener mListener;
-    private ArrayList<Chat> chats;
+
+    /**
+     * List of every chatRooms
+     */
+    private static List<Chat> chats;
+    /**
+     * the listView to inflate
+     */
     ListView listView;
 
+    /**
+     * Empty constructor
+     */
     public ChatFragment() {
         // Required empty public constructor
     }
 
-    public static ChatFragment newInstance(ArrayList<Chat> chats) {
+    /**
+     *
+     * @param chatsRooms List of every chatRooms
+     * @return a new instance of the chatFragment
+     */
+    public static ChatFragment newInstance(List<Chat> chatsRooms) {
         ChatFragment fragment = new ChatFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("chats",chats);
-        fragment.setArguments(args);
+        chats = chatsRooms;
         return fragment;
     }
 
     @Override
+    /**
+     * onCreate Method
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().getSerializable("chats") != null) {
-           this.chats = (ArrayList<Chat>) getArguments().getSerializable("chats");
-        }
     }
 
     @Override
+    /**
+     * @return inflated views and subviews
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -59,7 +72,7 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         listView = (ListView) view.findViewById(R.id.chat_list);
         //Set Adapter
-        listView.setAdapter(new ChatAdapter(getContext(), R.layout.row_chat, chats.toArray(new Chat[chats.size()])));
+        listView.setAdapter(new ChatAdapter(getContext(), chats));
 
         return view;
     }
