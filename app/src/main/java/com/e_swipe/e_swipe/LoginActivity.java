@@ -14,6 +14,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,7 +63,8 @@ public class LoginActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
 
         //If user is already connected, go to TabbedActivity else initialise Mail/FB authentification Listeners
-        if(mAuth.getCurrentUser() != null){
+        if(AccessToken.getCurrentAccessToken() != null){
+            Toast.makeText(getApplicationContext(),mAuth.getCurrentUser().getEmail(),Toast.LENGTH_LONG);
             Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
             startActivity(intent);
         }

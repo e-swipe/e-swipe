@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">E-swipe</string>
+    <string name="title_activity_login">Connexion</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Mail</string>
+    <string name="prompt_password">Mot de Passe</string>
+    <string name="action_sign_in">Connectez vous ou inscrivez vous</string>
+    <string name="action_sign_in_short">Connexion</string>
+    <string name="error_invalid_email">Cette adresse mail est invalide</string>
+    <string name="error_invalid_password">Ce mot de passe estt trop court</string>
+    <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
+    <string name="error_field_required">Ce champ est necessaire</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="facebook_app_id">1116195745174631</string>
+    <string name="title_activity_profile">Profil</string>
+    <string name="title_activity_tabbed">Tabbed Activity</string>
+    <string name="action_settings">Parametres</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="sign_up">S'inscrire</string>
+    <string name="accept_card">Like</string>
+    <string name="reject_card">Reject</string>
+
+
+</resources>

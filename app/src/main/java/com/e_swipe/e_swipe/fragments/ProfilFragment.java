@@ -1,6 +1,7 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +14,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e_swipe.e_swipe.LoginActivity;
 import com.e_swipe.e_swipe.R;
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -70,6 +75,35 @@ public class ProfilFragment extends Fragment {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    /**
+     * Update the subviews relative to user infos
+     * @param user Firebase user currently connected
+     */
+    private void updateUserInfo(FirebaseUser user) {
+        tx_email.setText(user.getDisplayName());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_profil, container, false);
+        signOut = (Button) v.findViewById(R.id.sign_out);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FacebookSdk.sdkInitialize(mContext);
+                LoginManager.getInstance().logOut();
+                AccessToken.setCurrentAccessToken(null);
+                
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        //Initialise subviews
+        tx_email = (TextView) v.findViewById(R.id.email);
         //Get user Info from firebase
         //Asynchrone and called after onCreateView so need to update userInfo when we listener is fired
         mAuth = FirebaseAuth.getInstance();
@@ -87,33 +121,6 @@ public class ProfilFragment extends Fragment {
                 }
             }
         };
-    }
-
-    /**
-     * Update the subviews relative to user infos
-     * @param user Firebase user currently connected
-     */
-    private void updateUserInfo(FirebaseUser user) {
-        tx_email.setText(user.getEmail());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_profil, container, false);
-        signOut = (Button) v.findViewById(R.id.sign_out);
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                if (mAuthListener != null) {
-                    mAuth.removeAuthStateListener(mAuthListener);
-                }
-            }
-        });
-        //Initialise subviews
-        tx_email = (TextView) v.findViewById(R.id.email);
 
         return v;
     }
@@ -139,20 +146,6 @@ public class ProfilFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     public interface OnFragmentInteractionListener {

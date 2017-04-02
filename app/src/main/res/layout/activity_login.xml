@@ -61,6 +61,14 @@
             android:text="@string/action_sign_in"
             android:id = "@+id/signin"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/hyperlink"
+            android:textAlignment="center"
+            android:text="@string/sign_up"
+            android:autoLink="all" />
+
         <!--Add connect with FB button + Twitter Button  !-->
 
         <com.facebook.login.widget.LoginButton
@@ -68,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp" />
 
     </LinearLayout>
