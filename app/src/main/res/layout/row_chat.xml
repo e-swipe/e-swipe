@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:layout_margin="5dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:id="@+id/image_chat" />
@@ -34,9 +34,6 @@
 
         </LinearLayout>
 
-
     </LinearLayout>
-
-
 
 </RelativeLayout>

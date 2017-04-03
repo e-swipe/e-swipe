@@ -19,7 +19,7 @@
     <string name="action_settings">Parametres</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <string name="sign_up">S'inscrire</string>
+    <string name="sign_up">Sinscrire</string>
     <string name="accept_card">Like</string>
     <string name="reject_card">Reject</string>
 
