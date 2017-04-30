@@ -1,12 +1,14 @@
 package com.e_swipe.e_swipe.layout;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.fragments.SwipeFragment;
 import com.e_swipe.e_swipe.objects.Profile;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
@@ -50,6 +52,11 @@ public class TinderCard {
     private SwipePlaceHolderView mSwipeView;
 
     /**
+     * Current listener
+     */
+    private onSwipeListener onSwipeListener;
+
+    /**
      * Constructor
      * @param context Application Context
      * @param profile Profile displayed in tinderCard
@@ -71,32 +78,48 @@ public class TinderCard {
         locationNameTxt.setText(mProfile.getLocation());
     }
 
+    public void setOnSwipeListener(onSwipeListener onSwipeListener){
+        this.onSwipeListener = onSwipeListener;
+    }
+
     /**
      * Listeners to swipe events
      */
     @SwipeOut
-    private void onSwipedOut(){
-        Log.d("EVENT", "onSwipedOut");
+    private void onSwipedOut() {
+        onSwipeListener.onCardChange(this);
+        onSwipeListener.onSwipeCancel();
         mSwipeView.addView(this);
     }
 
     @SwipeCancelState
     private void onSwipeCancelState(){
         Log.d("EVENT", "onSwipeCancelState");
+        onSwipeListener.onSwipeCancel();
     }
 
     @SwipeIn
     private void onSwipeIn(){
+        onSwipeListener.onSwipeStarted();
         Log.d("EVENT", "onSwipedIn");
     }
 
     @SwipeInState
     private void onSwipeInState(){
+        onSwipeListener.onSwipeStarted();
         Log.d("EVENT", "onSwipeInState");
     }
 
     @SwipeOutState
     private void onSwipeOutState(){
+        onSwipeListener.onSwipeStarted();
         Log.d("EVENT", "onSwipeOutState");
     }
+
+    public interface onSwipeListener{
+        public void onCardChange(TinderCard tinderCard);
+        public void onSwipeCancel();
+        public void onSwipeStarted();
+    }
+    //Tinder card -> Fragment Parent -> CustomViewPager
 }

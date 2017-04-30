@@ -4,11 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.TabbedActivity;
 import com.e_swipe.e_swipe.layout.TinderCard;
 import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.Profile;
@@ -22,7 +24,6 @@ import java.util.List;
  */
 public class SwipeFragment extends Fragment {
 
-
     /**
      * Attribute related to listen interaction on fragment
      */
@@ -35,6 +36,8 @@ public class SwipeFragment extends Fragment {
      * Holder of every tinderCards
      */
     SwipePlaceHolderView mSwipeView;
+
+    onSwipeEventListener onSwipeEventListener;
 
     /**
      * Empty Constructor
@@ -84,7 +87,24 @@ public class SwipeFragment extends Fragment {
 
         //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
         for(Profile profile : JsonLoader.loadProfiles(mContext)){
-            mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
+            TinderCard tinderCard = new TinderCard(mContext, profile, mSwipeView);
+            tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
+                @Override
+                public void onCardChange(TinderCard tinderCard) {
+                    onSwipeEventListener.onCardChange(tinderCard);
+                }
+
+                @Override
+                public void onSwipeCancel() {
+                    onSwipeEventListener.onSwipeCancel();
+                }
+
+                @Override
+                public void onSwipeStarted() {
+                    onSwipeEventListener.onSwipeStarted();
+                }
+            });
+            mSwipeView.addView(tinderCard);
         }
 
         //Init buttons that will handle accept and reject of a tinderCard
@@ -101,9 +121,11 @@ public class SwipeFragment extends Fragment {
                 mSwipeView.doSwipe(true);
             }
         });
+
+        //onSwipeEventListener.onFragmentCreated();
+
         return v;
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -127,6 +149,16 @@ public class SwipeFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void setOnSwipeEventListener(onSwipeEventListener onSwipeEventListener){
+        this.onSwipeEventListener = onSwipeEventListener;
+    }
+    public interface onSwipeEventListener  {
+        public void onFragmentCreated();
+        public void onCardChange(TinderCard tinderCard);
+        public void onSwipeCancel();
+        public void onSwipeStarted();
     }
 
     public interface OnFragmentInteractionListener {

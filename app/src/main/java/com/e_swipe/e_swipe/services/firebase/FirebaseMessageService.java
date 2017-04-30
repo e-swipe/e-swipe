@@ -1,4 +1,4 @@
-package com.e_swipe.e_swipe.firebase;
+package com.e_swipe.e_swipe.services.firebase;
 
 import android.util.Log;
 

@@ -10,9 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.e_swipe.e_swipe.layout.TinderCard;
 import com.e_swipe.e_swipe.objects.Chat;
 import com.e_swipe.e_swipe.objects.Event;
 import com.e_swipe.e_swipe.objects.JsonLoader;
@@ -35,10 +37,11 @@ public class TabbedActivity extends AppCompatActivity
      * Adapter that will handle fragments/Pages
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +54,14 @@ public class TabbedActivity extends AppCompatActivity
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CustomViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
+
+
 
     @Override
     /**
@@ -88,6 +92,7 @@ public class TabbedActivity extends AppCompatActivity
 
     }
 
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -111,7 +116,31 @@ public class TabbedActivity extends AppCompatActivity
                 case 0:
                     return ProfilFragment.newInstance(getApplicationContext());
                 case 1:
-                    return SwipeFragment.newInstance(getApplicationContext());
+                    SwipeFragment swipeFragment = SwipeFragment.newInstance(getApplicationContext());
+                    swipeFragment.setOnSwipeEventListener(new SwipeFragment.onSwipeEventListener() {
+                        @Override
+                        public void onFragmentCreated() {
+                            Log.d("TEST","Fragment Created");
+                        }
+
+                        @Override
+                        public void onCardChange(TinderCard tinderCard) {
+                            Log.d("TEST","Card Change");
+                        }
+
+                        @Override
+                        public void onSwipeCancel() {
+                            Log.d("TEST","Swipe Cancel");
+                            mViewPager.setSwipeable(true);
+                        }
+
+                        @Override
+                        public void onSwipeStarted() {
+                            Log.d("TEST","Swipe Started");
+                            mViewPager.setSwipeable(false);
+                        }
+                    });
+                    return swipeFragment;
                 case 2:
                     List<Event> events = JsonLoader.loadEvents(getApplicationContext());
                     return EventsFragment.newInstance(getApplicationContext(),events);

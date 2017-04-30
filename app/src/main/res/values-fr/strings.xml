@@ -13,7 +13,8 @@
     <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
     <string name="error_field_required">Ce champ est necessaire</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <string name="facebook_app_id">1116195745174631</string>
+    <!--
+    <string name="facebook_app_id">1116195745174631</string> !-->
     <string name="title_activity_profile">Profil</string>
     <string name="title_activity_tabbed">Tabbed Activity</string>
     <string name="action_settings">Parametres</string>

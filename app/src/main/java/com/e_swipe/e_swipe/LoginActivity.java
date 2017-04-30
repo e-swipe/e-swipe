@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.e_swipe.e_swipe.services.gps.LocalisationListener;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -126,6 +127,8 @@ public class LoginActivity extends Activity {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        Intent serviceIntent = new Intent(getApplicationContext(), LocalisationListener.class);
+        startService(serviceIntent);
     }
 
     @Override
