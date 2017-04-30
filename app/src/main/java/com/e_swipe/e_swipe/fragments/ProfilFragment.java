@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import com.e_swipe.e_swipe.LoginActivity;
 import com.e_swipe.e_swipe.R;
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
+//import com.facebook.AccessToken;
+//import com.facebook.FacebookSdk;
+//import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -90,7 +90,7 @@ public class ProfilFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profil, container, false);
-        signOut = (Button) v.findViewById(R.id.sign_out);
+        /*signOut = (Button) v.findViewById(R.id.sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +120,7 @@ public class ProfilFragment extends Fragment {
                     Log.d("AUTH", "onAuthStateChanged:signed_out");
                 }
             }
-        };
+        };*/
 
         return v;
     }
