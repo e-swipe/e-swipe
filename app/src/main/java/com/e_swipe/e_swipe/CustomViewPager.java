@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.e_swipe.e_swipe.layout.TinderCard;
 
@@ -26,8 +27,10 @@ public class CustomViewPager extends ViewPager{
 
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if(swipeable){
+            Toast.makeText(getContext(),"YES",Toast.LENGTH_LONG).show();
             return super.onInterceptTouchEvent(event);
         }
+        Toast.makeText(getContext(),"NO",Toast.LENGTH_LONG).show();
         return false;
     }
 

@@ -23,5 +23,12 @@
     <string name="accept_card">Like</string>
     <string name="reject_card">Reject</string>
 
+    <string name="preference_file_key"> com.e_swipe.e_swipe.PREFERENCE_FILE_KEY</string>
+    <string name="isManWanted">isManWanted</string>
+    <string name="isWomenWanted">isWomenWanted</string>
+    <string name="distance">distance</string>
+    <string name="ageMin">ageMin</string>
+    <string name="ageMax">ageMax</string>
+
 
 </resources>

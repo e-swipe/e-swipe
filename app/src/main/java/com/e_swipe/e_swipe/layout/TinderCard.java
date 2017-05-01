@@ -90,6 +90,8 @@ public class TinderCard {
         onSwipeListener.onCardChange(this);
         onSwipeListener.onSwipeCancel();
         mSwipeView.addView(this);
+        mSwipeView.clearAnimation();
+        mSwipeView.clearFocus();
     }
 
     @SwipeCancelState
@@ -100,7 +102,7 @@ public class TinderCard {
 
     @SwipeIn
     private void onSwipeIn(){
-        onSwipeListener.onSwipeStarted();
+        onSwipeListener.onSwipeCancel();
         Log.d("EVENT", "onSwipedIn");
     }
 

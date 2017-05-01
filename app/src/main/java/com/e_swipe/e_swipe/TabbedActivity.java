@@ -140,18 +140,16 @@ public class TabbedActivity extends AppCompatActivity
 
                         @Override
                         public void onCardChange(TinderCard tinderCard) {
-                            Log.d("TEST","Card Change");
+                            mViewPager.setSwipeable(true);
                         }
 
                         @Override
                         public void onSwipeCancel() {
-                            Log.d("TEST","Swipe Cancel");
                             mViewPager.setSwipeable(true);
                         }
 
                         @Override
                         public void onSwipeStarted() {
-                            Log.d("TEST","Swipe Started");
                             mViewPager.setSwipeable(false);
                         }
                     });
