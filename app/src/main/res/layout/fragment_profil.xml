@@ -54,7 +54,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="TEST,AGE"/>
+                        android:text="TEST,AGE"
+                        android:id="@+id/textView_user" />
 
                     <View
                         android:id="@+id/view"
@@ -83,32 +84,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:id="@+id/textView7" />
+                    android:id="@+id/SettingsLabel" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_margin="7dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/showMe_container">
 
                     <TextView
                         android:text="Montrez-moi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView8"
+                        android:id="@+id/ShowmeLabel"
                         android:layout_weight="1" />
 
                     <Switch
                         android:text="Homme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/switch3" />
+                        android:id="@+id/switch_homme" />
 
                     <Switch
                         android:text="Femme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/switch4" />
+                        android:id="@+id/switch_femme" />
 
                 </LinearLayout>
 
@@ -121,7 +123,8 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:id="@+id/distance_container">
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
@@ -130,13 +133,13 @@
                                 android:text="Distance"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/textView9" />
+                                android:id="@+id/DistanceLabel" />
 
                             <TextView
                                 android:text="plein de Km"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/textView"
+                                android:id="@+id/textView_age"
                                 android:gravity="right" />
 
                         </RelativeLayout>
@@ -144,7 +147,7 @@
                         <SeekBar
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/seekBar5" />
+                            android:id="@+id/seekBar_distance" />
 
 
                     </LinearLayout>
@@ -160,26 +163,27 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/test"
+                        android:id="@+id/age_container"
                         android:layout_margin="5dp">
 
                         <TextView
                             android:text="Age"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/textView10" />
+                            android:id="@+id/AgeLabel" />
 
                         <TextView
                             android:text="plein d'années"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/textView2"
+                            android:id="@+id/textView_age"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true" />
 
                         <org.florescu.android.rangeseekbar.RangeSeekBar
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rangeSeekBar_age" />
 
 
                     </RelativeLayout>
@@ -190,13 +194,14 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_margin="7dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/signOut_container">
 
                     <Switch
                         android:text="Rendre votre profil visible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/switch5" />
+                        android:id="@+id/switch_visible" />
 
                     <Button
                         android:text="Deconnexion"
