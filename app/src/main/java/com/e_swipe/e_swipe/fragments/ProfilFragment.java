@@ -164,7 +164,6 @@ public class ProfilFragment extends Fragment {
         circleImageView = (de.hdodenhof.circleimageview.CircleImageView) v.findViewById(R.id.profile_image);
         nameAndImage = (TextView) v.findViewById(R.id.textView_user);
         int age = 0;
-        SimpleDateFormat format = new SimpleDateFormat("MM/DD/YYYY");
         age = getAge(profil.getBirthday());
         nameAndImage.setText(profil.getName()+", "+ age);
 
@@ -192,7 +191,7 @@ public class ProfilFragment extends Fragment {
 
         int age = 0;
         try {
-            SimpleDateFormat format = new SimpleDateFormat("MM/DD/YYYY");
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
             Date date1 = format.parse(date);
             Calendar now = Calendar.getInstance();
             Calendar dob = Calendar.getInstance();

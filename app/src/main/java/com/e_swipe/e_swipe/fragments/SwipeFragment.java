@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.TabbedActivity;
@@ -122,7 +123,7 @@ public class SwipeFragment extends Fragment {
             }
         });
 
-        //onSwipeEventListener.onFragmentCreated();
+        onSwipeEventListener.onFragmentCreated();
 
         return v;
     }

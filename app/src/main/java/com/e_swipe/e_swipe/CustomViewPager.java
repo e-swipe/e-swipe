@@ -27,10 +27,8 @@ public class CustomViewPager extends ViewPager{
 
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if(swipeable){
-            Toast.makeText(getContext(),"YES",Toast.LENGTH_LONG).show();
             return super.onInterceptTouchEvent(event);
         }
-        Toast.makeText(getContext(),"NO",Toast.LENGTH_LONG).show();
         return false;
     }
 
