@@ -1,26 +1,28 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.e_swipe.e_swipe.LoginActivity;
+import com.e_swipe.e_swipe.Profil;
 import com.e_swipe.e_swipe.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.net.URL;
+
 //import com.facebook.AccessToken;
 //import com.facebook.FacebookSdk;
 //import com.facebook.login.LoginManager;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Class related to the Profil fragment
@@ -35,8 +37,8 @@ public class ProfilFragment extends Fragment {
     /**
      * Subviews
      */
-    Button signOut;
-    TextView tx_email;
+    TextView nameAndImage;
+    de.hdodenhof.circleimageview.CircleImageView circleImageView;
     /**
      * Firebase listener and authentifier
      */
@@ -47,9 +49,9 @@ public class ProfilFragment extends Fragment {
      */
     private OnFragmentInteractionListener mListener;
     /**
-     * String related to the mail adress of the user
+     * The profil of the user
      */
-    String email;
+    private static Profil profil;
 
     /**
      * Empty constructor
@@ -63,9 +65,10 @@ public class ProfilFragment extends Fragment {
      * @param context Application context
      * @return a new instance of the ProfilFragment
      */
-    public static ProfilFragment newInstance(Context context) {
+    public static ProfilFragment newInstance(Context context, Profil profile) {
         ProfilFragment fragment = new ProfilFragment();
         mContext = context;
+        profil = profile;
         return fragment;
     }
 
@@ -77,53 +80,36 @@ public class ProfilFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    /**
-     * Update the subviews relative to user infos
-     * @param user Firebase user currently connected
-     */
-    private void updateUserInfo(FirebaseUser user) {
-        tx_email.setText(user.getDisplayName());
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profil, container, false);
-        /*signOut = (Button) v.findViewById(R.id.sign_out);
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FacebookSdk.sdkInitialize(mContext);
-                LoginManager.getInstance().logOut();
-                AccessToken.setCurrentAccessToken(null);
-                
-                Intent intent = new Intent(mContext, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        //Initialise subviews
-        tx_email = (TextView) v.findViewById(R.id.email);
-        //Get user Info from firebase
-        //Asynchrone and called after onCreateView so need to update userInfo when we listener is fired
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                Log.d("onCreate", "onAuthStateChange");
-                if (user != null) {
-                    // User is signed in
-                    updateUserInfo(user);
-                } else {
-                    // User is signed out
-                    Log.d("AUTH", "onAuthStateChanged:signed_out");
-                }
-            }
-        };*/
+
+        circleImageView = (de.hdodenhof.circleimageview.CircleImageView) v.findViewById(R.id.profile_image);
+        nameAndImage = (TextView) v.findViewById(R.id.textView_user);
+        nameAndImage.setText(profil.getName() + "," + profil.getBirthday());
+
+        Bitmap bitmap = getFacebookProfilePicture(profil.getUserId());
 
         return v;
     }
+
+    public Bitmap getFacebookProfilePicture(String userID){
+        FacebookGraphConnector facebookGraphConnector = new FacebookGraphConnector();
+        String url = "https://graph.facebook.com/" + userID + "/picture?type=large";
+        URL imageURL = null;
+        Bitmap bitmap = null;
+        try {
+            facebookGraphConnector.execute(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
+
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -151,5 +137,25 @@ public class ProfilFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public class FacebookGraphConnector extends AsyncTask<String,Void,Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String[] strings) {
+            URL imageURL = null;
+            Bitmap bitmap = null;
+            try {
+                imageURL = new URL(strings[0]);
+                bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            circleImageView.setImageBitmap(bitmap);
+        }
     }
 }

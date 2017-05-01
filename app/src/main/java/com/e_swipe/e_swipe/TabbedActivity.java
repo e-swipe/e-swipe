@@ -1,5 +1,6 @@
 package com.e_swipe.e_swipe;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,11 @@ public class TabbedActivity extends AppCompatActivity
      */
     private CustomViewPager mViewPager;
 
+    /**
+     * The user profile
+     */
+    private Profil profil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,15 @@ public class TabbedActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        //Get FB userId
+        Intent intent = getIntent();
+        String userId = intent.getStringExtra("id");
+        String name = intent.getStringExtra("name");
+        String surname = intent.getStringExtra("surname");
+        String birthday = intent.getStringExtra("birthday");
+
+        profil = new Profil(userId,name,surname,birthday);
     }
 
 
@@ -114,7 +129,7 @@ public class TabbedActivity extends AppCompatActivity
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return ProfilFragment.newInstance(getApplicationContext());
+                    return ProfilFragment.newInstance(getApplicationContext(),profil);
                 case 1:
                     SwipeFragment swipeFragment = SwipeFragment.newInstance(getApplicationContext());
                     swipeFragment.setOnSwipeEventListener(new SwipeFragment.onSwipeEventListener() {
@@ -149,7 +164,7 @@ public class TabbedActivity extends AppCompatActivity
                     chats.add(new Chat("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
                     return ChatFragment.newInstance(chats);
                 default:
-                    return ProfilFragment.newInstance(getApplicationContext());
+                    return ProfilFragment.newInstance(getApplicationContext(),profil);
             }
         }
 

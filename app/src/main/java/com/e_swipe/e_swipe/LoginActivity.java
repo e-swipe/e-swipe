@@ -1,5 +1,6 @@
 package com.e_swipe.e_swipe;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,10 +13,14 @@ import android.widget.Toast;
 
 import com.e_swipe.e_swipe.services.gps.LocalisationListener;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -26,6 +31,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Activity related to every SignIn options (Email / FB)
@@ -41,7 +49,6 @@ public class LoginActivity extends Activity {
      */
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
     /*
      *Subviews
      */
@@ -49,75 +56,93 @@ public class LoginActivity extends Activity {
     EditText editPassword;
     Button signin;
 
-    String mail;
-    String password;
+    int age;
+    Context context;
+
+    private static final String TAG = "DEBUG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        context = getApplicationContext();
         //Initialise components
         editMail = (EditText) findViewById(R.id.mail);
         editPassword = (EditText) findViewById(R.id.password);
         signin = (Button) findViewById(R.id.signin);
         mAuth = FirebaseAuth.getInstance();
 
-        //If user is already connected, go to TabbedActivity else initialise Mail/FB authentification Listeners
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email", "public_profile", "user_birthday");
+
         if(AccessToken.getCurrentAccessToken() != null){
-            Toast.makeText(getApplicationContext(),mAuth.getCurrentUser().getEmail(),Toast.LENGTH_LONG);
-            Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
-            startActivity(intent);
+            GraphRequest request = GraphRequest.newMeRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(
+                                JSONObject object,
+                                GraphResponse response) {
+                            // Application code
+                            Profile profile = Profile.getCurrentProfile();
+                            Intent intent = new Intent(context,TabbedActivity.class);
+                            intent.putExtra("id", profile.getId());
+                            intent.putExtra("name",profile.getFirstName());
+                            intent.putExtra("surname",profile.getLastName());
+                            intent.putExtra("birthday", object.optString("birthday"));
+                            startActivity(intent);
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
         }
-        else {
-            //Initialise signIn with Email/Password
-            signin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mail = editMail.getText().toString();
-                    password = editPassword.getText().toString();
-                    //Initialise Mail/Password
-                    handleEmailPassordConnexion();
-                }
-            });
-            // Initialize Facebook Login button
-            mCallbackManager = CallbackManager.Factory.create();
-            LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-            loginButton.setReadPermissions("email", "public_profile");
-            loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    Log.d("SUCCESS", "facebook:onSuccess:" + loginResult);
-                    handleFacebookAccessToken(loginResult.getAccessToken());
-                }
 
-                @Override
-                public void onCancel() {
-                    Log.d("CANCEL", "facebook:onCancel");
-                    mAuth.signOut();
-                }
-
-                @Override
-                public void onError(FacebookException error) {
-                    Log.d("ERROR", "facebook:onError", error);
-                }
-            });
-        }
-        //Initialize Firebase Listener
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d("AUTH", "onAuthStateChanged:signed_in:" + user.getUid());
-                    Toast.makeText(LoginActivity.this,"Token " + user.getToken(false),Toast.LENGTH_LONG).show();
-                } else {
-                    // User is signed out
-                    Log.d("AUTH", "onAuthStateChanged:signed_out");
-                }
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                //handleFacebookAccessToken(loginResult.getAccessToken());
+                // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("LoginActivity", response.toString());
+                                // Application code
+                                try {
+                                    Profile profile = Profile.getCurrentProfile();
+                                    Intent intent = new Intent(context,TabbedActivity.class);
+                                    intent.putExtra("id", profile.getId());
+                                    intent.putExtra("name",profile.getFirstName());
+                                    intent.putExtra("surname",profile.getLastName());
+                                    String birthday = object.getString("birthday"); // 01/31/1980 format
+                                    intent.putExtra("birthday", birthday);
+                                    Toast.makeText(context,"birthday : " + birthday, Toast.LENGTH_LONG);
+                                    startActivity(intent);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender,birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
-        };
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+            }
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+            }
+        });
     }
 
     @Override
@@ -126,9 +151,7 @@ public class LoginActivity extends Activity {
      */
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-        Intent serviceIntent = new Intent(getApplicationContext(), LocalisationListener.class);
-        startService(serviceIntent);
+
     }
 
     @Override
@@ -140,58 +163,6 @@ public class LoginActivity extends Activity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-    /**
-     * Method that handle the connexion with Email and Password
-     */
-    private void handleEmailPassordConnexion(){
-        //Initialise Mail/Password
-        mAuth.signInWithEmailAndPassword(mail, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d("ON COMPLETE" , "signInWithEmail:onComplete:" + task.isSuccessful());
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
-                        Log.w("!Successful", "signInWithEmail:failed", task.getException());
-                        Toast.makeText(LoginActivity.this, "Authentification  Failed", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        //Authentification successful
-                        Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
-                        startActivity(intent);
-                        }
-                    }
-                });
-    }
-    /**
-     * Method that handle the connexion with Facebook Authentification
-     */
-    private void handleFacebookAccessToken(AccessToken token) {
-
-        Log.d("HANDLE Facebook", "handleFacebookAccessToken:" + token);
-        final AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("ON COMPLETE", "signInWithCredential:onComplete:" + task.isSuccessful());
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w("ON COMPLETE", "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
     }
 
     /*
