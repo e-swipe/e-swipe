@@ -5,214 +5,220 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ProfilFragment">
 
-    <ScrollView
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="vertical"
-        android:paddingBottom="?android:attr/actionBarSize">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/main_container">
+            android:fillViewport="true"
+            android:scrollbars="vertical"
+            android:paddingBottom="?android:attr/actionBarSize">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/image_container"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    tools:ignore="UselessParent">
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:id="@+id/image_text_container">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/profile_image"
-                            android:layout_width="150dp"
-                            android:layout_height="150dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="10dp"
-                            android:src="@mipmap/ic_oktamer"
-                            app:civ_border_width="2dp"
-                            app:civ_border_color="#FF000000"/>
-
-
-                    </RelativeLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="TEST,AGE"
-                        android:id="@+id/textView_user" />
-
-                    <View
-                        android:id="@+id/view"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_margin="25dp"
-                        android:layout_alignParentBottom="true"
-                        android:background="#000000" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-
-
-            <LinearLayout
+            <RelativeLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_below="@+id/image_container"
-                android:id="@+id/options_container">
-
-                <TextView
-                    android:text="Reglages"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:id="@+id/SettingsLabel" />
+                android:id="@+id/main_container">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_margin="7dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/showMe_container">
-
-                    <TextView
-                        android:text="Montrez-moi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/ShowmeLabel"
-                        android:layout_weight="1" />
-
-                    <Switch
-                        android:text="Homme"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/switch_homme" />
-
-                    <Switch
-                        android:text="Femme"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/switch_femme" />
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:orientation="vertical"
-                    android:layout_margin="7dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:id="@+id/image_container"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:id="@+id/distance_container">
+                        tools:ignore="UselessParent">
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:text="Distance"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/DistanceLabel" />
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:id="@+id/image_text_container">
 
-                            <TextView
-                                android:text="plein de Km"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/textView_distance"
-                                android:gravity="right" />
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/profile_image"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:src="@mipmap/ic_oktamer"
+                                app:civ_border_width="2dp"
+                                app:civ_border_color="#FF000000"/>
+
 
                         </RelativeLayout>
 
-                        <SeekBar
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/seekBar_distance" />
+                            android:layout_gravity="center"
+                            android:text="TEST,AGE"
+                            android:id="@+id/textView_user" />
+
+                        <View
+                            android:id="@+id/view"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_margin="25dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="#000000" />
 
                     </LinearLayout>
 
-                </RelativeLayout>
+                </LinearLayout>
+
+
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/image_container"
+                    android:id="@+id/options_container">
 
-                    <RelativeLayout
+                    <TextView
+                        android:text="Reglages"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/age_container"
-                        android:layout_margin="5dp">
+                        android:gravity="center"
+                        android:id="@+id/SettingsLabel" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_margin="7dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:id="@+id/showMe_container">
 
                         <TextView
-                            android:text="Age"
+                            android:text="Montrez-moi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/AgeLabel" />
+                            android:id="@+id/ShowmeLabel"
+                            android:layout_weight="1" />
 
-                        <TextView
-                            android:text="plein d'années"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/textView_age"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true" />
-
-                        <org.florescu.android.rangeseekbar.RangeSeekBar
+                        <Switch
+                            android:text="Homme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/rangeSeekBar_age" />
+                            android:id="@+id/switch_homme" />
 
+                        <Switch
+                            android:text="Femme"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/switch_femme" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_margin="7dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:id="@+id/distance_container">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:text="Distance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/DistanceLabel" />
+
+                                <TextView
+                                    android:text="plein de Km"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/textView_distance"
+                                    android:gravity="right" />
+
+                            </RelativeLayout>
+
+                            <SeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/seekBar_distance" />
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_margin="7dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/signOut_container">
-
-                    <Switch
-                        android:text="Rendre votre profil visible"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/switch_visible" />
+                        android:orientation="vertical">
 
-                    <Button
-                        android:text="Deconnexion"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/age_container"
+                            android:layout_margin="5dp">
+
+                            <TextView
+                                android:text="Age"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/AgeLabel" />
+
+                            <TextView
+                                android:text="plein d'années"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/textView_age"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true" />
+
+                            <org.florescu.android.rangeseekbar.RangeSeekBar
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/rangeSeekBar_age" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
+                        android:layout_margin="7dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/sign_out" />
+                        android:id="@+id/signOut_container">
+
+                        <Switch
+                            android:text="Rendre votre profil visible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/switch_visible" />
+
+                        <Button
+                            android:text="Deconnexion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/sign_out" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
-        </RelativeLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 
-</FrameLayout>
+    </FrameLayout>
