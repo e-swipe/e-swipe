@@ -4,21 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.e_swipe.e_swipe.R;
-import com.e_swipe.e_swipe.TabbedActivity;
 import com.e_swipe.e_swipe.layout.TinderCard;
 import com.e_swipe.e_swipe.objects.JsonLoader;
-import com.e_swipe.e_swipe.objects.Profile;
+import com.e_swipe.e_swipe.objects.ProfilTinderCard;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
-
-import java.util.List;
 
 /**
  * Class related to the swipe fragment
@@ -87,8 +82,8 @@ public class SwipeFragment extends Fragment {
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
         //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
-        for(Profile profile : JsonLoader.loadProfiles(mContext)){
-            TinderCard tinderCard = new TinderCard(mContext, profile, mSwipeView);
+        for(ProfilTinderCard profilTinderCard : JsonLoader.loadProfiles(mContext)){
+            TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
             tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
                 @Override
                 public void onCardChange(TinderCard tinderCard) {
@@ -123,7 +118,7 @@ public class SwipeFragment extends Fragment {
             }
         });
 
-        onSwipeEventListener.onFragmentCreated();
+        //onSwipeEventListener.onFragmentCreated();
 
         return v;
     }

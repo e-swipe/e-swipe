@@ -1,4 +1,4 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.viewPager;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

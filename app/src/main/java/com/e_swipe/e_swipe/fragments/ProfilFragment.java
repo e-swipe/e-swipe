@@ -1,6 +1,7 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,17 +12,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.e_swipe.e_swipe.Profil;
+import com.e_swipe.e_swipe.UserProfileActivity;
+import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
@@ -30,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 //import com.facebook.AccessToken;
 //import com.facebook.FacebookSdk;
@@ -148,6 +145,8 @@ public class ProfilFragment extends Fragment {
 
             }
         });
+
+        //Init RangeSeekBar
         rangeSeekBar = (RangeSeekBar) v.findViewById(R.id.rangeSeekBar_age);
         rangeSeekBar.setRangeValues(0,100);
         rangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
@@ -161,7 +160,19 @@ public class ProfilFragment extends Fragment {
             }
         });
 
+        //Init CircleImageView
         circleImageView = (de.hdodenhof.circleimageview.CircleImageView) v.findViewById(R.id.profile_image);
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), UserProfileActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("profil",profil);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+            }
+        });
         nameAndImage = (TextView) v.findViewById(R.id.textView_user);
         int age = 0;
         age = getAge(profil.getBirthday());

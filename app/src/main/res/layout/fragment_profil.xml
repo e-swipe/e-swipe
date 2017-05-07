@@ -20,6 +20,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#F5F5F5"
                 android:id="@+id/main_container">
 
                 <LinearLayout
@@ -95,14 +96,17 @@
                         android:layout_margin="7dp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:background="#FFFFFF"
+                        android:elevation="20dp"
                         android:id="@+id/showMe_container">
 
                         <TextView
                             android:text="Montrez-moi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/ShowmeLabel"
-                            android:layout_weight="1" />
+                            android:textColor="#FF4500"
+                            android:layout_weight="1"
+                            android:id="@+id/ShowmeLabel"/>
 
                         <Switch
                             android:text="Homme"
@@ -128,6 +132,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:elevation="20dp"
                             android:id="@+id/distance_container">
 
                             <RelativeLayout
@@ -165,8 +171,10 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/age_container"
-                            android:layout_margin="5dp">
+                            android:background="#FFFFFF"
+                            android:elevation="20dp"
+                            android:layout_margin="5dp"
+                            android:id="@+id/age_container">
 
                             <TextView
                                 android:text="Age"
@@ -197,6 +205,8 @@
                         android:layout_width="match_parent"
                         android:layout_margin="7dp"
                         android:layout_height="wrap_content"
+                        android:background="#FFFFFF"
+                        android:elevation="20dp"
                         android:id="@+id/signOut_container">
 
                         <Switch

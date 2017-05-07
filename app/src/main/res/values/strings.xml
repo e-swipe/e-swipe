@@ -29,6 +29,7 @@
     <string name="distance">distance</string>
     <string name="ageMin">ageMin</string>
     <string name="ageMax">ageMax</string>
+    <string name="title_activity_user_profile">UserProfile</string>
 
 
 </resources>

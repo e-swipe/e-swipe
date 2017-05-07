@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Class related to Profile in tinderCard, expose attributs to gson Parsing
+ * Class related to ProfilTinderCard in tinderCard, expose attributs to gson Parsing
  */
-public class Profile {
+public class ProfilTinderCard {
 
     @SerializedName("name")
     @Expose

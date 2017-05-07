@@ -11,7 +11,6 @@ import org.json.JSONArray;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +26,17 @@ public class JsonLoader {
      * @param context Context of the App
      * @return the list of profiles in profiles.json
      */
-    public static List<Profile> loadProfiles(Context context){
+    public static List<ProfilTinderCard> loadProfiles(Context context){
         try{
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "profiles.json"));
-            List<Profile> profileList = new ArrayList<>();
+            List<ProfilTinderCard> profilTinderCardList = new ArrayList<>();
             for(int i=0;i<array.length();i++){
-                Profile profile = gson.fromJson(array.getString(i), Profile.class);
-                profileList.add(profile);
+                ProfilTinderCard profilTinderCard = gson.fromJson(array.getString(i), ProfilTinderCard.class);
+                profilTinderCardList.add(profilTinderCard);
             }
-            return profileList;
+            return profilTinderCardList;
         }catch (Exception e){
             e.printStackTrace();
             return null;

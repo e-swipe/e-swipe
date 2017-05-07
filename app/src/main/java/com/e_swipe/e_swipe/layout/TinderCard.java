@@ -1,15 +1,13 @@
 package com.e_swipe.e_swipe.layout;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.e_swipe.e_swipe.R;
-import com.e_swipe.e_swipe.fragments.SwipeFragment;
-import com.e_swipe.e_swipe.objects.Profile;
+import com.e_swipe.e_swipe.objects.ProfilTinderCard;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
@@ -38,9 +36,9 @@ public class TinderCard {
     private TextView locationNameTxt;
 
     /**
-     * Profile related
+     * ProfilTinderCard related
      */
-    private Profile mProfile;
+    private ProfilTinderCard mProfilTinderCard;
     /**
      * Application Context
      */
@@ -59,12 +57,12 @@ public class TinderCard {
     /**
      * Constructor
      * @param context Application Context
-     * @param profile Profile displayed in tinderCard
+     * @param profilTinderCard ProfilTinderCard displayed in tinderCard
      * @param swipeView Holder related to swipe events
      */
-    public TinderCard(Context context, Profile profile, SwipePlaceHolderView swipeView) {
+    public TinderCard(Context context, ProfilTinderCard profilTinderCard, SwipePlaceHolderView swipeView) {
         mContext = context;
-        mProfile = profile;
+        mProfilTinderCard = profilTinderCard;
         mSwipeView = swipeView;
     }
 
@@ -73,9 +71,9 @@ public class TinderCard {
      * onResolved set the subviews to there values in profile
      */
     private void onResolved(){
-        Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
-        nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
-        locationNameTxt.setText(mProfile.getLocation());
+        Glide.with(mContext).load(mProfilTinderCard.getImageUrl()).into(profileImageView);
+        nameAgeTxt.setText(mProfilTinderCard.getName() + ", " + mProfilTinderCard.getAge());
+        locationNameTxt.setText(mProfilTinderCard.getLocation());
     }
 
     public void setOnSwipeListener(onSwipeListener onSwipeListener){

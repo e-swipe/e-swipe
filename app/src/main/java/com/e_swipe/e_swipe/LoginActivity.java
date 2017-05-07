@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.services.gps.LocalisationListener;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -20,6 +21,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -31,9 +33,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Activity related to every SignIn options (Email / FB)
@@ -73,11 +79,14 @@ public class LoginActivity extends Activity {
         signin = (Button) findViewById(R.id.signin);
         mAuth = FirebaseAuth.getInstance();
 
+        /**
+         * Handle Facebook sign in
+         */
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email", "public_profile", "user_birthday");
+        loginButton.setReadPermissions("email", "public_profile", "user_birthday,user_photos");
 
-        if(AccessToken.getCurrentAccessToken() != null){
+        /*if(AccessToken.getCurrentAccessToken() != null){
             GraphRequest request = GraphRequest.newMeRequest(
                     AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
@@ -93,46 +102,21 @@ public class LoginActivity extends Activity {
                             intent.putExtra("surname",profile.getLastName());
                             intent.putExtra("birthday", object.optString("birthday"));
                             startActivity(intent);
+                            finish();
                         }
                     });
             Bundle parameters = new Bundle();
             parameters.putString("fields", "birthday");
             request.setParameters(parameters);
             request.executeAsync();
-        }
+        }*/
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                //handleFacebookAccessToken(loginResult.getAccessToken());
+                handleFacebookAccessToken(loginResult.getAccessToken());
                 // App code
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
-                                // Application code
-                                try {
-                                    Profile profile = Profile.getCurrentProfile();
-                                    Intent intent = new Intent(context,TabbedActivity.class);
-                                    intent.putExtra("id", profile.getId());
-                                    intent.putExtra("name",profile.getFirstName());
-                                    intent.putExtra("surname",profile.getLastName());
-                                    String birthday = object.getString("birthday"); // 01/31/1980 format
-                                    intent.putExtra("birthday", birthday);
-                                    Toast.makeText(context,"birthday : " + birthday, Toast.LENGTH_LONG);
-                                    startActivity(intent);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
             }
             @Override
             public void onCancel() {
@@ -145,15 +129,101 @@ public class LoginActivity extends Activity {
         });
     }
 
+    /**
+     * Authentification to firebase to get firebase user
+     * @param token the facebook access token
+     */
+    private void handleFacebookAccessToken(final AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            requestFBUserInfos(token);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void requestFBUserInfos(AccessToken accessToken){
+        GraphRequest request = GraphRequest.newMeRequest(
+                accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        // Application code
+                        try {
+                            final JSONObject birthdayObject = object;
+                            final ArrayList<String> picturesUrl = new ArrayList<>();
+                            for(int i=0;i<object.getJSONObject("albums").getJSONArray("data").length();i++){
+                                JSONObject album = object.getJSONObject("albums").getJSONArray("data").getJSONObject(i);
+                                String albumId = album.getString("id");
+                                //For each album request photos url
+                                Bundle params = new Bundle();
+                                params.putBoolean("redirect", false);
+                                new GraphRequest(
+                                        AccessToken.getCurrentAccessToken(),
+                                        "/" + albumId +"/picture",
+                                        params,
+                                        HttpMethod.GET,
+                                        new GraphRequest.Callback() {
+                                            public void onCompleted(GraphResponse response) {
+                                                JSONObject picture = response.getJSONObject();
+                                                try {
+                                                    picturesUrl.add(picture.getJSONObject("data").getString("url"));
+                                                    Log.d("Debug",picture.getJSONObject("data").getString("url"));
+
+                                                    //Facebook profile
+                                                    Profile profile = Profile.getCurrentProfile();
+                                                    //App profile
+                                                    Profil profil = new Profil(profile.getId(),profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),picturesUrl);
+                                                    //Create new Intent
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putParcelable("profil",profil);
+                                                    Intent intent = new Intent(context,TabbedActivity.class);
+                                                    intent.putExtras(bundle);
+
+                                                    startActivity(intent);
+                                                    finish();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                ).executeAsync();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,gender,birthday,albums");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private HashMap<String,String> getUsersInfoFromSwagger() {
+        return null;
+    }
+
+
     @Override
     /**
      * On Activity Start add the Authentification Listener
      */
     public void onStart() {
         super.onStart();
-
     }
-
     @Override
     /**
      * On Activity Stop remove the Authentification Listener
@@ -174,5 +244,4 @@ public class LoginActivity extends Activity {
         // Pass the activity result back to the Facebook SDK
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
 }

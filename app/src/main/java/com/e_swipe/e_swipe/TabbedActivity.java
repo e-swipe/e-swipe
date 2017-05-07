@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +23,8 @@ import com.e_swipe.e_swipe.fragments.ChatFragment;
 import com.e_swipe.e_swipe.fragments.EventsFragment;
 import com.e_swipe.e_swipe.fragments.ProfilFragment;
 import com.e_swipe.e_swipe.fragments.SwipeFragment;
+import com.e_swipe.e_swipe.objects.Profil;
+import com.e_swipe.e_swipe.viewPager.CustomViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,12 +69,13 @@ public class TabbedActivity extends AppCompatActivity
 
         //Get FB userId
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("id");
+        profil = (Profil) intent.getExtras().getParcelable("profil");
+        /*String userId = intent.getStringExtra("id");
         String name = intent.getStringExtra("name");
         String surname = intent.getStringExtra("surname");
         String birthday = intent.getStringExtra("birthday");
 
-        profil = new Profil(userId,name,surname,birthday);
+        profil = new Profil(userId,name,surname,birthday);*/
     }
 
 
