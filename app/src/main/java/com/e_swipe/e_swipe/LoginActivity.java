@@ -127,6 +127,15 @@ public class LoginActivity extends Activity {
                 Log.d(TAG, "facebook:onError", error);
             }
         });
+
+        final Button registerButton = (Button) findViewById(R.id.register);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

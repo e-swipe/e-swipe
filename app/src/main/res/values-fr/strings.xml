@@ -6,7 +6,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Mail</string>
     <string name="prompt_password">Mot de Passe</string>
-    <string name="action_sign_in">Connectez vous ou inscrivez vous</string>
+    <string name="action_sign_in">Connectez vous</string>
     <string name="action_sign_in_short">Connexion</string>
     <string name="error_invalid_email">Cette adresse mail est invalide</string>
     <string name="error_invalid_password">Ce mot de passe estt trop court</string>

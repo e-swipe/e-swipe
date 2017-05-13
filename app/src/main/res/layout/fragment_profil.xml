@@ -49,8 +49,8 @@
                                 android:layout_gravity="center"
                                 android:layout_margin="10dp"
                                 android:src="@mipmap/ic_oktamer"
-                                app:civ_border_width="2dp"
-                                app:civ_border_color="#FF000000"/>
+                                app:civ_border_width="1dp"
+                                app:civ_border_color="#F5F5F5"/>
 
 
                         </RelativeLayout>
@@ -93,12 +93,16 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_margin="7dp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="#FFFFFF"
-                        android:elevation="20dp"
-                        android:id="@+id/showMe_container">
+                        android:elevation="5dp"
+                        android:id="@+id/showMe_container"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="7dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="7dp"
+                        android:background="@drawable/rounded_border"
+                        android:layout_margin="7dp">
 
                         <TextView
                             android:text="Montrez-moi"
@@ -109,13 +113,13 @@
                             android:id="@+id/ShowmeLabel"/>
 
                         <Switch
-                            android:text="Homme"
+                            android:text="Hommes"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/switch_homme" />
 
                         <Switch
-                            android:text="Femme"
+                            android:text="Femmes"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/switch_femme" />
@@ -126,15 +130,17 @@
                         android:orientation="vertical"
                         android:layout_margin="7dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:elevation="0dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:background="#FFFFFF"
-                            android:elevation="20dp"
-                            android:id="@+id/distance_container">
+                            android:background="@drawable/rounded_border"
+                            android:elevation="5dp"
+                            android:id="@+id/distance_container"
+                            android:padding="10dp">
 
                             <RelativeLayout
                                 android:layout_width="wrap_content"
@@ -171,10 +177,11 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="#FFFFFF"
-                            android:elevation="20dp"
-                            android:layout_margin="5dp"
-                            android:id="@+id/age_container">
+                            android:background="@drawable/rounded_border"
+                            android:elevation="5dp"
+                            android:layout_margin="7dp"
+                            android:id="@+id/age_container"
+                            android:padding="7dp">
 
                             <TextView
                                 android:text="Age"
@@ -205,9 +212,10 @@
                         android:layout_width="match_parent"
                         android:layout_margin="7dp"
                         android:layout_height="wrap_content"
-                        android:background="#FFFFFF"
-                        android:elevation="20dp"
-                        android:id="@+id/signOut_container">
+                        android:background="@drawable/rounded_border"
+                        android:elevation="5dp"
+                        android:id="@+id/signOut_container"
+                        android:padding="5dp">
 
                         <Switch
                             android:text="Rendre votre profil visible"
@@ -231,4 +239,4 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    </FrameLayout>
+</FrameLayout>
