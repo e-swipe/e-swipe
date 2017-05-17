@@ -1,23 +1,25 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.e_swipe.e_swipe.ChatActivity;
 import com.e_swipe.e_swipe.R;
-import com.e_swipe.e_swipe.adapter.ChatAdapter;
-import com.e_swipe.e_swipe.objects.Chat;
+import com.e_swipe.e_swipe.adapter.ChatRoomAdapter;
+import com.e_swipe.e_swipe.objects.ChatRoom;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class that represents the fragment related to chats rooms
+ * Class that represents the fragment related to chatRooms rooms
  */
 public class ChatFragment extends Fragment {
 
@@ -29,7 +31,7 @@ public class ChatFragment extends Fragment {
     /**
      * List of every chatRooms
      */
-    private static List<Chat> chats;
+    private static List<ChatRoom> chatRooms;
     /**
      * the listView to inflate
      */
@@ -47,9 +49,9 @@ public class ChatFragment extends Fragment {
      * @param chatsRooms List of every chatRooms
      * @return a new instance of the chatFragment
      */
-    public static ChatFragment newInstance(List<Chat> chatsRooms) {
+    public static ChatFragment newInstance(List<ChatRoom> chatsRooms) {
         ChatFragment fragment = new ChatFragment();
-        chats = chatsRooms;
+        chatRooms = chatsRooms;
         return fragment;
     }
 
@@ -72,7 +74,14 @@ public class ChatFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         listView = (ListView) view.findViewById(R.id.chat_list);
         //Set Adapter
-        listView.setAdapter(new ChatAdapter(getContext(), chats));
+        listView.setAdapter(new ChatRoomAdapter(getContext(), chatRooms));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getContext(), ChatActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }

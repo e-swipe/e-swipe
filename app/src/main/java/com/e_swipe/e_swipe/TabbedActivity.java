@@ -14,8 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.e_swipe.e_swipe.fragments.ProfilFragment.OnFragmentInteractionListener;
 import com.e_swipe.e_swipe.layout.TinderCard;
-import com.e_swipe.e_swipe.objects.Chat;
+import com.e_swipe.e_swipe.objects.ChatRoom;
 import com.e_swipe.e_swipe.objects.Event;
 import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.Person;
@@ -33,7 +34,7 @@ import java.util.List;
  * Activity related to the creation of fragments (Profil , Swipe , Events ..)
  */
 public class TabbedActivity extends AppCompatActivity
-        implements ProfilFragment.OnFragmentInteractionListener, SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener {
+        implements ProfilFragment.FragmentListenerCallback,SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, OnFragmentInteractionListener {
 
     /**
      * Adapter that will handle fragments/Pages
@@ -106,9 +107,20 @@ public class TabbedActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 
+    @Override
+    public void askForFinish() {
+        Log.d("Debug","Finish from tabbed");
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        super.finish();
+        finish();
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -160,9 +172,9 @@ public class TabbedActivity extends AppCompatActivity
                     List<Event> events = JsonLoader.loadEvents(getApplicationContext());
                     return EventsFragment.newInstance(getApplicationContext(),events);
                 case 3:
-                    ArrayList<Chat> chats = new ArrayList<Chat>();
-                    chats.add(new Chat("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
-                    return ChatFragment.newInstance(chats);
+                    ArrayList<ChatRoom> chatRooms = new ArrayList<ChatRoom>();
+                    chatRooms.add(new ChatRoom("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
+                    return ChatFragment.newInstance(chatRooms);
                 default:
                     return ProfilFragment.newInstance(getApplicationContext(),profil);
             }
@@ -190,7 +202,7 @@ public class TabbedActivity extends AppCompatActivity
                 case 2:
                     return "Events";
                 case 3:
-                    return "Chat";
+                    return "Chats";
             }
             return null;
         }

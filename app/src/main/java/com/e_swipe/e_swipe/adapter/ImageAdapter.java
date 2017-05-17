@@ -16,13 +16,13 @@ import java.util.ArrayList;
 /**
  * Created by Anthonny on 07/05/2017.
  */
-public class ImagePager extends PagerAdapter {
+public class ImageAdapter extends PagerAdapter {
 
     Context mContext;
     LayoutInflater mLayoutInflater;
     ArrayList<String> imageUrls;
 
-    public ImagePager(Context context, ArrayList<String> urls){
+    public ImageAdapter(Context context, ArrayList<String> urls){
         mContext = context;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imageUrls = urls;

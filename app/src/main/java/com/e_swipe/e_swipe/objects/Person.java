@@ -2,8 +2,6 @@ package com.e_swipe.e_swipe.objects;
 
 import android.support.annotation.NonNull;
 
-import com.e_swipe.e_swipe.objects.Chat;
-
 import java.util.ArrayList;
 
 /**
@@ -14,16 +12,16 @@ public class Person {
     private String displayName;
     private String token;
     private String imageUrl;
-    private ArrayList<Chat> chats;
+    private ArrayList<ChatRoom> chatRooms;
 
     public Person(String displayName, @NonNull String token, String imageUrl){
         this.displayName = displayName;
         this.token = token;
         this.imageUrl = imageUrl;
-        chats = new ArrayList<Chat>();
+        chatRooms = new ArrayList<ChatRoom>();
     }
 
-    public void addChat(Chat chat){
-        chats.add(chat);
+    public void addChat(ChatRoom chatRoom){
+        chatRooms.add(chatRoom);
     }
 }

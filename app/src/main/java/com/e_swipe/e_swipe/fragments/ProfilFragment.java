@@ -1,5 +1,6 @@
 package com.e_swipe.e_swipe.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,17 +10,22 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.e_swipe.e_swipe.LoginActivity;
 import com.e_swipe.e_swipe.UserProfileActivity;
 import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.R;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
@@ -29,15 +35,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-//import com.facebook.AccessToken;
-//import com.facebook.FacebookSdk;
-//import com.facebook.login.LoginManager;
 
 /**
  * Class related to the Profil fragment
  */
 public class ProfilFragment extends Fragment {
-    // TODO: 27/03/2017
     /**
      * Application Context
      */
@@ -53,10 +55,12 @@ public class ProfilFragment extends Fragment {
     Switch switchFemme;
     SeekBar seekbarDistance;
     RangeSeekBar <Integer> rangeSeekBar;
+    Button signOutButton;
     /**
      * Listener to event over the fragment
      */
     private OnFragmentInteractionListener mListener;
+    private FragmentListenerCallback fragmentListenerCallback;
     /**
      * The profil of the user
      */
@@ -181,6 +185,20 @@ public class ProfilFragment extends Fragment {
         Bitmap bitmap = getFacebookProfilePicture(profil.getUserId());
         initSubviewsFromSharedPreferences();
 
+        signOutButton = (Button) v.findViewById(R.id.sign_out);
+        signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //fragmentListenerCallback.askForFinish();
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+                getActivity().finish();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+                Log.d("Debug","finish");
+            }
+        });
+
         return v;
     }
 
@@ -193,9 +211,6 @@ public class ProfilFragment extends Fragment {
         seekbarDistance.setProgress(sharedPref.getInt(getString(R.string.distance),0));
         rangeSeekBar.setRangeValues(sharedPref.getInt(getString(R.string.ageMin),0), sharedPref.getInt(getString(R.string.ageMax),100));
 
-        /*SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int defaultValue = getResources().getInteger(R.string.);
-        long highScore = sharedPref.getInt(getString(R.string.saved_high_score), defaultValue);*/
     }
 
     public static int getAge(String date) {
@@ -248,6 +263,16 @@ public class ProfilFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    public interface FragmentListenerCallback {
+        void askForFinish();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        fragmentListenerCallback = (FragmentListenerCallback) activity;
     }
 
     @Override

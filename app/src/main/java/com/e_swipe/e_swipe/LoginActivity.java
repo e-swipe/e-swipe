@@ -2,8 +2,10 @@ package com.e_swipe.e_swipe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.e_swipe.e_swipe.objects.Profil;
+import com.e_swipe.e_swipe.services.firebase.FirebaseInstanceIDService;
+import com.e_swipe.e_swipe.services.firebase.FirebaseMessageService;
 import com.e_swipe.e_swipe.services.gps.LocalisationListener;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -34,6 +38,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,9 +67,25 @@ public class LoginActivity extends Activity {
     EditText editMail;
     EditText editPassword;
     Button signin;
+    Button register;
 
-    int age;
+    /**
+     * Current context
+     */
     Context context;
+
+    /**
+     * SharedPreferences
+     */
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+    /**
+     * List of pictures url of urer
+     */
+    ArrayList<String> picturesUrl;
+    JSONObject birthdayObject;
+    int nbAlbums;
+    int cpt;
 
     private static final String TAG = "DEBUG";
 
@@ -71,8 +93,18 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("TOKEN",FirebaseInstanceId.getInstance().getToken());
 
+        picturesUrl = new ArrayList<String>();
+
+        //Get context
         context = getApplicationContext();
+
+        //Init sharedPreferences
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         //Initialise components
         editMail = (EditText) findViewById(R.id.mail);
         editPassword = (EditText) findViewById(R.id.password);
@@ -86,56 +118,84 @@ public class LoginActivity extends Activity {
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email", "public_profile", "user_birthday,user_photos");
 
-        /*if(AccessToken.getCurrentAccessToken() != null){
-            GraphRequest request = GraphRequest.newMeRequest(
-                    AccessToken.getCurrentAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(
-                                JSONObject object,
-                                GraphResponse response) {
-                            // Application code
-                            Profile profile = Profile.getCurrentProfile();
-                            Intent intent = new Intent(context,TabbedActivity.class);
-                            intent.putExtra("id", profile.getId());
-                            intent.putExtra("name",profile.getFirstName());
-                            intent.putExtra("surname",profile.getLastName());
-                            intent.putExtra("birthday", object.optString("birthday"));
-                            startActivity(intent);
-                            finish();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            //Get user infos from shared preferences
+            Log.d("Debug","user set");
+            Gson gson = new Gson();
+            String json = sharedPref.getString("userProfil","");
+            Profil profil = gson.fromJson(json, Profil.class);
+
+            //Start intent with profile
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("profil",profil);
+            Intent intent = new Intent(context,TabbedActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            //If user isn't connected init Facebook connexion and Email/Password Connexion
+
+            //Init Register
+            register = (Button) findViewById(R.id.register);
+            register.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+            //Init Email/Password
+            signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signinWithEmailAndPassword(editMail.getText().toString().trim(), editPassword.getText().toString().trim());
+                }
+            });
+
+            //Init facebook signIn
+            Log.d("Debug","user not set");
+            loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                    handleFacebookAccessToken(loginResult.getAccessToken());
+                    // App code
+                }
+                @Override
+                public void onCancel() {
+                    Log.d(TAG, "facebook:onCancel");
+                }
+                @Override
+                public void onError(FacebookException error) {
+                    Log.d(TAG, "facebook:onError", error);
+                }
+            });
+        }
+    }
+    // TODO: 15/05/2017
+    //Request Swagger for info and profil creation
+    private void signinWithEmailAndPassword(String email, String password) {
+        Log.d(TAG,"Email : " + email + " password : " + password);
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "birthday");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }*/
-
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-                // App code
-            }
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-            }
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-            }
-        });
-
-        final Button registerButton = (Button) findViewById(R.id.register);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
+                    }
+                });
     }
 
     /**
@@ -154,7 +214,6 @@ public class LoginActivity extends Activity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             requestFBUserInfos(token);
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -164,6 +223,7 @@ public class LoginActivity extends Activity {
     }
 
     public void requestFBUserInfos(AccessToken accessToken){
+
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -171,8 +231,8 @@ public class LoginActivity extends Activity {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         // Application code
                         try {
-                            final JSONObject birthdayObject = object;
-                            final ArrayList<String> picturesUrl = new ArrayList<>();
+                            birthdayObject = object;
+                            nbAlbums = object.getJSONObject("albums").getJSONArray("data").length()-1;
                             for(int i=0;i<object.getJSONObject("albums").getJSONArray("data").length();i++){
                                 JSONObject album = object.getJSONObject("albums").getJSONArray("data").getJSONObject(i);
                                 String albumId = album.getString("id");
@@ -190,22 +250,33 @@ public class LoginActivity extends Activity {
                                                 try {
                                                     picturesUrl.add(picture.getJSONObject("data").getString("url"));
                                                     Log.d("Debug",picture.getJSONObject("data").getString("url"));
-
-                                                    //Facebook profile
-                                                    Profile profile = Profile.getCurrentProfile();
-                                                    //App profile
-                                                    Profil profil = new Profil(profile.getId(),profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),picturesUrl);
-                                                    //Create new Intent
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putParcelable("profil",profil);
-                                                    Intent intent = new Intent(context,TabbedActivity.class);
-                                                    intent.putExtras(bundle);
-
-                                                    startActivity(intent);
-                                                    finish();
+                                                    if(cpt == nbAlbums){
+                                                        //Facebook profile
+                                                        Profile profile = Profile.getCurrentProfile();
+                                                        //App profile
+                                                        Profil profil = null;
+                                                        try {
+                                                            profil = new Profil(profile.getId(),profile.getFirstName(),profile.getLastName(), birthdayObject.getString("birthday"),picturesUrl);
+                                                            //Save Profil to sharedPreferences
+                                                            Gson gson = new Gson();
+                                                            String json = gson.toJson(profil);
+                                                            editor.putString("userProfil", json);
+                                                            editor.commit();
+                                                            //Create new Intent with new profil
+                                                            Bundle bundle = new Bundle();
+                                                            bundle.putParcelable("profil",profil);
+                                                            Intent intent = new Intent(context,TabbedActivity.class);
+                                                            intent.putExtras(bundle);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
+                                                cpt++;
                                             }
                                         }
                                 ).executeAsync();

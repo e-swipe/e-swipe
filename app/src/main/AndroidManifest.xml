@@ -12,7 +12,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/splashScreenTheme">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,6 +57,12 @@
             android:name=".RegisterActivity"
             android:label="RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ChatActivity"
+            android:label="@string/title_activity_chat_"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        
+        <service android:name=".services.gps.LocalisationListener"/>
     </application>
 
 </manifest>

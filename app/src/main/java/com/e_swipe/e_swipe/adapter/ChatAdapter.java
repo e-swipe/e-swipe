@@ -1,82 +1,79 @@
 package com.e_swipe.e_swipe.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.e_swipe.e_swipe.R;
-import com.e_swipe.e_swipe.objects.Chat;
 
-import java.util.List;
+import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.objects.ChatMessage;
+
+import java.util.ArrayList;
 
 /**
- * Adapter class linked to Chat list View in the Chat fragment layout related to
+ * Created by Anthonny on 16/05/2017.
  */
-public class ChatAdapter extends BaseAdapter implements View.OnClickListener {
-    /**
-     * List of every chatRooms
-     */
-    List<Chat> chats;
-    /**
-     * Context of the Activity/App
-     */
+public class ChatAdapter extends BaseAdapter {
+
+    private static LayoutInflater inflater = null;
+    ArrayList<ChatMessage> chatMessages;
     Context context;
 
-
-    public ChatAdapter(Context context, List<Chat> chats){
-        this.chats = chats;
+    public ChatAdapter(Context context, ArrayList<ChatMessage> chatMessages){
         this.context = context;
+        this.chatMessages = chatMessages;
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-
     @Override
-    /**
-     * @return size of chatList
-     */
     public int getCount() {
-        return chats.size();
+        return chatMessages.size();
     }
 
     @Override
-    /**
-     * @return Chat at position
-     */
-    public Chat getItem(int position) {
-        return chats.get(position);
+    public Object getItem(int i) {
+        return chatMessages.get(i);
     }
 
     @Override
-    /**
-     * @return id of item at position
-     */
-    public long getItemId(int position) {
-        return position;
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
-    /**
-     * @return the view inflated with subviews
-     */
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        if( convertView == null ){
-            //We must create a View:
-            LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.row_chat, parent, false);
-            //Init subViews
-            TextView chatName = (TextView) convertView.findViewById(R.id.chat_name);
-            chatName.setText(getItem(position).getChatName());
-            TextView lastMessage = (TextView) convertView.findViewById(R.id.last_message);
-            lastMessage.setText(getItem(position).getLastMessage());
-
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        ChatMessage chatMessage = (ChatMessage) getItem(i);
+        View vi = view;
+        if(view == null){
+            vi = inflater.inflate(R.layout.chat_bubble, null);
         }
-        return convertView;
+        TextView textMessage = (TextView) vi.findViewById(R.id.message_text);
+        textMessage.setText(chatMessage.getMessage());
+
+        LinearLayout layout = (LinearLayout) vi
+                .findViewById(R.id.bubble_layout);
+        LinearLayout parent_layout = (LinearLayout) vi
+                .findViewById(R.id.bubble_layout_parent);
+
+        // if message is mine then align to right
+        if (chatMessage.isMine()) {
+            layout.setBackgroundResource(R.drawable.bubble2);
+            parent_layout.setGravity(Gravity.RIGHT);
+        }
+        // If not mine then align to left
+        else {
+            layout.setBackgroundResource(R.drawable.bubble1);
+            parent_layout.setGravity(Gravity.LEFT);
+        }
+        textMessage.setTextColor(Color.BLACK);
+        return vi;
     }
 
-    @Override
-    // TODO: 27/03/2017
-    public void onClick(View v) {
-
+    public void addChatMessage(ChatMessage chatMessage){
+        chatMessages.add(chatMessage);
     }
 }

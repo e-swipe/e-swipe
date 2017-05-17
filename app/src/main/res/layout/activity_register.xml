@@ -53,6 +53,7 @@
 					android:layout_width="0px"
 					android:layout_height="match_parent"
 					android:layout_weight="3.67"
+					android:inputType="textEmailAddress"
 					android:id="@+id/mail"/>
 		    </LinearLayout>
 
@@ -62,16 +63,18 @@
 			    android:weightSum="5"
                 android:id="@+id/contain_password">
 			    <TextView
-				    android:layout_width="87dp"
+				    android:layout_width="0dp"
 				    android:layout_height="match_parent"
 			    	android:text="@string/prompt_password"
 				    android:gravity="center_vertical"
+					android:layout_weight="1.18"
                     android:id="@+id/textView_password" />
 
 			    <EditText
 				    android:layout_height="match_parent"
+					android:layout_width="match_parent"
 				    android:id="@+id/password"
-				    android:layout_width="match_parent" />
+					android:layout_weight="3.67" />
 		    </LinearLayout>
 
         </LinearLayout>
@@ -85,12 +88,14 @@
             android:padding="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:id="@+id/contain_info">
+            android:id="@+id/contain_info"
+			android:weightSum="4">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/contain_name">
+                android:id="@+id/contain_name"
+				android:layout_weight="1">
                 <TextView
                     android:layout_width="0px"
                     android:layout_height="match_parent"
@@ -105,41 +110,69 @@
                     android:id="@+id/name"/>
             </LinearLayout>
 
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:weightSum="5"
+				android:id="@+id/contain_surname">
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:text="Surname"
+					android:gravity="center_vertical"
+					android:layout_weight="1.18"
+					android:id="@+id/textView_surname" />
+
+				<EditText
+					android:layout_height="match_parent"
+					android:layout_width="match_parent"
+					android:id="@+id/surname"
+					android:layout_weight="3.67" />
+			</LinearLayout>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/contain_age">
+				android:weightSum="5"
+                android:id="@+id/contain_birthday"
+				android:layout_weight="1">
 
                 <TextView
-                    android:text="Age"
-                    android:layout_width="wrap_content"
+                    android:text="Birthday"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textView_age"
-                    android:layout_weight="1" />
+					android:layout_weight="1.18"
+					android:id="@+id/textView_birthday" />
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/age"
-                    android:layout_weight="1" />
+					android:layout_weight="3.67"
+                    android:id="@+id/birthday" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/contain_sex">
+                android:id="@+id/contain_sex"
+				android:layout_weight="1">
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:text="Homme/Femme"
+					android:layout_centerVertical="true"
+					android:layout_alignParentStart="false" />
 
                 <Switch
-                    android:text="Homme/Femme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/switchSex"
-                    android:layout_weight="1" />
-            </LinearLayout>
+					android:layout_alignParentEnd="true"
+                    android:id="@+id/switchSex" />
+            </RelativeLayout>
 
         </LinearLayout>
 

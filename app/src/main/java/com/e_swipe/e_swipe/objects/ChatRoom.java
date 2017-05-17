@@ -7,14 +7,14 @@ import java.io.Serializable;
 /**
  * Created by Anthonny on 20/03/2017.
  */
-public class Chat implements Serializable {
+public class ChatRoom implements Serializable {
 
     Person current;
     Person receiver;
     String lastMessage;
     String chatName;
 
-    public Chat(String chatName, Person current, Person receiver) {
+    public ChatRoom(String chatName, Person current, Person receiver) {
         this.current = current;
         this.receiver = receiver;
         this.chatName = chatName;

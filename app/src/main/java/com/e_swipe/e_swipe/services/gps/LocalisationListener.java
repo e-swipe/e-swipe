@@ -7,20 +7,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-/**
- * Created by Anthonny on 03/04/2017.
- */
 public class LocalisationListener extends Service {
-    private static final String TAG = "GPS";
+    private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 100;
-    private static final float LOCATION_DISTANCE = 1f;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final float LOCATION_DISTANCE = 10f;
+
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -52,11 +54,6 @@ public class LocalisationListener extends Service {
         }
     }
 
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
-
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -75,7 +72,7 @@ public class LocalisationListener extends Service {
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, 0,
                     mLocationListeners[1]);
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
@@ -84,8 +81,10 @@ public class LocalisationListener extends Service {
         }
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, 0,
                     mLocationListeners[0]);
+            sendLocalisation send = new sendLocalisation();
+            send.execute();
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
@@ -105,7 +104,7 @@ public class LocalisationListener extends Service {
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
                         //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
+                        //                                      int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
                         return;
@@ -117,11 +116,19 @@ public class LocalisationListener extends Service {
             }
         }
     }
-
     private void initializeLocationManager() {
         Log.e(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+    }
+
+    private class sendLocalisation extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d(TAG,"Do In Background");
+            return null;
         }
     }
 }
