@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.e_swipe.e_swipe.R;
@@ -74,7 +75,15 @@ public class EventsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_events, container, false);
         listEvent = (ListView) view.findViewById(R.id.event_list);
-        listEvent.setAdapter(new EventAdapter(mContext,eventList));
+        EventAdapter eventAdapter = new EventAdapter(mContext,eventList);
+        listEvent.setAdapter(eventAdapter);
+        listEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO
+                // Create Intent to new Activity
+            }
+        });
 
         return view;
     }

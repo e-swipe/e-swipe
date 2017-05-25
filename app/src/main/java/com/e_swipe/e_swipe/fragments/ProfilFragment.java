@@ -16,16 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.e_swipe.e_swipe.EditProfileActivity;
 import com.e_swipe.e_swipe.LoginActivity;
 import com.e_swipe.e_swipe.UserProfileActivity;
 import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.R;
 import com.facebook.login.LoginManager;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
@@ -56,6 +57,7 @@ public class ProfilFragment extends Fragment {
     SeekBar seekbarDistance;
     RangeSeekBar <Integer> rangeSeekBar;
     Button signOutButton;
+    ImageButton editProfilButton;
     /**
      * Listener to event over the fragment
      */
@@ -109,6 +111,14 @@ public class ProfilFragment extends Fragment {
         /**
          * Init subviews
          */
+        editProfilButton = (ImageButton) v.findViewById(R.id.edit_profile_btn);
+        editProfilButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(),EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
         switchHomme = (Switch) v.findViewById(R.id.switch_homme);
         switchHomme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -190,7 +200,7 @@ public class ProfilFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //fragmentListenerCallback.askForFinish();
-                FirebaseAuth.getInstance().signOut();
+                editor.putString("auth","");
                 LoginManager.getInstance().logOut();
                 getActivity().finish();
                 Intent intent = new Intent(getContext(), LoginActivity.class);

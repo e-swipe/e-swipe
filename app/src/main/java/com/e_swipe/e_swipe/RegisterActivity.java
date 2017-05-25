@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,11 +83,16 @@ public class RegisterActivity extends AppCompatActivity {
                 DatePickerDialog mDatePicker=new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                         // TODO Auto-generated method stub
-                        String myFormat = "MM/dd/yyyy"; //In which you need put here
-                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                        sdf.format(new Date(selectedmonth,selectedday,selectedyear));
+                        try {
+                            String myFormat = "MM/dd/yyyy"; //In which you need put here
+                            SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+                            Date date = sdf.parse(selectedmonth+"/"+selectedday+"/"+selectedyear);
+                            sdf.format(new Date(selectedmonth,selectedday,selectedyear));
+                            birthday.setText(date.toString());
 
-                        birthday.setText(sdf.format(mcurrentDate.getTime()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select date");

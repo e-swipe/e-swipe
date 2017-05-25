@@ -3,6 +3,7 @@ package com.e_swipe.e_swipe;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Debug;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.e_swipe.e_swipe.login.FacebookLoginTask;
+import com.e_swipe.e_swipe.login.MailPasswordLoginTask;
 import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.services.firebase.FirebaseInstanceIDService;
 import com.e_swipe.e_swipe.services.firebase.FirebaseMessageService;
@@ -56,11 +59,6 @@ public class LoginActivity extends Activity {
      * Callback Manager that will handle result from facebook login
      */
     CallbackManager mCallbackManager;
-    /*
-     * Firebase Authentifier and Listener
-     */
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     /*
      *Subviews
      */
@@ -109,7 +107,6 @@ public class LoginActivity extends Activity {
         editMail = (EditText) findViewById(R.id.mail);
         editPassword = (EditText) findViewById(R.id.password);
         signin = (Button) findViewById(R.id.signin);
-        mAuth = FirebaseAuth.getInstance();
 
         /**
          * Handle Facebook sign in
@@ -118,7 +115,8 @@ public class LoginActivity extends Activity {
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email", "public_profile", "user_birthday,user_photos");
 
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+
+        if(!sharedPref.getString("auth","").equals("")){
             //Get user infos from shared preferences
             Log.d("Debug","user set");
             Gson gson = new Gson();
@@ -150,7 +148,10 @@ public class LoginActivity extends Activity {
             signin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    signinWithEmailAndPassword(editMail.getText().toString().trim(), editPassword.getText().toString().trim());
+                    if(!editMail.getText().toString().equals("") &&
+                            !editPassword.getText().toString().equals("")) {
+                        signinWithEmailAndPassword(editMail.getText().toString().trim(), editPassword.getText().toString().trim());
+                    }
                 }
             });
 
@@ -178,24 +179,18 @@ public class LoginActivity extends Activity {
     //Request Swagger for info and profil creation
     private void signinWithEmailAndPassword(String email, String password) {
         Log.d(TAG,"Email : " + email + " password : " + password);
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+        MailPasswordLoginTask mailPasswordLoginTask = new MailPasswordLoginTask(email, password , FirebaseInstanceId.getInstance().getToken(), new MailPasswordLoginTask.AsyncResponse() {
+            @Override
+            public void processFinish(String token) {
+                //Request for user infos
+            }
 
+            @Override
+            public void processError() {
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            }
+        });
+        mailPasswordLoginTask.execute();
     }
 
     /**
@@ -206,20 +201,20 @@ public class LoginActivity extends Activity {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            requestFBUserInfos(token);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        }
-                    }
-                });
+
+        FacebookLoginTask facebookLoginTask = new FacebookLoginTask(token.getToken(),FirebaseInstanceId.getInstance().getToken(), new FacebookLoginTask.AsyncResponse() {
+            @Override
+            public void processFinish(String authToken) {
+                requestFBUserInfos(token);
+            }
+
+            @Override
+            public void processError() {
+                //Show Dialog to retry
+            }
+        });
+        facebookLoginTask.execute();
+
     }
 
     public void requestFBUserInfos(AccessToken accessToken){
@@ -292,11 +287,6 @@ public class LoginActivity extends Activity {
         request.executeAsync();
     }
 
-    private HashMap<String,String> getUsersInfoFromSwagger() {
-        return null;
-    }
-
-
     @Override
     /**
      * On Activity Start add the Authentification Listener
@@ -310,9 +300,6 @@ public class LoginActivity extends Activity {
      */
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 
     /*

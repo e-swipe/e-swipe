@@ -35,6 +35,8 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="title_activity_chat_">Chat_Activity</string>
+    <string name="title_activity_event_profil">EventProfilActivity</string>
+    <string name="title_activity_edit_profile">EditProfile</string>
 
 
 </resources>

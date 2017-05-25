@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Adapter class linked to Event list View in the event fragment layout related to
  */
-public class EventAdapter extends BaseAdapter implements View.OnClickListener {
+public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
 
     /**
      * List of every event to display
@@ -85,8 +86,7 @@ public class EventAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     @Override
-    // TODO: 27/03/2017
-    public void onClick(View v) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
     }
 }

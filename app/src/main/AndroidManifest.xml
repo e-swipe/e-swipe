@@ -15,11 +15,6 @@
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!-- [START firebase_service] -->
         <service android:name=".services.firebase.FirebaseMessageService">
@@ -65,10 +60,27 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity"
-            android:label="@string/title_activity_chat_"
+            android:label="@string/title_activity_chat"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".EventProfilActivity"
+            android:label="@string/title_activity_event_profil"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="@string/title_activity_edit_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <service android:name=".services.gps.LocalisationListener"/>
     </application>
 

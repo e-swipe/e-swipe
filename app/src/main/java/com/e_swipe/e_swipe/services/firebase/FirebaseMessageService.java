@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -70,37 +71,59 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         final String bitmapURL = lastMessageReceived.getData().get("URL");
         final Context context = getApplicationContext();
 
-        Bitmap bitmap = getBitmapfromUrl(bitmapURL);
+        ImageDownloader imageDownloader = new ImageDownloader(bitmapURL, new ImageDownloader.DownloadResponse() {
+            @Override
+            public void downloadEnded(Bitmap bitmap) {
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(context)
+                                .setLargeIcon(bitmap)
+                                .setContentTitle(personName)
+                                .setContentText("You have Matched with " + personName);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.com_facebook_button_icon)
-                        .setLargeIcon(bitmap)
-                        .setContentTitle(personName)
-                        .setContentText("You have Matched with " + personName);
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(001, mBuilder.build());
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(001, mBuilder.build());
+            }
+        });
+        imageDownloader.execute();
     }
 
-    /*
-*To get a Bitmap image from the URL received
-* */
-    public Bitmap getBitmapfromUrl(String imageUrl) {
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(input);
-            return bitmap;
+    public static class ImageDownloader extends AsyncTask<Void,Void,Bitmap>{
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+        String imageUrl;
 
+        public interface DownloadResponse{
+            public void downloadEnded(Bitmap bitmap);
+        }
+
+        DownloadResponse downloadResponse;
+
+        ImageDownloader(String imageUrl, DownloadResponse downloadResponse){
+            this.imageUrl = imageUrl;
+            this.downloadResponse = downloadResponse;
+        }
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(input);
+                return bitmap;
+
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            downloadResponse.downloadEnded(bitmap);
+            super.onPostExecute(bitmap);
         }
     }
+
 }
