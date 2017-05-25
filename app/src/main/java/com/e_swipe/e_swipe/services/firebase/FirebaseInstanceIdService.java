@@ -3,12 +3,11 @@ package com.e_swipe.e_swipe.services.firebase;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /**
  * Created by Anthonny on 06/03/2017.
  */
-public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
+public class FirebaseInstanceIdService extends com.google.firebase.iid.FirebaseInstanceIdService {
 
     private static final String TAG  = "TOKEN";
 
