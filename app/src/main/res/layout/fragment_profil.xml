@@ -13,20 +13,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:scrollbars="vertical"
-            android:paddingBottom="?android:attr/actionBarSize">
+            android:paddingBottom="?android:attr/actionBarSize"
+            android:scrollbars="vertical">
 
             <RelativeLayout
-                android:orientation="vertical"
+                android:id="@+id/main_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#F5F5F5"
-                android:id="@+id/main_container">
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/image_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/image_container"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -36,45 +36,44 @@
                         tools:ignore="UselessParent">
 
                         <RelativeLayout
+                            android:id="@+id/image_text_container"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:id="@+id/image_text_container">
+                            android:layout_gravity="center">
 
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    android:id="@+id/profile_image"
-                                    android:layout_width="150dp"
-                                    android:layout_height="150dp"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="10dp"
-                                    android:src="@mipmap/ic_oktamer"
-                                    app:civ_border_width="1dp"
-                                    app:civ_border_color="#F5F5F5"/>
+                            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/profile_image"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dp"
+                                android:src="@mipmap/ic_oktamer"
+                                app:civ_border_color="#F5F5F5"
+                                app:civ_border_width="1dp" />
 
-                                <ImageButton
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@mipmap/ic_edit"
-                                    android:layout_alignBottom="@+id/profile_image"
-                                    android:layout_alignEnd="@+id/profile_image"
-                                    android:id="@+id/edit_profile_btn"/>
+                            <ImageButton
+                                android:id="@+id/edit_profile_btn"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignBottom="@+id/profile_image"
+                                android:layout_alignEnd="@+id/profile_image"
+                                android:src="@mipmap/ic_edit" />
 
                         </RelativeLayout>
 
                         <TextView
+                            android:id="@+id/textView_user"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="TEST,AGE"
-                            android:id="@+id/textView_user" />
+                            android:text="TEST,AGE" />
 
                         <View
                             android:id="@+id/view"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_margin="25dp"
                             android:layout_alignParentBottom="true"
+                            android:layout_margin="25dp"
                             android:background="#000000" />
 
                     </LinearLayout>
@@ -82,90 +81,91 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/options_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:layout_below="@+id/image_container"
-                    android:id="@+id/options_container">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:text="Reglages"
+                        android:id="@+id/SettingsLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:id="@+id/SettingsLabel" />
+                        android:text="Reglages" />
 
                     <LinearLayout
+                        android:id="@+id/showMe_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:elevation="5dp"
-                        android:id="@+id/showMe_container"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="7dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="7dp"
+                        android:layout_margin="10dp"
                         android:background="@drawable/rounded_border"
-                        android:layout_margin="10dp">
+                        android:elevation="5dp"
+                        android:orientation="vertical"
+                        android:paddingBottom="7dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="7dp">
 
                         <TextView
-                            android:text="Montrez-moi"
+                            android:id="@+id/ShowmeLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#FF4500"
                             android:layout_weight="1"
-                            android:id="@+id/ShowmeLabel"/>
+                            android:text="Montrez-moi"
+                            android:textColor="#FF4500" />
 
                         <Switch
-                            android:text="Hommes"
+                            android:id="@+id/switch_homme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/switch_homme" />
+                            android:text="Hommes" />
 
                         <Switch
-                            android:text="Femmes"
+                            android:id="@+id/switch_femme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/switch_femme" />
+                            android:text="Femmes" />
 
                     </LinearLayout>
 
                     <RelativeLayout
-                        android:layout_margin="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:background="@drawable/rounded_border"
                         android:elevation="5dp">
 
                         <LinearLayout
+                            android:id="@+id/distance_container"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:id="@+id/distance_container"
                             android:padding="7dp">
 
                             <RelativeLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
-                                <TextView
-                                    android:text="Distance"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/DistanceLabel" />
 
                                 <TextView
-                                    android:text="plein de Km"
+                                    android:id="@+id/DistanceLabel"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="Distance" />
+
+                                <TextView
                                     android:id="@+id/textView_distance"
-                                    android:gravity="right" />
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="right"
+                                    android:text="plein de Km" />
 
                             </RelativeLayout>
 
                             <SeekBar
+                                android:id="@+id/seekBar_distance"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/seekBar_distance" />
+                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
@@ -177,32 +177,32 @@
                         android:orientation="vertical">
 
                         <RelativeLayout
+                            android:id="@+id/age_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
                             android:background="@drawable/rounded_border"
                             android:elevation="5dp"
-                            android:layout_margin="10dp"
-                            android:id="@+id/age_container"
                             android:padding="7dp">
 
                             <TextView
-                                android:text="Age"
+                                android:id="@+id/AgeLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/AgeLabel" />
+                                android:text="Age" />
 
                             <TextView
-                                android:text="plein d'années"
+                                android:id="@+id/textView_age"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/textView_age"
+                                android:layout_alignParentEnd="true"
                                 android:layout_alignParentTop="true"
-                                android:layout_alignParentEnd="true" />
+                                android:text="plein d'années" />
 
                             <org.florescu.android.rangeseekbar.RangeSeekBar
+                                android:id="@+id/rangeSeekBar_age"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/rangeSeekBar_age" />
+                                android:layout_height="wrap_content" />
 
 
                         </RelativeLayout>
@@ -210,26 +210,26 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
+                        android:id="@+id/signOut_container"
                         android:layout_width="match_parent"
-                        android:layout_margin="10dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:background="@drawable/rounded_border"
                         android:elevation="5dp"
-                        android:id="@+id/signOut_container"
+                        android:orientation="vertical"
                         android:padding="7dp">
 
                         <Switch
-                            android:text="Rendre votre profil visible"
+                            android:id="@+id/switch_visible"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/switch_visible" />
+                            android:text="Rendre votre profil visible" />
 
                         <Button
-                            android:text="Deconnexion"
+                            android:id="@+id/sign_out"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/sign_out" />
+                            android:text="Deconnexion" />
 
                     </LinearLayout>
 

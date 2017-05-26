@@ -38,43 +38,48 @@
             android:id="@+id/contain_ids">
 
 			<LinearLayout
+				android:id="@+id/contain_email"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:id="@+id/contain_email">
-
+				android:weightSum="5">
+                <!--
 				<TextView
-					android:layout_width="0px"
+					android:id="@+id/textView_email"
+					android:layout_width="0dp"
 					android:layout_height="match_parent"
-					android:text="@string/prompt_email"
-					android:layout_weight="1.18"
+					android:layout_weight="1"
 					android:gravity="center_vertical"
-                    android:id="@+id/textView_email" />
+					android:text="@string/prompt_email" />
+                -->
 				<EditText
-					android:layout_width="0px"
+					android:id="@+id/mail"
+					android:layout_width="0dp"
 					android:layout_height="match_parent"
-					android:layout_weight="3.67"
+					android:layout_weight="5"
 					android:inputType="textEmailAddress"
-					android:id="@+id/mail"/>
-		    </LinearLayout>
+                    android:hint="@string/prompt_email" />
+			</LinearLayout>
 
 		    <LinearLayout
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:weightSum="5"
                 android:id="@+id/contain_password">
-			    <TextView
-				    android:layout_width="0dp"
-				    android:layout_height="match_parent"
-			    	android:text="@string/prompt_password"
-				    android:gravity="center_vertical"
-					android:layout_weight="1.18"
-                    android:id="@+id/textView_password" />
-
-			    <EditText
-				    android:layout_height="match_parent"
-					android:layout_width="match_parent"
-				    android:id="@+id/password"
-					android:layout_weight="3.67" />
+                <!--
+				<TextView
+					android:id="@+id/textView_password"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center_vertical"
+					android:text="@string/prompt_password" />
+                -->
+				<EditText
+					android:id="@+id/password"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+                    android:hint="@string/prompt_password"
+                    android:layout_weight="5" />
 		    </LinearLayout>
 
         </LinearLayout>
@@ -91,44 +96,52 @@
             android:id="@+id/contain_info"
 			android:weightSum="4">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/contain_name"
-				android:layout_weight="1">
-                <TextView
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:text="Nom"
-                    android:layout_weight="1.18"
-                    android:gravity="center_vertical"
-                    android:id="@+id/textView_name" />
-                <EditText
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3.67"
-                    android:id="@+id/name"/>
-            </LinearLayout>
+			<LinearLayout
+				android:id="@+id/contain_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:weightSum="5">
+                <!--
+				<TextView
+					android:id="@+id/textView_name"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center_vertical"
+					android:text="Nom" />
+                -->
+				<EditText
+					android:id="@+id/name"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="5"
+                    android:hint="Nom" />
+			</LinearLayout>
 
 
 			<LinearLayout
+				android:id="@+id/contain_surname"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:weightSum="5"
-				android:id="@+id/contain_surname">
+				android:layout_weight="1"
+				android:weightSum="5">
+                <!--
 				<TextView
+					android:id="@+id/textView_surname"
 					android:layout_width="0dp"
 					android:layout_height="match_parent"
-					android:text="Surname"
+					android:layout_weight="1"
 					android:gravity="center_vertical"
-					android:layout_weight="1.18"
-					android:id="@+id/textView_surname" />
-
+					android:text="Surname" />
+                -->
 				<EditText
-					android:layout_height="match_parent"
-					android:layout_width="match_parent"
 					android:id="@+id/surname"
-					android:layout_weight="3.67" />
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="5"
+                    android:hint="Surname"/>
+
 			</LinearLayout>
 
             <LinearLayout
@@ -138,19 +151,20 @@
 				android:weightSum="5"
                 android:id="@+id/contain_birthday"
 				android:layout_weight="1">
-
-                <TextView
-                    android:text="Birthday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-					android:layout_weight="1.18"
-					android:id="@+id/textView_birthday" />
-
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-					android:layout_weight="3.67"
-                    android:id="@+id/birthday" />
+                <!--
+				<TextView
+					android:id="@+id/textView_birthday"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Birthday" />
+                -->
+				<EditText
+					android:id="@+id/birthday"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="5"
+                    android:hint="Birthday"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -159,6 +173,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/contain_sex"
 				android:layout_weight="1">
+
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"

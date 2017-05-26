@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EventName"
+            android:textColor="#FF4500"
             android:layout_marginBottom="10dp"
             android:id="@+id/event_name" />
 
@@ -24,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EventLocalisation"
+            android:textColor="#FF4500"
             android:id="@+id/event_localisation"/>
 
 

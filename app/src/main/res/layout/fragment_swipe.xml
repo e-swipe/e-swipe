@@ -29,13 +29,13 @@
                 android:id="@+id/rejectBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@mipmap/ic_cancel"/>
+                android:background="@mipmap/ic_reject"/>
             <ImageButton
                 android:id="@+id/acceptBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:background="@mipmap/ic_heart"/>
+                android:background="@mipmap/ic_accept"/>
         </LinearLayout>
 
     </LinearLayout>

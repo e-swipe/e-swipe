@@ -1,12 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <android.support.v4.view.ViewPager
+    android:layout_height="match_parent"
+    android:weightSum="10">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/image_view_pager">
-    </android.support.v4.view.ViewPager>
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/image_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+        </android.support.v4.view.ViewPager>
+
+
+        <ImageButton
+            android:id="@+id/edit_profile_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_above="@+id/image_view_pager"
+            android:layout_alignBottom="@+id/image_view_pager"
+            android:layout_alignEnd="@+id/image_view_pager"
+            android:layout_margin="5dp"
+            android:src="@mipmap/ic_edit" />
+
+    </RelativeLayout>
+
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="25dp"
+        android:layout_alignParentBottom="true"
+        android:background="#000000" />
+
+    <TextView
+        android:id="@+id/textView_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="10dp"
+        android:text="TEST,AGE" />
+
+    <TextView
+        android:id="@+id/AreaText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|left"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:padding="10dp"
+        android:scrollHorizontally="false" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:orientation="Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </LinearLayout>
