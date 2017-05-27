@@ -38,5 +38,61 @@
     <string name="title_activity_event_profil">EventProfilActivity</string>
     <string name="title_activity_edit_profile">EditProfile</string>
 
+    <!-- Strings related to chat -->
+    <string name="person_name">Person_name</string>
+    <string name="since">Since</string>
+
+    <!-- Strings related to register -->
+    <string name="register_name">Name</string>
+    <string name="register_surname">Surname</string>
+    <string name="register_birthday">Birthday</string>
+    <string name="register_male">Man</string>
+    <string name="register_female">Woman</string>
+    <string name="register_accept">Accept</string>
+
+    <!-- Strings related to Activity_user_profil.xml-->
+    <string name="ActUserProfil_name_age">Name,Age</string>
+    <string name="ActUserProfil_description">Describing</string>
+
+    <!-- Strings related to chat-->
+    <string name="chat_message_text">Hi! new message</string>
+    <string name="chat_sendMessageButton">d</string>
+
+    <!-- Strings related to content_edit_profile-->
+    <string name="profile_description">Describing</string>
+    <string name="profile_edit_description">Hit me to change your describing !</string>
+    <string name="profile_male_female">Man/Woman</string>
+
+    <!-- Strings related to event_profil-->
+    <string name="event_name">nameEvent</string>
+    <string name="event_labelDate">Date</string>
+    <string name="event_date">MM/DD/AAAA</string>
+    <string name="event_labelHeure">Hour</string>
+    <string name="event_heure">hh:ff</string>
+    <string name="event_labelNbParticipants">Number of participants</string>
+    <string name="event_NbParticipants">42</string>
+    <string name="event_accept">Participate</string>
+    <string name="event_refuse">Quit this event</string>
+
+    <!-- Strings related to fragment_profil-->
+    <string name="profil_setting">Settings</string>
+    <string name="profil_showMe">Show me</string>
+    <string name="profil_males">Men</string>
+    <string name="profil_females">Women</string>
+    <string name="profil_labelDistance">Distance</string>
+    <string name="profil_distance">lot of miles</string>
+    <string name="profil_labelAge">Age</string>
+    <string name="profil_age">lot of years</string>
+    <string name="profil_visible">Visibility of profile</string>
+    <string name="profil_signOut">Sign out</string>
+
+    <!-- Strings related to row_chat and row_event-->
+    <string name="row_chat_name">Name of person</string>
+    <string name="row_chat_lastMessage">last message</string>
+    <string name="row_event_name">Name of event</string>
+    <string name="row_event_location">Location of event</string>
+
+
+
 
 </resources>

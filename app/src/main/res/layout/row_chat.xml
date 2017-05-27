@@ -27,14 +27,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
                 android:textStyle="bold"
-                android:text="test"
+                android:text="@string/row_chat_name"
                 android:textColor="#000000"
                 android:id="@+id/chat_name"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="test"
+                android:hint="@string/row_chat_lastMessage"
                 android:id="@+id/last_message"/>
 
         </LinearLayout>

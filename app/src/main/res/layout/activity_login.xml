@@ -57,7 +57,9 @@
                     android:id="@+id/mail"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:inputType="textEmailAddress"
                     android:hint="@string/prompt_email"
+                    android:maxLines="1"
                     android:layout_weight="5" />
 
             </LinearLayout>
@@ -80,7 +82,9 @@
                     android:id="@+id/password"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:inputType="textPassword"
                     android:layout_weight="5"
+                    android:maxLines="1"
                     android:hint="@string/prompt_password" />
 
             </LinearLayout>

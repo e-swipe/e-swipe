@@ -66,7 +66,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="TEST,AGE" />
+                            android:text="@string/ActUserProfil_name_age"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:textColor="#000000"/>
 
                         <View
                             android:id="@+id/view"
@@ -91,8 +94,11 @@
                         android:id="@+id/SettingsLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
                         android:gravity="center"
-                        android:text="Reglages" />
+                        android:text="@string/profil_setting" />
 
                     <LinearLayout
                         android:id="@+id/showMe_container"
@@ -112,20 +118,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Montrez-moi"
+                            android:text="@string/profil_showMe"
                             android:textColor="#FF4500" />
 
                         <Switch
                             android:id="@+id/switch_homme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Hommes" />
+                            android:text="@string/profil_males" />
 
                         <Switch
                             android:id="@+id/switch_femme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Femmes" />
+                            android:text="@string/profil_females" />
 
                     </LinearLayout>
 
@@ -151,14 +157,16 @@
                                     android:id="@+id/DistanceLabel"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Distance" />
+                                    android:textColor="#FF4500"
+                                    android:text="@string/profil_labelDistance" />
 
                                 <TextView
                                     android:id="@+id/textView_distance"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:textColor="#FF4500"
                                     android:gravity="right"
-                                    android:text="plein de Km" />
+                                    android:text="@string/profil_distance" />
 
                             </RelativeLayout>
 
@@ -189,7 +197,8 @@
                                 android:id="@+id/AgeLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Age" />
+                                android:textColor="#FF4500"
+                                android:text="@string/profil_labelAge" />
 
                             <TextView
                                 android:id="@+id/textView_age"
@@ -197,7 +206,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentTop="true"
-                                android:text="plein d'années" />
+                                android:textColor="#FF4500"
+                                android:text="@string/profil_age" />
 
                             <org.florescu.android.rangeseekbar.RangeSeekBar
                                 android:id="@+id/rangeSeekBar_age"
@@ -223,13 +233,13 @@
                             android:id="@+id/switch_visible"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Rendre votre profil visible" />
+                            android:text="@string/profil_visible" />
 
                         <Button
                             android:id="@+id/sign_out"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Deconnexion" />
+                            android:text="@string/profil_signOut" />
 
                     </LinearLayout>
 

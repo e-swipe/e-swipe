@@ -25,15 +25,30 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="13dp">
 
-        <TextView
-            android:id="@+id/textViewNameEvent"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="top|center"
-            android:text="Nom de l'event"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_event"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:src="@mipmap/ic_oktamer" />
+
+            <TextView
+                android:id="@+id/textViewNameEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/event_name"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
         <LinearLayout
             android:orientation="vertical"
             android:elevation="5dp"
@@ -44,28 +59,7 @@
             android:padding="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="5"
-                android:id="@+id/contain_heure">
 
-                <TextView
-                    android:id="@+id/textView_labelHeure"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical"
-                    android:text="labelHeure" />
-
-                <TextView
-                    android:id="@+id/textView_heure"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center_vertical"
-                    android:text="heure de l'event" />
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,7 +72,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center_vertical"
-                    android:text="labelDate" />
+                    android:text="@string/event_labelDate" />
 
                 <TextView
                     android:id="@+id/textView_date"
@@ -86,8 +80,32 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="center_vertical"
-                    android:text="date de l'event" />
+                    android:text="@string/event_date" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="5"
+                android:id="@+id/contain_heure">
+
+                <TextView
+                    android:id="@+id/textView_labelHeure"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical"
+                    android:text="@string/event_labelHeure" />
+
+                <TextView
+                    android:id="@+id/textView_heure"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center_vertical"
+                    android:text="@string/event_heure" />
+            </LinearLayout>
+
         </LinearLayout>
         <!--
         <com.google.android.gms.maps.MapFragment
@@ -98,7 +116,7 @@
         -->
         <fragment
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="100dp" />
 
         <LinearLayout
             android:id="@+id/contain_nbParticipants"
@@ -115,7 +133,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:gravity="center_vertical"
-                android:text="label_nbParticipants" />
+                android:text="@string/event_labelNbParticipants" />
 
             <TextView
                 android:id="@+id/textView_nb"
@@ -123,7 +141,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
-                android:text="plein de participants" />
+                android:text="@string/event_NbParticipants" />
         </LinearLayout>
 
         <Button
@@ -134,7 +152,7 @@
             android:layout_marginTop="10dp"
             android:focusable="false"
             android:padding="10dp"
-            android:text="Participer/Ne pas participer" />
+            android:text="@string/event_accept" />
     </LinearLayout>
 
 

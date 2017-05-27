@@ -18,11 +18,64 @@
     <string name="title_activity_profile">Profil</string>
     <string name="title_activity_tabbed">Tabbed Activity</string>
     <string name="action_settings">Parametres</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="section_format">Salut le monde de la section: %1$d</string>
 
     <string name="sign_up">Sinscrire</string>
     <string name="accept_card">Like</string>
-    <string name="reject_card">Reject</string>
+    <string name="reject_card">Rejeté</string>
 
+    <!-- Strings related to chat -->
+    <string name="person_name">Nom de la personne</string>
+    <string name="since">Depuis</string>
+
+    <!-- Strings related to register -->
+    <string name="register_name">Prenom</string>
+    <string name="register_surname">Nom de famille</string>
+    <string name="register_birthday">Date de naissance</string>
+    <string name="register_male">Homme</string>
+    <string name="register_female">Femme</string>
+    <string name="register_accept">Valider</string>
+
+    <!-- Strings related to Activity_user_profil.xml-->
+    <string name="ActUserProfil_name_age">Nom,Age</string>
+    <string name="ActUserProfil_description">Description</string>
+
+    <!-- Strings related to chat_bubble-->
+    <string name="chat_message_text">Salut! Nouveau message</string>
+    <string name="chat_sendMessageButton">d</string>
+
+    <!-- Strings related to content_edit_profile-->
+    <string name="profile_description">Description</string>
+    <string name="profile_edit_description">Touche moi pour changer ta description !</string>
+    <string name="profile_male_female">Homme/Femme</string>
+
+    <!-- Strings related to content_edit_profile-->
+    <string name="event_name">Evènement</string>
+    <string name="event_labelDate">Date</string>
+    <string name="event_date">JJ/MM/AAAA</string>
+    <string name="event_labelHeure">Heure</string>
+    <string name="event_heure">hh:ff</string>
+    <string name="event_labelNbParticipants">Nombre de participants</string>
+    <string name="event_NbParticipants">42</string>
+    <string name="event_accept">Participer</string>
+    <string name="event_refuse">Quitter cet evènement</string>
+
+    <!-- Strings related to fragment_profil-->
+    <string name="profil_setting">Reglages</string>
+    <string name="profil_showMe">Montrez-moi</string>
+    <string name="profil_males">Hommes</string>
+    <string name="profil_females">Femmes</string>
+    <string name="profil_labelDistance">Distance</string>
+    <string name="profil_distance">plein de km</string>
+    <string name="profil_labelAge">Age</string>
+    <string name="profil_age">des années</string>
+    <string name="profil_visible">Rendre votre profil visible</string>
+    <string name="profil_signOut">Deconnexion</string>
+
+    <!-- Strings related to row_chat and row_event-->
+    <string name="row_chat_name">Nom de la personne</string>
+    <string name="row_chat_lastMessage">Dernier message</string>
+    <string name="row_event_name">Nom evenement</string>
+    <string name="row_event_location">Localisation evenement</string>
 
 </resources>

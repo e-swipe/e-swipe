@@ -39,7 +39,7 @@
             android:id="@+id/textViewDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="@string/profile_description"
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:gravity="top|left"
-            android:hint="Hit me to change your description"
+            android:hint="@string/profile_edit_description"
             android:inputType="textMultiLine"
             android:lines="4"
             android:background="@null"
@@ -75,7 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_weight="3"
             android:gravity="center_vertical"
-            android:text="Homme/Femme" />
+            android:text="@string/profile_male_female" />
 
         <Switch
             android:id="@+id/switchSex"
