@@ -91,7 +91,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
                 Location locationEvent = new Location("pointUser");
 
                 float meters = location.distanceTo(locationEvent);
-                eventLocalisation.setText(Float.toString(meters/1000));
+                eventLocalisation.setHint(Float.toString(meters/1000));
             }
 
             ImageView imageView =  (ImageView) convertView.findViewById(R.id.event_image);

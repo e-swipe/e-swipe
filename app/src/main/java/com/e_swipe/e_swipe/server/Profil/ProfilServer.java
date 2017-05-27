@@ -6,6 +6,7 @@ import android.util.Log;
 import com.e_swipe.e_swipe.model.Image;
 import com.e_swipe.e_swipe.model.Message;
 import com.e_swipe.e_swipe.model.Profil;
+import com.e_swipe.e_swipe.model.UserCreate;
 import com.e_swipe.e_swipe.model.UserPatch;
 import com.e_swipe.e_swipe.utils.PhotoUtils;
 import com.e_swipe.e_swipe.utils.ResponseCode;
@@ -36,6 +37,26 @@ public class ProfilServer {
             = MediaType.parse("application/json; charset=utf-8");
 
     public static final String BASE_URL =  "api.stardis.blue";
+
+    public static void addProfil(UserCreate userCreate, Callback callback){
+        OkHttpClient client = new OkHttpClient();
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host(BASE_URL)
+                .addPathSegment("v1")
+                .addPathSegment("users")
+                .build();
+
+
+        Request request = new Request.Builder()
+                .url(httpUrl)
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+
+    }
 
     public static void getProfil(String auth, Callback callback) throws IOException {
 

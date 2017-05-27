@@ -3,6 +3,7 @@ package com.e_swipe.e_swipe.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -247,7 +248,7 @@ public class LoginActivity extends Activity {
                                                                         public void onResponse(Call call, Response response) throws IOException {
                                                                             JSONObject mainObject = null;
                                                                             Log.d("Response", String.valueOf(response.code()));
-                                                                            /*try {
+                                                                            try {
 
                                                                                 mainObject = new JSONObject(response.body().string());
                                                                                 switch (response.code()){
@@ -279,7 +280,7 @@ public class LoginActivity extends Activity {
                                                                                 }
                                                                             } catch (JSONException e) {
                                                                                 e.printStackTrace();
-                                                                            }*/
+                                                                            }
                                                                         }
                                                                     });
                                                         } catch (JSONException e) {

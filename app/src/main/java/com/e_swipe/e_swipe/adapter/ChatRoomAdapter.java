@@ -68,7 +68,7 @@ public class ChatRoomAdapter extends BaseAdapter implements View.OnClickListener
             TextView chatName = (TextView) convertView.findViewById(R.id.chat_name);
             chatName.setText(getItem(position).getChatName());
             TextView lastMessage = (TextView) convertView.findViewById(R.id.last_message);
-            lastMessage.setText(getItem(position).getLastMessage());
+            lastMessage.setHint(getItem(position).getLastMessage());
 
         }
         return convertView;
