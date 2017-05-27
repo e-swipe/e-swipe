@@ -1,15 +1,12 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.activity;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,11 +17,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.services.gps.LocalisationListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
@@ -169,8 +166,16 @@ public class SplashActivity extends AppCompatActivity  implements GoogleApiClien
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                                finish();
+                                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                                        getString(R.string.user_file_key), Context.MODE_PRIVATE);
+                                if(!sharedPref.getString("auth","").equals("")){
+                                    startActivity(new Intent(getApplicationContext(),TabbedActivity.class));
+                                    finish();
+                                }
+                                else {
+                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                    finish();
+                                }
                             }
 
                             @Override

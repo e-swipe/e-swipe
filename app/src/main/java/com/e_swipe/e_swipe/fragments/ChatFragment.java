@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.e_swipe.e_swipe.ChatActivity;
+import com.e_swipe.e_swipe.activity.ChatActivity;
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.ChatRoomAdapter;
 import com.e_swipe.e_swipe.objects.ChatRoom;

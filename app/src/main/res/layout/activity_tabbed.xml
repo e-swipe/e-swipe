@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".TabbedActivity"
+    tools:context=".activity.TabbedActivity"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
     <android.support.design.widget.AppBarLayout

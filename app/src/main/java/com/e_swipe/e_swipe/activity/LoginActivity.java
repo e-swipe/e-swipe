@@ -1,21 +1,18 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.e_swipe.e_swipe.login.FacebookLoginTask;
-import com.e_swipe.e_swipe.login.MailPasswordLoginTask;
-import com.e_swipe.e_swipe.objects.Profil;
+import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.server.login.LoginServer;
+import com.e_swipe.e_swipe.model.UserFacebook;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -26,21 +23,19 @@ import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Activity related to every SignIn options (Email / FB)
@@ -76,6 +71,7 @@ public class LoginActivity extends Activity {
     JSONObject birthdayObject;
     int nbAlbums;
     int cpt;
+    String auth;
 
     private static final String TAG = "DEBUG";
 
@@ -100,7 +96,7 @@ public class LoginActivity extends Activity {
         editPassword = (EditText) findViewById(R.id.password);
         signin = (Button) findViewById(R.id.signin);
 
-        /**
+        /*
          * Handle Facebook sign in
          */
         mCallbackManager = CallbackManager.Factory.create();
@@ -110,16 +106,7 @@ public class LoginActivity extends Activity {
 
         if(!sharedPref.getString("auth","").equals("")){
             //Get user infos from shared preferences
-            Log.d("Debug","user set");
-            Gson gson = new Gson();
-            String json = sharedPref.getString("userProfil","");
-            Profil profil = gson.fromJson(json, Profil.class);
-
-            //Start intent with profile
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("profil",profil);
             Intent intent = new Intent(context,TabbedActivity.class);
-            intent.putExtras(bundle);
             startActivity(intent);
             finish();
         }
@@ -142,7 +129,11 @@ public class LoginActivity extends Activity {
                 public void onClick(View view) {
                     if(!editMail.getText().toString().equals("") &&
                             !editPassword.getText().toString().equals("")) {
-                        signinWithEmailAndPassword(editMail.getText().toString().trim(), editPassword.getText().toString().trim());
+                        try {
+                            signinWithEmailAndPassword(editMail.getText().toString().trim(), editPassword.getText().toString().trim());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
@@ -169,20 +160,32 @@ public class LoginActivity extends Activity {
     }
     // TODO: 15/05/2017
     //Request Swagger for info and profil creation
-    private void signinWithEmailAndPassword(String email, String password) {
+    private void signinWithEmailAndPassword(String email, String password) throws JSONException {
         Log.d(TAG,"Email : " + email + " password : " + password);
-        MailPasswordLoginTask mailPasswordLoginTask = new MailPasswordLoginTask(email, password , FirebaseInstanceId.getInstance().getToken(), new MailPasswordLoginTask.AsyncResponse() {
-            @Override
-            public void processFinish(String token) {
-                //Request for user infos
-            }
+        try {
+            LoginServer.withMailAndPassword(email,password,FirebaseInstanceId.getInstance().getToken(), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            @Override
-            public void processError() {
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        JSONObject mainObject = new JSONObject(response.body().string());
+                        auth = mainObject.getString("auth");
+                        editor.putString("auth",auth);
 
-            }
-        });
-        mailPasswordLoginTask.execute();
+                        Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -193,23 +196,12 @@ public class LoginActivity extends Activity {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-
-        FacebookLoginTask facebookLoginTask = new FacebookLoginTask(token.getToken(),FirebaseInstanceId.getInstance().getToken(), new FacebookLoginTask.AsyncResponse() {
-            @Override
-            public void processFinish(String authToken) {
-                requestFBUserInfos(token);
-            }
-
-            @Override
-            public void processError() {
-                //Show Dialog to retry
-            }
-        });
-        facebookLoginTask.execute();
+        Log.d("TOKEN",token.getToken());
+        requestFBUserInfos(token);
 
     }
 
-    public void requestFBUserInfos(AccessToken accessToken){
+    public void requestFBUserInfos(final AccessToken accessToken){
 
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
@@ -218,6 +210,8 @@ public class LoginActivity extends Activity {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         // Application code
                         try {
+                            final String email = response.getJSONObject().getString("email");
+                            final String gender = response.getJSONObject().getString("gender");
                             birthdayObject = object;
                             nbAlbums = object.getJSONObject("albums").getJSONArray("data").length()-1;
                             for(int i=0;i<object.getJSONObject("albums").getJSONArray("data").length();i++){
@@ -239,24 +233,58 @@ public class LoginActivity extends Activity {
                                                     Log.d("Debug",picture.getJSONObject("data").getString("url"));
                                                     if(cpt == nbAlbums){
                                                         //Facebook profile
-                                                        Profile profile = Profile.getCurrentProfile();
-                                                        //App profile
-                                                        Profil profil = null;
+                                                        final Profile profile = Profile.getCurrentProfile();
+
                                                         try {
-                                                            profil = new Profil(profile.getId(),profile.getFirstName(),profile.getLastName(), birthdayObject.getString("birthday"),picturesUrl);
-                                                            //Save Profil to sharedPreferences
-                                                            Gson gson = new Gson();
-                                                            String json = gson.toJson(profil);
-                                                            editor.putString("userProfil", json);
-                                                            editor.commit();
-                                                            //Create new Intent with new profil
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putParcelable("profil",profil);
-                                                            Intent intent = new Intent(context,TabbedActivity.class);
-                                                            intent.putExtras(bundle);
-                                                            startActivity(intent);
-                                                            finish();
+                                                            UserFacebook userFacebook = new UserFacebook(profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),gender,email);
+                                                            LoginServer.withFacebook(accessToken.getToken(), FirebaseInstanceId.getInstance().getToken(),
+                                                                    profile.getId(), userFacebook, new Callback() {
+                                                                        @Override
+                                                                        public void onFailure(Call call, IOException e) {
+
+                                                                        }
+                                                                        @Override
+                                                                        public void onResponse(Call call, Response response) throws IOException {
+                                                                            JSONObject mainObject = null;
+                                                                            Log.d("Response", String.valueOf(response.code()));
+                                                                            /*try {
+
+                                                                                mainObject = new JSONObject(response.body().string());
+                                                                                switch (response.code()){
+                                                                                    case 200:
+                                                                                        //User Connected
+                                                                                        auth = mainObject.getString("auth");
+                                                                                        editor.putString("auth",auth);
+                                                                                        if(auth != null){
+                                                                                            //Go to next Activity
+                                                                                            Intent intent = new Intent(context,TabbedActivity.class);
+                                                                                            startActivity(intent);
+                                                                                            finish();
+                                                                                        }
+                                                                                        break;
+                                                                                    case 201:
+                                                                                        //User Created
+                                                                                        auth = mainObject.getString("token");
+                                                                                        Bitmap bitmap = LoginServer.getFacebookProfilePicture(profile.getId());
+                                                                                        if(auth != null){
+                                                                                            //Go to next Activity
+                                                                                            Intent intent = new Intent(context,TabbedActivity.class);
+                                                                                            startActivity(intent);
+                                                                                            finish();
+                                                                                        }
+                                                                                        break;
+                                                                                    default:
+                                                                                        //Default
+                                                                                        break;
+                                                                                }
+                                                                            } catch (JSONException e) {
+                                                                                e.printStackTrace();
+                                                                            }*/
+                                                                        }
+                                                                    });
                                                         } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        } catch (IOException e) {
                                                             e.printStackTrace();
                                                         }
                                                     }

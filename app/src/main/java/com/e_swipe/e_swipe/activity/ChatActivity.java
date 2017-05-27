@@ -1,4 +1,4 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.ChatAdapter;
 import com.e_swipe.e_swipe.objects.ChatMessage;
 

@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +17,29 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.e_swipe.e_swipe.EditProfileActivity;
-import com.e_swipe.e_swipe.LoginActivity;
-import com.e_swipe.e_swipe.UserProfileActivity;
-import com.e_swipe.e_swipe.objects.Profil;
+import com.bumptech.glide.Glide;
+import com.e_swipe.e_swipe.activity.EditProfileActivity;
+import com.e_swipe.e_swipe.activity.LoginActivity;
+import com.e_swipe.e_swipe.activity.UserProfileActivity;
+import com.e_swipe.e_swipe.model.Profil;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.model.UserPatch;
+import com.e_swipe.e_swipe.server.Profil.ProfilServer;
+import com.e_swipe.e_swipe.utils.DateUtils;
 import com.facebook.login.LoginManager;
+import com.google.gson.Gson;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static com.e_swipe.e_swipe.server.Profil.ProfilServer.patch;
 
 
 /**
@@ -63,11 +68,12 @@ public class ProfilFragment extends Fragment {
      */
     private OnFragmentInteractionListener mListener;
     private FragmentListenerCallback fragmentListenerCallback;
-    /**
-     * The profil of the user
-     */
-    private static Profil profil;
 
+
+    /**
+     * UserProfil
+     */
+    Profil profil;
     /**
      * Empty constructor
      */
@@ -80,10 +86,9 @@ public class ProfilFragment extends Fragment {
      * @param context Application context
      * @return a new instance of the ProfilFragment
      */
-    public static ProfilFragment newInstance(Context context, Profil profile) {
+    public static ProfilFragment newInstance(Context context) {
         ProfilFragment fragment = new ProfilFragment();
         mContext = context;
-        profil = profile;
         return fragment;
     }
 
@@ -101,10 +106,9 @@ public class ProfilFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profil, container, false);
         /**
-         * Init Shared Preferences
+         * SharedPreferences
          */
-        Context context = getActivity();
-        final SharedPreferences sharedPref = context.getSharedPreferences(
+        final SharedPreferences sharedPref = mContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -123,10 +127,7 @@ public class ProfilFragment extends Fragment {
         switchHomme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //Save switch value in shared Preferences
-                editor.putBoolean(getString(R.string.isManWanted), b);
-                editor.apply();
-                compoundButton.clearFocus();
+
             }
         });
 
@@ -134,9 +135,7 @@ public class ProfilFragment extends Fragment {
         switchFemme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                editor.putBoolean(getString(R.string.isWomenWanted), b);
-                editor.apply();
-                compoundButton.clearFocus();
+
             }
         });
 
@@ -144,9 +143,7 @@ public class ProfilFragment extends Fragment {
         seekbarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                editor.putInt(getString(R.string.distance), i);
-                editor.apply();
-                seekbarDistance.clearFocus();
+
             }
 
             @Override
@@ -156,21 +153,41 @@ public class ProfilFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                editor.putInt("distance",seekBar.getProgress());
+                if(profil != null) {
+                    List<String> lookingFor = new ArrayList<String>();
+                    if(switchFemme.isChecked()) lookingFor.add("female");
+                    if(switchHomme.isChecked()) lookingFor.add("male");
+                    try {
+                        patch(sharedPref.getString("auth", ""), new UserPatch(profil.getFirst_name(), profil.getLast_name(),
+                                profil.getDate_of_birth(), profil.getDescription(), profil.getGender(), lookingFor,
+                                rangeSeekBar.getSelectedMinValue(), rangeSeekBar.getSelectedMaxValue(), true), new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
 
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
+        seekbarDistance.setMax(1);
+        seekbarDistance.setMax(100);
 
         //Init RangeSeekBar
         rangeSeekBar = (RangeSeekBar) v.findViewById(R.id.rangeSeekBar_age);
-        rangeSeekBar.setRangeValues(0,100);
+        rangeSeekBar.setRangeValues(18,100);
         rangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
-                editor.putInt(getString(R.string.ageMin), minValue);
-                editor.putInt(getString(R.string.ageMax),maxValue);
-                editor.apply();
-                rangeSeekBar.clearFocus();
-                rangeSeekBar.clearAnimation();
+
             }
         });
 
@@ -180,20 +197,10 @@ public class ProfilFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), UserProfileActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("profil",profil);
-                intent.putExtras(bundle);
                 startActivity(intent);
-
             }
         });
         nameAndImage = (TextView) v.findViewById(R.id.textView_user);
-        int age = 0;
-        age = getAge(profil.getBirthday());
-        nameAndImage.setText(profil.getName()+", "+ age);
-
-        Bitmap bitmap = getFacebookProfilePicture(profil.getUserId());
-        initSubviewsFromSharedPreferences();
 
         signOutButton = (Button) v.findViewById(R.id.sign_out);
         signOutButton.setOnClickListener(new View.OnClickListener() {
@@ -205,68 +212,55 @@ public class ProfilFragment extends Fragment {
                 getActivity().finish();
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
-                Log.d("Debug","finish");
             }
         });
 
+        //Get the new profil user
+        try {
+            getProfil(sharedPref.getString("auth",""));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return v;
     }
 
-    public void initSubviewsFromSharedPreferences(){
-        final SharedPreferences sharedPref = getActivity().getSharedPreferences(
+    public void getProfil(String auth) throws IOException {
+        ProfilServer.getProfil(auth, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                profil = new Gson().fromJson(response.body().string(), Profil.class);
+                initSubViewsWithProfilAndPreferences(profil);
+            }
+        });
+    }
+
+    public void initSubViewsWithProfilAndPreferences(Profil profil){
+
+        nameAndImage.setText(profil.getFirst_name()+","+DateUtils.getAge(profil.getDate_of_birth()));
+        Glide.with(mContext).load(profil.getPicture_url()).into(circleImageView);
+        if(profil.getLooking_for().contains("male")){
+            switchHomme.setChecked(true);
+        }
+        else switchHomme.setChecked(false);
+        if (profil.getLooking_for().contains("female")){
+            switchFemme.setChecked(true);
+        }
+        else switchFemme.setChecked(false);
+
+        /**
+         * SharedPreferences
+         */
+        final SharedPreferences sharedPref = mContext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        seekbarDistance.setProgress(sharedPref.getInt("distance",1));
 
-        switchHomme.setChecked(sharedPref.getBoolean(getString(R.string.isManWanted),false));
-        switchFemme.setChecked(sharedPref.getBoolean(getString(R.string.isWomenWanted),false));
-        seekbarDistance.setProgress(sharedPref.getInt(getString(R.string.distance),0));
-        rangeSeekBar.setRangeValues(sharedPref.getInt(getString(R.string.ageMin),0), sharedPref.getInt(getString(R.string.ageMax),100));
-
-    }
-
-    public static int getAge(String date) {
-
-        int age = 0;
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            Date date1 = format.parse(date);
-            Calendar now = Calendar.getInstance();
-            Calendar dob = Calendar.getInstance();
-            dob.setTime(date1);
-            if (dob.after(now)) {
-                throw new IllegalArgumentException("Can't be born in the future");
-            }
-            int year1 = now.get(Calendar.YEAR);
-            int year2 = dob.get(Calendar.YEAR);
-            age = year1 - year2;
-            int month1 = now.get(Calendar.MONTH);
-            int month2 = dob.get(Calendar.MONTH);
-            if (month2 > month1) {
-                age--;
-            } else if (month1 == month2) {
-                int day1 = now.get(Calendar.DAY_OF_MONTH);
-                int day2 = dob.get(Calendar.DAY_OF_MONTH);
-                if (day2 > day1) {
-                    age--;
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return age;
-    }
-
-    public Bitmap getFacebookProfilePicture(String userID){
-        FacebookGraphConnector facebookGraphConnector = new FacebookGraphConnector();
-        String url = "https://graph.facebook.com/" + userID + "/picture?type=large";
-        URL imageURL = null;
-        Bitmap bitmap = null;
-        try {
-            facebookGraphConnector.execute(url);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
+        rangeSeekBar.setSelectedMinValue(profil.getLooking_for_age_min());
+        rangeSeekBar.setSelectedMaxValue(profil.getLooking_for_age_max());
     }
 
     public void onButtonPressed(Uri uri) {
@@ -305,25 +299,5 @@ public class ProfilFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-    }
-
-    public class FacebookGraphConnector extends AsyncTask<String,Void,Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String[] strings) {
-            URL imageURL = null;
-            Bitmap bitmap = null;
-            try {
-                imageURL = new URL(strings[0]);
-                bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            circleImageView.setImageBitmap(bitmap);
-        }
     }
 }

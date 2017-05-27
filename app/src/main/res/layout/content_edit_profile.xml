@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".EditProfileActivity"
+    tools:context=".activity.EditProfileActivity"
     tools:showIn="@layout/activity_edit_profile">
 
     <GridView
@@ -46,7 +46,7 @@
         <EditText
             android:id="@+id/EditText02"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:gravity="top|left"
             android:hint="Hit me to change your description"
             android:inputType="textMultiLine"

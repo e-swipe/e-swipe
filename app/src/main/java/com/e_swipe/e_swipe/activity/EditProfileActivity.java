@@ -1,19 +1,16 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.ViewSwitcher;
+import android.widget.ImageView;
 
+import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.PictureSelectionAdapter;
 import com.e_swipe.e_swipe.objects.Picture;
 
@@ -23,9 +20,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
     //TODO : need to add listener to selection image
 
-    ImageButton swapButton;
+    ImageView swapButton;
     GridView gridView;
-    int [] positionsToSwap;
+    ArrayList<Integer> positionsToSwap;
     ArrayList<String> imageUrl;
 
     @Override
@@ -40,12 +37,12 @@ public class EditProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        positionsToSwap = new int[2];
+        positionsToSwap = new ArrayList<>(2);
         imageUrl = new ArrayList<>();
 
         //Get Images from server
         gridView = (GridView) findViewById(R.id.grid_pictures);
-        ArrayList<Picture> pictures = new ArrayList<>();
+        final ArrayList<Picture> pictures = new ArrayList<>();
         Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
                 R.drawable.com_facebook_button_icon_blue);
         pictures.add(new Picture(icon,false));
@@ -54,24 +51,46 @@ public class EditProfileActivity extends AppCompatActivity {
         pictures.add(new Picture(icon,false));
         pictures.add(new Picture(icon,false));
 
-
-        gridView.setAdapter(new PictureSelectionAdapter(getApplicationContext(),pictures, new PictureSelectionAdapter.PictureSelection() {
+        final PictureSelectionAdapter pictureSelectionAdapter = new PictureSelectionAdapter(getApplicationContext(),pictures, new PictureSelectionAdapter.PictureSelection() {
             @Override
             public void pictureSelected(Bitmap bitmap, int position) {
-
+                if(positionsToSwap.size() < 2){
+                    positionsToSwap.add(position);
+                }
+                else if(positionsToSwap.size() == 2) positionsToSwap.set(0,position);
             }
 
             @Override
             public void pictureUnselected(Bitmap bitmap, int position) {
-
+                positionsToSwap.remove(position);
             }
-        })); //Create new adapter on selection
+        });
 
-        swapButton = (ImageButton) findViewById(R.id.swap_pictures);
+        gridView.setAdapter(pictureSelectionAdapter);
+
+        swapButton = (ImageView) findViewById(R.id.swap_pictures);
         swapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(positionsToSwap.size() == 1){
+                    Picture picture = pictures.get(positionsToSwap.get(0)); //1,2,3,4
+                    Picture firstPicture = pictures.get(0); // 0
 
+                    pictures.set(0,picture);
+                    pictures.set(positionsToSwap.get(0),firstPicture);
+
+                    pictureSelectionAdapter.notifyDataSetChanged();
+                }
+                else if(positionsToSwap.size() == 2){
+
+                    Picture picture = pictures.get(positionsToSwap.get(1)); //1,2,3,4
+                    Picture firstPicture = pictures.get(positionsToSwap.get(0)); // 0
+
+                    pictures.set(positionsToSwap.get(1),firstPicture);
+                    pictures.set(positionsToSwap.get(0),picture);
+
+                    pictureSelectionAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

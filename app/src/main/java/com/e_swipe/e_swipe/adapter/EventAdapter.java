@@ -1,6 +1,11 @@
 package com.e_swipe.e_swipe.adapter;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.model.EventCard;
 import com.e_swipe.e_swipe.objects.Event;
 
 import java.util.List;
@@ -23,7 +29,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
     /**
      * List of every event to display
      */
-    List<Event> eventList;
+    List<EventCard> eventList;
     /**
      * Context related to the activity/Application
      */
@@ -34,7 +40,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
      * @param context Application Context
      * @param eventList List of events
      */
-    public EventAdapter(Context context, List<Event> eventList){
+    public EventAdapter(Context context, List<EventCard> eventList) {
         this.eventList = eventList;
         this.mContext = context;
     }
@@ -51,7 +57,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
     /**
      *  @return event at position
      */
-    public Event getItem(int position) {
+    public EventCard getItem(int position) {
         return eventList.get(position);
     }
 
@@ -69,7 +75,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
      */
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if( convertView == null ){
+        if (convertView == null) {
             //We must create a View:
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.row_event, parent, false);
@@ -77,10 +83,20 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
             TextView eventName = (TextView) convertView.findViewById(R.id.event_name);
             eventName.setText(getItem(position).getName());
             TextView eventLocalisation = (TextView) convertView.findViewById(R.id.event_localisation);
-            eventLocalisation.setText(getItem(position).getLocation());
+            //TODO
+            LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                //Current User Location
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location locationEvent = new Location("pointUser");
+
+                float meters = location.distanceTo(locationEvent);
+                eventLocalisation.setText(Float.toString(meters/1000));
+            }
+
             ImageView imageView =  (ImageView) convertView.findViewById(R.id.event_image);
             //Ask Glide to load the image from url into imageView
-            Glide.with(mContext).load(getItem(position).getImageUrl()).into(imageView);
+            Glide.with(mContext).load(getItem(position).getPicture_url()).into(imageView);
         }
         return convertView;
     }

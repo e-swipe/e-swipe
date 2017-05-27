@@ -1,7 +1,7 @@
-package com.e_swipe.e_swipe;
+package com.e_swipe.e_swipe.activity;
 
-import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
@@ -14,27 +14,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.fragments.ProfilFragment.OnFragmentInteractionListener;
 import com.e_swipe.e_swipe.layout.TinderCard;
+import com.e_swipe.e_swipe.model.EventCard;
 import com.e_swipe.e_swipe.objects.ChatRoom;
-import com.e_swipe.e_swipe.objects.Event;
-import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.Person;
 import com.e_swipe.e_swipe.fragments.ChatFragment;
 import com.e_swipe.e_swipe.fragments.EventsFragment;
 import com.e_swipe.e_swipe.fragments.ProfilFragment;
 import com.e_swipe.e_swipe.fragments.SwipeFragment;
-import com.e_swipe.e_swipe.objects.Profil;
 import com.e_swipe.e_swipe.viewPager.CustomViewPager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Activity related to the creation of fragments (Profil , Swipe , Events ..)
  */
 public class TabbedActivity extends AppCompatActivity
-        implements ProfilFragment.FragmentListenerCallback,SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, OnFragmentInteractionListener {
+        implements ProfilFragment.FragmentListenerCallback, SwipeFragment.OnFragmentInteractionListener, ChatFragment.OnFragmentInteractionListener, EventsFragment.OnFragmentInteractionListener, OnFragmentInteractionListener {
 
     /**
      * Adapter that will handle fragments/Pages
@@ -46,10 +44,6 @@ public class TabbedActivity extends AppCompatActivity
      */
     private CustomViewPager mViewPager;
 
-    /**
-     * The user profile
-     */
-    private Profil profil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +62,7 @@ public class TabbedActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //Get FB userId
-        Intent intent = getIntent();
-        profil = (Profil) intent.getExtras().getParcelable("profil");
-        /*String userId = intent.getStringExtra("id");
-        String name = intent.getStringExtra("name");
-        String surname = intent.getStringExtra("surname");
-        String birthday = intent.getStringExtra("birthday");
-
-        profil = new Profil(userId,name,surname,birthday);*/
     }
-
 
 
     @Override
@@ -111,7 +95,7 @@ public class TabbedActivity extends AppCompatActivity
 
     @Override
     public void askForFinish() {
-        Log.d("Debug","Finish from tabbed");
+        Log.d("Debug", "Finish from tabbed");
         finish();
     }
 
@@ -139,17 +123,15 @@ public class TabbedActivity extends AppCompatActivity
          * Return fragment depending of the position (Profil , Swipe ...)
          */
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return ProfilFragment.newInstance(getApplicationContext(),profil);
+                    return ProfilFragment.newInstance(getApplicationContext());
                 case 1:
                     SwipeFragment swipeFragment = SwipeFragment.newInstance(getApplicationContext());
                     swipeFragment.setOnSwipeEventListener(new SwipeFragment.onSwipeEventListener() {
                         @Override
                         public void onFragmentCreated() {
-                            Log.d("TEST","Fragment Created");
+                            Log.d("TEST", "Fragment Created");
                         }
 
                         @Override
@@ -169,14 +151,13 @@ public class TabbedActivity extends AppCompatActivity
                     });
                     return swipeFragment;
                 case 2:
-                    List<Event> events = JsonLoader.loadEvents(getApplicationContext());
-                    return EventsFragment.newInstance(getApplicationContext(),events);
+                    return EventsFragment.newInstance(getApplicationContext(), new ArrayList<EventCard>());
                 case 3:
                     ArrayList<ChatRoom> chatRooms = new ArrayList<ChatRoom>();
                     chatRooms.add(new ChatRoom("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
                     return ChatFragment.newInstance(chatRooms);
                 default:
-                    return ProfilFragment.newInstance(getApplicationContext(),profil);
+                    return ProfilFragment.newInstance(getApplicationContext());
             }
         }
 
@@ -206,5 +187,10 @@ public class TabbedActivity extends AppCompatActivity
             }
             return null;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.model.Image;
 
 import java.util.ArrayList;
 
@@ -20,16 +21,16 @@ public class ImageAdapter extends PagerAdapter {
 
     Context mContext;
     LayoutInflater mLayoutInflater;
-    ArrayList<String> imageUrls;
+    ArrayList<Image> images;
 
-    public ImageAdapter(Context context, ArrayList<String> urls){
+    public ImageAdapter(Context context, ArrayList<Image> images){
         mContext = context;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        imageUrls = urls;
+        this.images = images;
     }
     @Override
     public int getCount() {
-        return imageUrls.size();
+        return images.size();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ImageAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.image_pager, container, false);
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.image_pager);
-        Glide.with(mContext).load(imageUrls.get(position)).into(imageView);
+        Glide.with(mContext).load(images.get(position)).into(imageView);
 
         container.addView(itemView);
 

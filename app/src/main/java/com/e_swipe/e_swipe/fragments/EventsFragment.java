@@ -1,8 +1,13 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +17,20 @@ import android.widget.ListView;
 
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.EventAdapter;
-import com.e_swipe.e_swipe.objects.Event;
-import com.e_swipe.e_swipe.objects.JsonLoader;
+import com.e_swipe.e_swipe.model.EventCard;
+import com.e_swipe.e_swipe.server.event.EventServer;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Class that represent the EventFragment
@@ -33,11 +48,16 @@ public class EventsFragment extends Fragment {
     /**
      * List of events to display
      */
-    private static List<Event> eventList;
+    private static List<EventCard> eventList;
     /**
      * Subviews
      */
     ListView listEvent;
+
+    /**
+     * EventAdapter
+     */
+    EventAdapter eventAdapter;
 
     /**
      * Empty constructor
@@ -51,7 +71,7 @@ public class EventsFragment extends Fragment {
      * @param events List of events to display
      * @return a new instance of the eventFragment
      */
-    public static EventsFragment newInstance(Context context,List<Event> events) {
+    public static EventsFragment newInstance(Context context,List<EventCard> events) {
         EventsFragment fragment = new EventsFragment();
         mContext = context;
         eventList = events;
@@ -75,7 +95,7 @@ public class EventsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_events, container, false);
         listEvent = (ListView) view.findViewById(R.id.event_list);
-        EventAdapter eventAdapter = new EventAdapter(mContext,eventList);
+        eventAdapter = new EventAdapter(mContext,eventList);
         listEvent.setAdapter(eventAdapter);
         listEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,10 +105,53 @@ public class EventsFragment extends Fragment {
             }
         });
 
+        getEvents();
+
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
+
+    public void getEvents() {
+        //Get Events from Server
+        LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            try {
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                int latitude = (int) location.getLatitude();
+                int longitude = (int) location.getLatitude();
+
+                int radius;
+                int offset = 0;
+                int limit = 10;
+
+                //Get SharedPreferences for radius
+                final SharedPreferences sharedPref = mContext.getSharedPreferences(
+                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+                radius = sharedPref.getInt(getString(R.string.distance), 1);
+                EventServer.getAllEvents(sharedPref.getString("auth", ""), latitude, longitude, radius, offset, limit, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        Gson gson = new Gson();
+                        EventCard[] eventCards = gson.fromJson(response.body().toString(), EventCard[].class);
+                        eventList = new ArrayList<>(Arrays.asList(eventCards));
+                        eventAdapter.notifyDataSetChanged();
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+        public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

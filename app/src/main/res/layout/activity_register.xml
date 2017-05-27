@@ -8,7 +8,7 @@
 	android:paddingLeft="@dimen/activity_horizontal_margin"
 	android:paddingRight="@dimen/activity_horizontal_margin"
 	android:paddingTop="@dimen/activity_vertical_margin"
-	tools:context=".RegisterActivity">
+	tools:context=".activity.RegisterActivity">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -170,24 +170,31 @@
             <RelativeLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:id="@+id/contain_sex"
-				android:layout_weight="1">
+				android:layout_weight="1"/>
 
-				<TextView
+			<RadioGroup
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<RadioButton
+					android:id="@+id/radioMale"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:gravity="center_vertical"
-					android:text="Homme/Femme"
-					android:layout_centerVertical="true"
-					android:layout_alignParentStart="false" />
+					android:checked="false"
+					android:text="Homme" />
 
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-					android:layout_alignParentEnd="true"
-                    android:id="@+id/switchSex" />
-            </RelativeLayout>
+
+				<RadioButton
+					android:id="@+id/radioFemale"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:checked="false"
+					android:text="Femme" />
+
+			</RadioGroup>
 
         </LinearLayout>
 

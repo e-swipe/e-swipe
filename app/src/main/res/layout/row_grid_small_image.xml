@@ -5,7 +5,7 @@
 
     <ImageView
         android:layout_width="100dp"
-        android:layout_height="150dp"
+        android:layout_height="75dp"
         android:src="@mipmap/ic_edit"
         android:id="@+id/small_image"/>
 </LinearLayout>
