@@ -18,7 +18,7 @@ public class ChatServer {
 
     public static final String BASE_URL =  "api.stardis.blue";
 
-    public void getAllChats(String auth, int offset, int limit, Callback callback){
+    public static void getAllChats(String auth, int offset, int limit, Callback callback){
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
@@ -41,7 +41,7 @@ public class ChatServer {
         call.enqueue(callback);
     }
 
-    public void getChatInfo(String uuid, String auth, int offset, int limit, int since, Callback callback){
+    public static void getChatInfo(String uuid, String auth, int offset, int limit, int since, Callback callback){
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")

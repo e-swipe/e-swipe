@@ -24,6 +24,10 @@ public class ProfilTinderCard {
     @Expose
     private String location;
 
+    @SerializedName("uuid")
+    @Expose
+    private String uuid;
+
     /**
      *Getters And Setters
      */
@@ -58,4 +62,13 @@ public class ProfilTinderCard {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
 }

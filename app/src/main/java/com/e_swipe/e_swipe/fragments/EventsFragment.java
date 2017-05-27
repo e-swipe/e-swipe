@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -60,6 +61,17 @@ public class EventsFragment extends Fragment {
     EventAdapter eventAdapter;
 
     /**
+     * currentOffset
+     */
+    int offset;
+
+    /**
+     * isLoading ?
+     */
+
+    boolean loading;
+
+    /**
      * Empty constructor
      */
     public EventsFragment() {
@@ -105,6 +117,23 @@ public class EventsFragment extends Fragment {
             }
         });
 
+        listEvent.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount !=0){
+                    if(!loading){
+                        getEvents();
+                        loading = true;
+                    }
+                }
+            }
+        });
+
         getEvents();
 
         return view;
@@ -121,7 +150,6 @@ public class EventsFragment extends Fragment {
                 int longitude = (int) location.getLatitude();
 
                 int radius;
-                int offset = 0;
                 int limit = 10;
 
                 //Get SharedPreferences for radius
@@ -141,6 +169,8 @@ public class EventsFragment extends Fragment {
                         EventCard[] eventCards = gson.fromJson(response.body().toString(), EventCard[].class);
                         eventList = new ArrayList<>(Arrays.asList(eventCards));
                         eventAdapter.notifyDataSetChanged();
+                        loading = false;
+                        offset++;
                     }
                 });
             } catch (JSONException e) {

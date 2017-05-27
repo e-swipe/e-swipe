@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.model.ChatCard;
 import com.e_swipe.e_swipe.objects.ChatRoom;
 
 import java.util.List;
@@ -18,14 +19,14 @@ public class ChatRoomAdapter extends BaseAdapter implements View.OnClickListener
     /**
      * List of every chatRooms
      */
-    List<ChatRoom> chatRooms;
+    List<ChatCard> chatRooms;
     /**
      * Context of the Activity/App
      */
     Context context;
 
 
-    public ChatRoomAdapter(Context context, List<ChatRoom> chatRooms){
+    public ChatRoomAdapter(Context context, List<ChatCard> chatRooms){
         this.chatRooms = chatRooms;
         this.context = context;
     }
@@ -42,7 +43,7 @@ public class ChatRoomAdapter extends BaseAdapter implements View.OnClickListener
     /**
      * @return ChatRoom at position
      */
-    public ChatRoom getItem(int position) {
+    public ChatCard getItem(int position) {
         return chatRooms.get(position);
     }
 
@@ -66,9 +67,9 @@ public class ChatRoomAdapter extends BaseAdapter implements View.OnClickListener
             convertView = inflater.inflate(R.layout.row_chat, parent, false);
             //Init subViews
             TextView chatName = (TextView) convertView.findViewById(R.id.chat_name);
-            chatName.setText(getItem(position).getChatName());
+            chatName.setText(getItem(position).getUser().getFirst_name());
             TextView lastMessage = (TextView) convertView.findViewById(R.id.last_message);
-            lastMessage.setHint(getItem(position).getLastMessage());
+            lastMessage.setHint(getItem(position).getLast_message_content());
 
         }
         return convertView;

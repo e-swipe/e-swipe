@@ -1,8 +1,13 @@
 package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +15,26 @@ import android.view.ViewGroup;
 
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.layout.TinderCard;
+import com.e_swipe.e_swipe.objects.Event;
 import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.ProfilTinderCard;
+import com.e_swipe.e_swipe.server.Profil.Swipe;
+import com.e_swipe.e_swipe.utils.ResponseCode;
+import com.google.gson.Gson;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
+import com.mindorks.placeholderview.listeners.ItemRemovedListener;
+
+import org.json.JSONArray;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Class related to the swipe fragment
@@ -81,6 +102,18 @@ public class SwipeFragment extends Fragment {
                         .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
+        mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
+            @Override
+            public void onItemRemoved(int count) {
+                //do something when the count changes to some specific value.
+                //For Example: Call server to fetch more data when count is zero
+                //Needs to fetch data a little bit before the end of count
+                if(count == 2){
+                    requestSwipeables();
+                }
+            }
+        });
+
         //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
         for(ProfilTinderCard profilTinderCard : JsonLoader.loadProfiles(mContext)){
             TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
@@ -118,9 +151,44 @@ public class SwipeFragment extends Fragment {
             }
         });
 
-        //onSwipeEventListener.onFragmentCreated();
-
         return v;
+    }
+
+    public void requestSwipeables(){
+
+        SharedPreferences sharedPref = mContext.getSharedPreferences(
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
+
+        LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            try {
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                int latitude = (int) location.getLatitude();
+                int longitude = (int) location.getLatitude();
+
+                Swipe.getSwipeable(sharedPref.getString("auth", ""), longitude, latitude, sharedPref.getInt("distance",1), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                        if(ResponseCode.checkResponseCode(response.code())){
+
+                            String swipeableString = response.body().string();
+                            FileOutputStream fileOutputStream = mContext.openFileOutput("swipeables.json",Context.MODE_PRIVATE);
+                            fileOutputStream.write(swipeableString.getBytes(Charset.forName("UTF-8")));
+                        }
+                    }
+                });
+
+            }
+            catch (Exception e){
+
+            }
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

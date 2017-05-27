@@ -82,7 +82,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         Log.d("TOKEN",FirebaseInstanceId.getInstance().getToken());
 
-        picturesUrl = new ArrayList<String>();
+        picturesUrl = new ArrayList<>();
 
         //Get context
         context = getApplicationContext();
@@ -214,88 +214,90 @@ public class LoginActivity extends Activity {
                             final String email = response.getJSONObject().getString("email");
                             final String gender = response.getJSONObject().getString("gender");
                             birthdayObject = object;
-                            nbAlbums = object.getJSONObject("albums").getJSONArray("data").length()-1;
                             for(int i=0;i<object.getJSONObject("albums").getJSONArray("data").length();i++){
                                 JSONObject album = object.getJSONObject("albums").getJSONArray("data").getJSONObject(i);
+                                Log.d("Album",album.toString());
                                 String albumId = album.getString("id");
+                                String nameAlbum = album.getString("name");
                                 //For each album request photos url
                                 Bundle params = new Bundle();
                                 params.putBoolean("redirect", false);
-                                new GraphRequest(
-                                        AccessToken.getCurrentAccessToken(),
-                                        "/" + albumId +"/picture",
-                                        params,
-                                        HttpMethod.GET,
-                                        new GraphRequest.Callback() {
-                                            public void onCompleted(GraphResponse response) {
-                                                JSONObject picture = response.getJSONObject();
-                                                try {
-                                                    picturesUrl.add(picture.getJSONObject("data").getString("url"));
-                                                    Log.d("Debug",picture.getJSONObject("data").getString("url"));
-                                                    if(cpt == nbAlbums){
-                                                        //Facebook profile
-                                                        final Profile profile = Profile.getCurrentProfile();
+                                if(nameAlbum.equals("Profile Pictures")){
+                                    new GraphRequest(
+                                            AccessToken.getCurrentAccessToken(),
+                                            "/" + albumId +"/picture",
+                                            params,
+                                            HttpMethod.GET,
+                                            new GraphRequest.Callback() {
+                                                public void onCompleted(GraphResponse response) {
+                                                    JSONObject picture = response.getJSONObject();
+                                                    try {
+                                                        picturesUrl.add(picture.getJSONObject("data").getString("url"));
+                                                        Log.d("Debug",picture.getJSONObject("data").getString("url"));
+                                                            //Facebook profile
+                                                            final Profile profile = Profile.getCurrentProfile();
+                                                            Log.d("Debug", String.valueOf(cpt));
+                                                            try {
+                                                                UserFacebook userFacebook = new UserFacebook(profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),gender,email);
+                                                                LoginServer.withFacebook(accessToken.getToken(), FirebaseInstanceId.getInstance().getToken(),
+                                                                        profile.getId(), userFacebook, new Callback() {
+                                                                            @Override
+                                                                            public void onFailure(Call call, IOException e) {
 
-                                                        try {
-                                                            UserFacebook userFacebook = new UserFacebook(profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),gender,email);
-                                                            LoginServer.withFacebook(accessToken.getToken(), FirebaseInstanceId.getInstance().getToken(),
-                                                                    profile.getId(), userFacebook, new Callback() {
-                                                                        @Override
-                                                                        public void onFailure(Call call, IOException e) {
-
-                                                                        }
-                                                                        @Override
-                                                                        public void onResponse(Call call, Response response) throws IOException {
-                                                                            JSONObject mainObject = null;
-                                                                            Log.d("Response", String.valueOf(response.code()));
-                                                                            try {
-
-                                                                                mainObject = new JSONObject(response.body().string());
-                                                                                switch (response.code()){
-                                                                                    case 200:
-                                                                                        //User Connected
-                                                                                        auth = mainObject.getString("auth");
-                                                                                        editor.putString("auth",auth);
-                                                                                        if(auth != null){
-                                                                                            //Go to next Activity
-                                                                                            Intent intent = new Intent(context,TabbedActivity.class);
-                                                                                            startActivity(intent);
-                                                                                            finish();
-                                                                                        }
-                                                                                        break;
-                                                                                    case 201:
-                                                                                        //User Created
-                                                                                        auth = mainObject.getString("token");
-                                                                                        Bitmap bitmap = LoginServer.getFacebookProfilePicture(profile.getId());
-                                                                                        if(auth != null){
-                                                                                            //Go to next Activity
-                                                                                            Intent intent = new Intent(context,TabbedActivity.class);
-                                                                                            startActivity(intent);
-                                                                                            finish();
-                                                                                        }
-                                                                                        break;
-                                                                                    default:
-                                                                                        //Default
-                                                                                        break;
-                                                                                }
-                                                                            } catch (JSONException e) {
-                                                                                e.printStackTrace();
                                                                             }
-                                                                        }
-                                                                    });
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                        }
+                                                                            @Override
+                                                                            public void onResponse(Call call, Response response) throws IOException {
+                                                                                JSONObject mainObject = null;
+                                                                                Log.d("Response", String.valueOf(response.code()));
+                                                                                try {
+                                                                                    String body = response.body().string();
+                                                                                    Log.d("Login",body);
+                                                                                    mainObject = new JSONObject(body);
+                                                                                    switch (response.code()){
+                                                                                        case 200:
+                                                                                            //User Connected
+                                                                                            auth = mainObject.getString("auth");
+                                                                                            editor.putString("auth",auth);
+                                                                                            if(auth != null){
+                                                                                                //Go to next Activity
+                                                                                                Intent intent = new Intent(context,TabbedActivity.class);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            }
+                                                                                            break;
+                                                                                        case 201:
+                                                                                            //User Created
+                                                                                            auth = mainObject.getString("token");
+                                                                                            Bitmap bitmap = LoginServer.getFacebookProfilePicture(profile.getId());
+                                                                                            if(auth != null){
+                                                                                                //Go to next Activity
+                                                                                                Intent intent = new Intent(context,TabbedActivity.class);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            }
+                                                                                            break;
+                                                                                        default:
+                                                                                            //Default
+                                                                                            break;
+                                                                                    }
+                                                                                } catch (JSONException e) {
+                                                                                    e.printStackTrace();
+                                                                                }
+                                                                            }
+                                                                        });
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            } catch (IOException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
                                                     }
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
+                                                    cpt++;
                                                 }
-                                                cpt++;
                                             }
-                                        }
-                                ).executeAsync();
+                                    ).executeAsync();
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

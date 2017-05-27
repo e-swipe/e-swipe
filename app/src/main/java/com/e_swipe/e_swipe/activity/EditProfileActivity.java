@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -45,15 +46,20 @@ public class EditProfileActivity extends AppCompatActivity {
         final ArrayList<Picture> pictures = new ArrayList<>();
         Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
                 R.drawable.com_facebook_button_icon_blue);
+        Bitmap test = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.mipmap.ic_accept);
+
         pictures.add(new Picture(icon,false));
         pictures.add(new Picture(icon,false));
-        pictures.add(new Picture(icon,false));
-        pictures.add(new Picture(icon,false));
+        pictures.add(new Picture(test,false));
+        pictures.add(new Picture(test,false));
         pictures.add(new Picture(icon,false));
 
         final PictureSelectionAdapter pictureSelectionAdapter = new PictureSelectionAdapter(getApplicationContext(),pictures, new PictureSelectionAdapter.PictureSelection() {
             @Override
             public void pictureSelected(Bitmap bitmap, int position) {
+                pictures.get(position).setSelected(true);
+                Log.d("PictureSelected", String.valueOf(position));
                 if(positionsToSwap.size() < 2){
                     positionsToSwap.add(position);
                 }
@@ -62,7 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void pictureUnselected(Bitmap bitmap, int position) {
-                positionsToSwap.remove(position);
+                pictures.get(position).setSelected(false);
             }
         });
 
@@ -72,12 +78,17 @@ public class EditProfileActivity extends AppCompatActivity {
         swapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("PictureSelection", String.valueOf(positionsToSwap));
                 if(positionsToSwap.size() == 1){
                     Picture picture = pictures.get(positionsToSwap.get(0)); //1,2,3,4
                     Picture firstPicture = pictures.get(0); // 0
 
                     pictures.set(0,picture);
                     pictures.set(positionsToSwap.get(0),firstPicture);
+                    positionsToSwap.clear();
+
+                    Log.d("Debug", String.valueOf(positionsToSwap)+"2");
+                    pictureSelectionAdapter.setPictures(pictures);
 
                     pictureSelectionAdapter.notifyDataSetChanged();
                 }
@@ -88,7 +99,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     pictures.set(positionsToSwap.get(1),firstPicture);
                     pictures.set(positionsToSwap.get(0),picture);
+                    positionsToSwap.clear();
 
+                    pictureSelectionAdapter.setPictures(pictures);
+                    Log.d("Debug", String.valueOf(positionsToSwap));
                     pictureSelectionAdapter.notifyDataSetChanged();
                 }
             }

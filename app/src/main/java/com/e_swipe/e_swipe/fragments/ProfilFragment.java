@@ -233,8 +233,8 @@ public class ProfilFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                profil = new Gson().fromJson(response.body().string(), Profil.class);
-                initSubViewsWithProfilAndPreferences(profil);
+                /*profil = new Gson().fromJson(response.body().string(), Profil.class);
+                initSubViewsWithProfilAndPreferences(profil);*/
             }
         });
     }

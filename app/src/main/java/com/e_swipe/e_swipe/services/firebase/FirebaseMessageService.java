@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.e_swipe.e_swipe.R;
@@ -26,6 +27,12 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     private static final String TAG_TOKEN = "TOKEN";
     private RemoteMessage lastMessageReceived;
     private Bitmap bitmap;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 

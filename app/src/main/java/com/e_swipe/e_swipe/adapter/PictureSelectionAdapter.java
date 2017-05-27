@@ -66,30 +66,24 @@ public class PictureSelectionAdapter extends BaseAdapter{
         ImageView imageView = (ImageView)vi.findViewById(R.id.small_image);
         imageView.setImageBitmap(picture.getImage());
 
-        /*view.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(picture.isSelected()){
                     pictureSelection.pictureUnselected(picture.getImage(),position);
+                    picture.setSelected(false);
                 }
-                else pictureSelection.pictureSelected(picture.getImage(),position);
+                else {
+                    pictureSelection.pictureSelected(picture.getImage(),position);
+                }
             }
-        });*/
+        });
 
         return vi;
 
-        /*if(view == null){
-            //Inflate view
-            if(i == 0) {
-                view = inflater.inflate(R.layout.row_grid_big_image, null);
-                ImageView imageView = (ImageView) view.findViewById(R.id.big_image);
-                imageView.setImageResource(R.mipmap.ic_edit);
-            }
-            else {
-                view = inflater.inflate(R.layout.row_grid_small_image, null);
-                ImageView imageView = (ImageView) view.findViewById(R.id.small_image);
-                imageView.setImageResource(R.mipmap.ic_edit);
-            }
-        }*/
+    }
+
+    public void setPictures(ArrayList<Picture> pictures){
+        this.pictures = pictures;
     }
 }

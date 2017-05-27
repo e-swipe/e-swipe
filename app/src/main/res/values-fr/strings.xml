@@ -22,7 +22,7 @@
 
     <string name="sign_up">Sinscrire</string>
     <string name="accept_card">Like</string>
-    <string name="reject_card">Rejeté</string>
+    <string name="reject_card">Rejete</string>
 
     <!-- Strings related to chat -->
     <string name="person_name">Nom de la personne</string>

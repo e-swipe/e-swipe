@@ -153,9 +153,7 @@ public class TabbedActivity extends AppCompatActivity
                 case 2:
                     return EventsFragment.newInstance(getApplicationContext(), new ArrayList<EventCard>());
                 case 3:
-                    ArrayList<ChatRoom> chatRooms = new ArrayList<ChatRoom>();
-                    chatRooms.add(new ChatRoom("Chat 1", new Person("Person 1", "token", "imageUrl"), new Person("Person 2", "token", "imageUrl")));
-                    return ChatFragment.newInstance(chatRooms);
+                    return ChatFragment.newInstance(getApplicationContext());
                 default:
                     return ProfilFragment.newInstance(getApplicationContext());
             }

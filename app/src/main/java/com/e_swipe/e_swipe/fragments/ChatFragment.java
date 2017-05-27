@@ -2,21 +2,34 @@ package com.e_swipe.e_swipe.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.e_swipe.e_swipe.activity.ChatActivity;
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.ChatRoomAdapter;
+import com.e_swipe.e_swipe.model.ChatCard;
 import com.e_swipe.e_swipe.objects.ChatRoom;
+import com.e_swipe.e_swipe.server.Chat.ChatServer;
+import com.e_swipe.e_swipe.utils.ResponseCode;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Class that represents the fragment related to chatRooms rooms
@@ -31,12 +44,27 @@ public class ChatFragment extends Fragment {
     /**
      * List of every chatRooms
      */
-    private static List<ChatRoom> chatRooms;
+    private static List<ChatCard> chatRooms;
     /**
      * the listView to inflate
      */
     ListView listView;
 
+    /**
+     * If the list view is loading new objects from server
+     */
+    boolean loading;
+
+    /**
+     * Current context
+     */
+    static Context mContext;
+
+    /**
+     * Current Offset
+     */
+
+    int offset;
     /**
      * Empty constructor
      */
@@ -45,13 +73,12 @@ public class ChatFragment extends Fragment {
     }
 
     /**
-     *
-     * @param chatsRooms List of every chatRooms
      * @return a new instance of the chatFragment
      */
-    public static ChatFragment newInstance(List<ChatRoom> chatsRooms) {
+    public static ChatFragment newInstance(Context context) {
         ChatFragment fragment = new ChatFragment();
-        chatRooms = chatsRooms;
+        chatRooms = new ArrayList<>();
+        mContext = context;
         return fragment;
     }
 
@@ -83,6 +110,40 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        loading = false;
+        offset = 0;
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount !=0){
+                    if(!loading){
+                        //Get SharedPreferences for radius
+                        final SharedPreferences sharedPref = mContext.getSharedPreferences(
+                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                        ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 10, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                if(ResponseCode.checkResponseCode(response.code())){
+                                    ChatCard[] chatCards = new Gson().fromJson(response.body().string(), ChatCard[].class);
+                                    chatRooms.addAll(Arrays.asList(chatCards));
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
         return view;
     }
 

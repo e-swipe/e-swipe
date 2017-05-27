@@ -9,11 +9,14 @@ public class Message {
     String user_id;
     String content;
     String date;
+    String uuid;
 
-    public Message(String user_id, String content, String date) {
+    public Message(String user_id, String content, String date, String uuid) {
         this.user_id = user_id;
         this.content = content;
         this.date = date;
+        this.uuid = uuid;
+
     }
 
     public String getUser_id() {
@@ -26,6 +29,10 @@ public class Message {
 
     public String getDate() {
         return date;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
 }

@@ -38,7 +38,7 @@ public class ProfilServer {
 
     public static final String BASE_URL =  "api.stardis.blue";
 
-    public static void addProfil(UserCreate userCreate, Callback callback){
+    public static void addProfil(UserCreate userCreate, String instanceId, Callback callback){
         OkHttpClient client = new OkHttpClient();
 
         HttpUrl httpUrl = new HttpUrl.Builder()
@@ -46,11 +46,19 @@ public class ProfilServer {
                 .host(BASE_URL)
                 .addPathSegment("v1")
                 .addPathSegment("users")
+                .addQueryParameter("instance_id",instanceId)
                 .build();
 
+        Gson gson = new Gson();
+        String json = gson.toJson(userCreate);
+
+        Log.d("Register", json);
+
+        RequestBody body = RequestBody.create(JSON, json);
 
         Request request = new Request.Builder()
                 .url(httpUrl)
+                .post(body )
                 .build();
 
         Call call = client.newCall(request);

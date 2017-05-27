@@ -44,9 +44,11 @@ public class LoginServer {
     public static void withFacebook(String facebookAuth, String instanceId, String userId,
                                       UserFacebook userFacebook, Callback callback) throws IOException, JSONException {
         //User : first_name, last_name, date_Of_birth, gender, email
-        Log.d("LoginServer " , "whithFacebook");
+        Log.d("LoginServer " , "withFacebook");
         Gson gson = new Gson();
         String userFacebookGson =  gson.toJson(userFacebook);
+
+        Log.d("LoginServer",userFacebookGson);
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")

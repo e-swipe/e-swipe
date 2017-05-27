@@ -2,22 +2,38 @@ package com.e_swipe.e_swipe.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Switch;
 
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.model.UserCreate;
+import com.e_swipe.e_swipe.server.Profil.ProfilServer;
+import com.e_swipe.e_swipe.utils.ResponseCode;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -26,11 +42,11 @@ public class RegisterActivity extends AppCompatActivity {
     EditText name;
     EditText birthday;
     EditText surname;
-    Switch gender;
+
+    RadioButton radioButtonMale;
+    RadioButton radioButtonFemale;
     Button register;
 
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -53,7 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
         name = (EditText) findViewById(R.id.name);
         birthday = (EditText) findViewById(R.id.birthday);
         surname = (EditText) findViewById(R.id.surname);
-        gender = (Switch) findViewById(R.id.switchSex);
+        radioButtonMale = (RadioButton) findViewById(R.id.radioMale);
+        radioButtonFemale = (RadioButton) findViewById(R.id.radioFemale);
 
         Calendar myCalendar = Calendar.getInstance();
 
@@ -71,16 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
                 DatePickerDialog mDatePicker=new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                         // TODO Auto-generated method stub
-                        try {
-                            String myFormat = "MM/dd/yyyy"; //In which you need put here
-                            SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
-                            Date date = sdf.parse(selectedmonth+"/"+selectedday+"/"+selectedyear);
-                            sdf.format(new Date(selectedmonth,selectedday,selectedyear));
-                            birthday.setText(date.toString());
-
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+                        birthday.setText(selectedmonth+"/"+selectedday+"/"+selectedyear);
                     }
                 },mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select date");
@@ -91,12 +100,42 @@ public class RegisterActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registerWithMailAndPassword(email.getText().toString(),password.getText().toString());
-                //createFirebaseUser(email.getText().toString(),password.getText().toString());
+                String gender;
+                if(radioButtonMale.isChecked()) gender = "male";
+                else gender = "female";
+                registerWithMailAndPassword(email.getText().toString(),password.getText().toString(),
+                        name.getText().toString(),surname.getText().toString(),birthday.getText().toString(),gender);
             }
         });
     }
-    public void registerWithMailAndPassword(String email, String password) {
+    public void registerWithMailAndPassword(String email, String password, String firstName, String lastName,String birthday, String gender) {
+        UserCreate userCreate = new UserCreate(firstName,lastName,birthday,gender,email,password);
+        Log.d("Register","register");
+        ProfilServer.addProfil(userCreate, FirebaseInstanceId.getInstance().getToken(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("Register", String.valueOf(response.code()));
+                if(ResponseCode.checkResponseCode(response.code())){
+                    final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                    final SharedPreferences.Editor editor = sharedPref.edit();
+
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response.body().string());
+                        String auth = jsonResponse.getString("auth");
+                        editor.putString("auth",auth);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 }

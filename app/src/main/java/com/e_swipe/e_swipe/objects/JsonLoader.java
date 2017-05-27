@@ -32,6 +32,7 @@ public class JsonLoader {
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "profiles.json"));
             List<ProfilTinderCard> profilTinderCardList = new ArrayList<>();
+            Log.d("Array", String.valueOf(array.length()));
             for(int i=0;i<array.length();i++){
                 ProfilTinderCard profilTinderCard = gson.fromJson(array.getString(i), ProfilTinderCard.class);
                 profilTinderCardList.add(profilTinderCard);
