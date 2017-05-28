@@ -59,7 +59,7 @@ public class UserProfileActivity extends Activity {
 
         try {
             getProfil();
-            getPhotos();
+            //getPhotos();
         } catch (IOException e) {
             e.printStackTrace();
         }
