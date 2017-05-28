@@ -80,7 +80,8 @@
             android:name=".activity.EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.TabbedActivity">
 
 
 

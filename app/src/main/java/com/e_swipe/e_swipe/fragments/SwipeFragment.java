@@ -227,7 +227,6 @@ public class SwipeFragment extends Fragment {
         this.onSwipeEventListener = onSwipeEventListener;
     }
     public interface onSwipeEventListener  {
-        public void onFragmentCreated();
         public void onCardChange(TinderCard tinderCard);
         public void onSwipeCancel();
         public void onSwipeStarted();

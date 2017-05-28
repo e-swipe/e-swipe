@@ -20,16 +20,16 @@ public class Profil implements Serializable {
     List<String> looking_for;
     int looking_for_age_min;
     int looking_for_age_max;
-    boolean isVisible;
+    boolean is_visible;
     position position;
-    Image [] pictures;
-    EventCard [] eventCards;
+    ArrayList<Image> pictures;
+    ArrayList<EventCard> events;
 
     public Profil(String uuid, String first_name, String last_name,
                   String date_of_birth, String description,
                   String picture_url, String gender, ArrayList<String> looking_for,
                   int looking_for_age_min, int looking_for_age_max,
-                  boolean isVisible, position position, Image[] pictures, EventCard[] eventCards){
+                  boolean isVisible, position position, ArrayList<Image> pictures, ArrayList<EventCard> eventCards){
 
         this.uuid = uuid;
         this.first_name = first_name;
@@ -41,10 +41,10 @@ public class Profil implements Serializable {
         this.looking_for = looking_for;
         this.looking_for_age_min = looking_for_age_min;
         this.looking_for_age_max = looking_for_age_max;
-        this.isVisible = isVisible;
+        this.is_visible = isVisible;
         this.position = position;
         this.pictures = pictures;
-        this.eventCards = eventCards;
+        this.events = eventCards;
     }
 
     public String getUuid() {
@@ -128,11 +128,11 @@ public class Profil implements Serializable {
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return is_visible;
     }
 
     public void setVisible(boolean visible) {
-        isVisible = visible;
+        is_visible = visible;
     }
 
     public Profil.position getPosition() {
@@ -144,20 +144,20 @@ public class Profil implements Serializable {
     }
 
 
-    public Image[] getPictures() {
+    public ArrayList<Image> getPictures() {
         return pictures;
     }
 
-    public void setPictures(Image[] pictures) {
+    public void setPictures(ArrayList<Image> pictures) {
         this.pictures = pictures;
     }
 
-    public EventCard[] getEventCards() {
-        return eventCards;
+    public ArrayList<EventCard> getEventCards() {
+        return events;
     }
 
-    public void setEventCards(EventCard[] eventCards) {
-        this.eventCards = eventCards;
+    public void setEventCards(ArrayList<EventCard> eventCards) {
+        this.events = eventCards;
     }
 
 

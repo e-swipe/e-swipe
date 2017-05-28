@@ -161,12 +161,14 @@
                                     android:text="@string/profil_labelDistance" />
 
                                 <TextView
-                                    android:id="@+id/textView_distance"
+                                    android:id="@+id/test"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#FF4500"
                                     android:gravity="right"
-                                    android:text="@string/profil_distance" />
+                                    android:text="@string/profil_distance"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentStart="true" />
 
                             </RelativeLayout>
 

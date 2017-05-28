@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class UserPatch {
-
+    //TODO : Annotation
     String first_name;
     String last_name;
     String date_of_birth;
@@ -16,11 +16,23 @@ public class UserPatch {
     List<String> looking_for;
     int looking_for_age_min;
     int looking_for_age_max;
-    boolean isVisible;
+    boolean is_visible;
+
+    public UserPatch(){
+        this.first_name = null;
+        this.last_name = null;
+        this.date_of_birth = null;
+        this.last_name = null;
+        this.description = null;
+        this.looking_for = null;
+        this.looking_for_age_max = 0;
+        this.looking_for_age_min = 0;
+        this.is_visible = true;
+    }
 
     public UserPatch(String first_name, String last_name, String date_of_birth, String description,
                      String gender, List<String> looking_for, int looking_for_age_min,
-                     int looking_for_age_max, boolean isVisible) {
+                     int looking_for_age_max, boolean is_visible) {
 
         this.first_name = first_name;
         this.last_name = last_name;
@@ -30,43 +42,44 @@ public class UserPatch {
         this.looking_for = looking_for;
         this.looking_for_age_min = looking_for_age_min;
         this.looking_for_age_max = looking_for_age_max;
-        this.isVisible = isVisible;
+
     }
 
 
-    public String getFirst_name() {
-        return first_name;
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
     }
 
-    public String getDate_of_birth() {
-        return date_of_birth;
+    public void setDate_of_birth(String date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
 
-    public String getDescription() {
-        return description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getGender() {
-        return gender;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
-    public List<String> getLooking_for() {
-        return looking_for;
+    public void setLooking_for(List<String> looking_for) {
+        this.looking_for = looking_for;
     }
 
-    public int getLooking_for_age_min() {
-        return looking_for_age_min;
+    public void setLooking_for_age_min(int looking_for_age_min) {
+        this.looking_for_age_min = looking_for_age_min;
     }
 
-    public int getLooking_for_age_max() {
-        return looking_for_age_max;
+    public void setLooking_for_age_max(int looking_for_age_max) {
+        this.looking_for_age_max = looking_for_age_max;
     }
 
-    public boolean isVisible() {
-        return isVisible;
+    public void setIs_visible(boolean is_visible) {
+        this.is_visible = is_visible;
     }
+
 }

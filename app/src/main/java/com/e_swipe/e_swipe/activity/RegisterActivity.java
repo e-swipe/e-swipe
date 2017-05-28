@@ -122,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("Register", String.valueOf(response.code()));
                 if(ResponseCode.checkResponseCode(response.code())){
                     final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                            getString(R.string.user_file_key), Context.MODE_PRIVATE);
                     final SharedPreferences.Editor editor = sharedPref.edit();
 
                     try {

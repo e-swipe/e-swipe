@@ -67,10 +67,8 @@ public class ProfilServer {
     }
 
     public static void getProfil(String auth, Callback callback) throws IOException {
-
-        Profil profil = null;
-
-        if(auth.equals("")) {
+        Log.d("PROFIL AUTH", auth);
+        if(!auth.equals("")) {
 
             OkHttpClient client = new OkHttpClient();
 
@@ -83,6 +81,7 @@ public class ProfilServer {
 
             Request request = new Request.Builder()
                     .addHeader("auth",auth)
+                    .addHeader("accept","application/json")
                     .url(httpUrl)
                     .build();
 
@@ -93,7 +92,7 @@ public class ProfilServer {
 
     public static void getUserPhotos(String auth, Callback callback) throws IOException {
 
-        if(auth.equals("")) {
+        if(!auth.equals("")) {
 
             OkHttpClient client = new OkHttpClient();
 
@@ -119,7 +118,7 @@ public class ProfilServer {
 
         String myBase64Image = PhotoUtils.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
 
-        if(auth.equals("")) {
+        if(!auth.equals("")) {
 
             OkHttpClient client = new OkHttpClient();
 
@@ -150,7 +149,7 @@ public class ProfilServer {
     public static void deletePhoto(String auth, String uuid, Callback callback) throws IOException {
 
 
-        if(auth.equals("")) {
+        if(!auth.equals("")) {
 
             OkHttpClient client = new OkHttpClient();
 
@@ -179,7 +178,7 @@ public class ProfilServer {
     }
 
     public static void patch(String auth, UserPatch userPatch, Callback callback) throws IOException {
-        if(auth.equals("")) {
+        if(!auth.equals("")) {
             OkHttpClient client = new OkHttpClient();
 
             HttpUrl httpUrl = new HttpUrl.Builder()
@@ -191,6 +190,8 @@ public class ProfilServer {
 
             Gson gson = new Gson();
             String userPatchString = gson.toJson(userPatch);
+
+            Log.d("PATCH",userPatchString);
 
             RequestBody requestBody = RequestBody.create(JSON,userPatchString);
             Request request = new Request.Builder()
@@ -204,8 +205,8 @@ public class ProfilServer {
         }
     }
 
-    public static void participateEvent(String auth, String uuid, Callback callback){
-        OkHttpClient client = new OkHttpClient();
+        public static void participateEvent(String auth, String uuid, Callback callback){
+            OkHttpClient client = new OkHttpClient();
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")

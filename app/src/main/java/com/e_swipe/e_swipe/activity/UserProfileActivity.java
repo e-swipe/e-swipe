@@ -19,6 +19,7 @@ import com.e_swipe.e_swipe.model.EventCard;
 import com.e_swipe.e_swipe.model.Image;
 import com.e_swipe.e_swipe.model.Profil;
 import com.e_swipe.e_swipe.server.Profil.ProfilServer;
+import com.e_swipe.e_swipe.utils.DateUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -36,6 +37,8 @@ public class UserProfileActivity extends Activity {
     Profil profil;
     ArrayList<Image> images;
     FlowLayout flowLayout;
+    TextView description;
+    TextView nameAge;
     //Get User profil from Auth
 
     @Override
@@ -43,26 +46,19 @@ public class UserProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profil);
 
-        final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
-
         images = new ArrayList<>();
         flowLayout = (FlowLayout) findViewById(R.id.flow_container);
 
-
+        description = (TextView) findViewById(R.id.textViewDescribing);
         for (int i=0;i<15;i++){
             flowLayout.addView(inflateTextview("TEST : " + i),
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         }
+        nameAge = (TextView) findViewById(R.id.textView_user);
 
-        try {
-            getProfil();
-            getPhotos();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getProfil();
+        //getPhotos();
 
         imageAdapter = new ImageAdapter(getApplicationContext(),images);
         Log.d("Debug", imageAdapter.toString());
@@ -71,30 +67,53 @@ public class UserProfileActivity extends Activity {
         viewPager.setAdapter(imageAdapter);
     }
 
-    public void getProfil() throws IOException {
+    public void getProfil(){
         final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
+        Log.d("me", "getProfil");
+        try {
+            ProfilServer.getProfil(sharedPref.getString("auth", ""), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-        ProfilServer.getProfil(sharedPref.getString("auth", ""), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                profil = new Gson().fromJson(response.body().toString(),Profil.class);
-                for (EventCard eventCard : profil.getEventCards()){
-                    flowLayout.addView(inflateTextview(eventCard.getName()),
-                            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    final Response newResponse = response;
+                    UserProfileActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String body = null;
+                            try {
+                                body = newResponse.body().string();
+                                Log.d("me", "Code : " + String.valueOf(newResponse.code()));
+                                profil = new Gson().fromJson(body,Profil.class);
+                                description.setText(profil.getDescription());
+                                Log.d("me",profil.getDate_of_birth());
+                                Log.d("me", String.valueOf(profil.getEventCards()));
+                                nameAge.setText(profil.getFirst_name()+","+ DateUtils.getAge(profil.getDate_of_birth()));
+                                for (EventCard eventCard : profil.getEventCards()){
+                                    flowLayout.addView(inflateTextview(eventCard.getName()),
+                                            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                }
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("me",body);
+                        }
+                    });
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void getPhotos() throws IOException {
 
         final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
 
         ProfilServer.getUserPhotos(sharedPref.getString("auth",""), new Callback() {
             @Override

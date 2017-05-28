@@ -186,7 +186,6 @@ public class SplashActivity extends AppCompatActivity  implements GoogleApiClien
                                     finish();
                                 }
                             }
-
                             @Override
                             public void onAnimationRepeat(Animation animation) {
 

@@ -1,5 +1,7 @@
 package com.e_swipe.e_swipe.utils;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,10 +17,13 @@ public class DateUtils {
 
         int age = 0;
         try {
+            Log.d("DATE",date);
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
             Date date1 = format.parse(date);
             Calendar now = Calendar.getInstance();
+            Log.d("DATE","Calendar nom : " + now);
             Calendar dob = Calendar.getInstance();
+            Log.d("DATE","Calendar  : " +dob);
             dob.setTime(date1);
             if (dob.after(now)) {
                 throw new IllegalArgumentException("Can't be born in the future");
@@ -26,6 +31,8 @@ public class DateUtils {
             int year1 = now.get(Calendar.YEAR);
             int year2 = dob.get(Calendar.YEAR);
             age = year1 - year2;
+            Log.d("DATE","YEAR 1 : " +year1);
+            Log.d("DATE","YEAR 2 : " +year2);
             int month1 = now.get(Calendar.MONTH);
             int month2 = dob.get(Calendar.MONTH);
             if (month2 > month1) {

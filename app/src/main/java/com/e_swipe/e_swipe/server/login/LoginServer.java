@@ -107,7 +107,18 @@ public class LoginServer {
     }
 
     public static Bitmap getFacebookProfilePicture(String userID){
-        FacebookGraphConnector facebookGraphConnector = new FacebookGraphConnector();
+        Log.d("GET IMAGE","Get image");
+        FacebookGraphConnector facebookGraphConnector = new FacebookGraphConnector(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("PHOTO SEND", String.valueOf(response.code()));
+            }
+        });
         String url = "https://graph.facebook.com/" + userID + "/picture?type=large";
         Bitmap bitmap = null;
         try {
@@ -121,6 +132,11 @@ public class LoginServer {
 
 
     public static class FacebookGraphConnector extends AsyncTask<String,Void,Bitmap> {
+
+        Callback callback;
+        FacebookGraphConnector(Callback callback){
+            this.callback = callback;
+        }
         @Override
         protected Bitmap doInBackground(String[] strings) {
             URL imageURL = null;
@@ -150,7 +166,7 @@ public class LoginServer {
             String myBase64Image = PhotoUtils.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
 
             RequestBody formBody = new FormBody.Builder()
-                    .add("search",myBase64Image)
+                    .add("photo",myBase64Image)
                     .build();
 
             Request request = new Request.Builder()
@@ -158,38 +174,10 @@ public class LoginServer {
                     .post(formBody)
                     .build();
 
-            try {
-                Response response = client.newCall(request).execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Call call = client.newCall(request);
+            call.enqueue(callback);
 
 
         }
-
-        public File saveImage(Bitmap bitmap){
-            String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-            OutputStream outStream = null;
-
-            File file = new File("default_image.png");
-            if (file.exists()) {
-                file.delete();
-                file = new File(extStorageDirectory, "default_image.png");
-                Log.e("file exist", "" + file + ",Bitmap= " + "default_image.png");
-            }
-            try {
-                // make a new bitmap from your file
-                bitmap = BitmapFactory.decodeFile(file.getName());
-
-                outStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-                outStream.flush();
-                outStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return file;
-        }
-
     }
 }

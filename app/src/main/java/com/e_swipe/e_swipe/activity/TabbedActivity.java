@@ -130,11 +130,6 @@ public class TabbedActivity extends AppCompatActivity
                     SwipeFragment swipeFragment = SwipeFragment.newInstance(getApplicationContext());
                     swipeFragment.setOnSwipeEventListener(new SwipeFragment.onSwipeEventListener() {
                         @Override
-                        public void onFragmentCreated() {
-                            Log.d("TEST", "Fragment Created");
-                        }
-
-                        @Override
                         public void onCardChange(TinderCard tinderCard) {
                             mViewPager.setSwipeable(true);
                         }

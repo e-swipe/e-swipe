@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.model.Image;
 
@@ -64,6 +65,9 @@ public class PictureSelectionAdapter extends BaseAdapter{
 
         vi = inflater.inflate(R.layout.row_grid_small_image, null);
         ImageView imageView = (ImageView)vi.findViewById(R.id.small_image);
+        Glide.with(context).load(picture.getUrl()).skipMemoryCache(true).into(imageView);
+        Log.d("Refresh","refresh");
+
         imageView.setImageBitmap(picture.getBitmap());
 
         imageView.setOnClickListener(new View.OnClickListener() {

@@ -20,10 +20,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="50dp"
         android:columnCount="3"
         android:contextClickable="false"
         android:numColumns="3"
-        android:rowCount="2"/>
+        android:rowCount="2" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,9 +45,11 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/EditText02"
+            android:id="@+id/edit_description"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:minHeight="200dp"
+            android:maxHeight="200dp"
             android:gravity="top|left"
             android:hint="@string/profile_edit_description"
             android:inputType="textMultiLine"
