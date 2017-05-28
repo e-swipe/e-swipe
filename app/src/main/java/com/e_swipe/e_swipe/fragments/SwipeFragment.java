@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import com.e_swipe.e_swipe.objects.Event;
 import com.e_swipe.e_swipe.objects.JsonLoader;
 import com.e_swipe.e_swipe.objects.ProfilTinderCard;
 import com.e_swipe.e_swipe.server.Profil.Swipe;
+import com.e_swipe.e_swipe.utils.NetworkUtils;
 import com.e_swipe.e_swipe.utils.ResponseCode;
 import com.google.gson.Gson;
 import com.mindorks.placeholderview.SwipeDecor;
@@ -56,6 +58,9 @@ public class SwipeFragment extends Fragment {
 
     onSwipeEventListener onSwipeEventListener;
 
+
+    static SharedPreferences sharedPref;
+
     /**
      * Empty Constructor
      */
@@ -91,6 +96,9 @@ public class SwipeFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_swipe, container, false);
 
+        sharedPref = mContext.getSharedPreferences(
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
+
         //Initialise the SwipePlaceHolderView
         mSwipeView = (SwipePlaceHolderView)v.findViewById(R.id.swipeView);
 
@@ -109,31 +117,68 @@ public class SwipeFragment extends Fragment {
                 //For Example: Call server to fetch more data when count is zero
                 //Needs to fetch data a little bit before the end of count
                 if(count == 2){
-                    requestSwipeables();
+                    SwipeDownloader swipeDownloader = new SwipeDownloader(new SwipeDownloader.DownloadState() {
+                        @Override
+                        public void downloadEnded() {
+
+                        }
+                    });
+                    swipeDownloader.execute();
                 }
             }
         });
 
-        //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
-        for(ProfilTinderCard profilTinderCard : JsonLoader.loadProfiles(mContext)){
-            TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
-            tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
-                @Override
-                public void onCardChange(TinderCard tinderCard) {
-                    onSwipeEventListener.onCardChange(tinderCard);
-                }
+        if(NetworkUtils.isNetworkAvailable(mContext)){
+            //For each profiles in the file (assets/profiles.json) add a new tinderCard to the holder
+            //Init from assets
+            for(ProfilTinderCard profilTinderCard : JsonLoader.loadProfiles(mContext)){
+                TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
+                tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
+                    @Override
+                    public void onCardChange(TinderCard tinderCard) {
+                        onSwipeEventListener.onCardChange(tinderCard);
+                    }
 
-                @Override
-                public void onSwipeCancel() {
-                    onSwipeEventListener.onSwipeCancel();
-                }
+                    @Override
+                    public void onSwipeCancel() {
+                        onSwipeEventListener.onSwipeCancel();
+                    }
 
+                    @Override
+                    public void onSwipeStarted() {
+                        onSwipeEventListener.onSwipeStarted();
+                    }
+                });
+                mSwipeView.addView(tinderCard);
+            }
+        }
+        else {
+            SwipeDownloader swipeDownloader = new SwipeDownloader(new SwipeDownloader.DownloadState() {
                 @Override
-                public void onSwipeStarted() {
-                    onSwipeEventListener.onSwipeStarted();
+                public void downloadEnded() {
+                    for(ProfilTinderCard profilTinderCard : JsonLoader.loadProfilesFromFile(mContext)){
+                        TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
+                        tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
+                            @Override
+                            public void onCardChange(TinderCard tinderCard) {
+                                onSwipeEventListener.onCardChange(tinderCard);
+                            }
+
+                            @Override
+                            public void onSwipeCancel() {
+                                onSwipeEventListener.onSwipeCancel();
+                            }
+
+                            @Override
+                            public void onSwipeStarted() {
+                                onSwipeEventListener.onSwipeStarted();
+                            }
+                        });
+                        mSwipeView.addView(tinderCard);
+                    }
                 }
             });
-            mSwipeView.addView(tinderCard);
+           swipeDownloader.execute();
         }
 
         //Init buttons that will handle accept and reject of a tinderCard
@@ -152,43 +197,6 @@ public class SwipeFragment extends Fragment {
         });
 
         return v;
-    }
-
-    public void requestSwipeables(){
-
-        SharedPreferences sharedPref = mContext.getSharedPreferences(
-                getString(R.string.user_file_key), Context.MODE_PRIVATE);
-
-        LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
-        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            try {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                int latitude = (int) location.getLatitude();
-                int longitude = (int) location.getLatitude();
-
-                Swipe.getSwipeable(sharedPref.getString("auth", ""), longitude, latitude, sharedPref.getInt("distance",1), new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-
-                        if(ResponseCode.checkResponseCode(response.code())){
-
-                            String swipeableString = response.body().string();
-                            FileOutputStream fileOutputStream = mContext.openFileOutput("swipeables.json",Context.MODE_PRIVATE);
-                            fileOutputStream.write(swipeableString.getBytes(Charset.forName("UTF-8")));
-                        }
-                    }
-                });
-
-            }
-            catch (Exception e){
-
-            }
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -228,5 +236,62 @@ public class SwipeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public static class SwipeDownloader extends AsyncTask<Void,Void,Void>{
+
+        public interface DownloadState{
+            void downloadEnded();
+        }
+        DownloadState downloadState;
+
+        SwipeDownloader(DownloadState downloadState){
+            this.downloadState = downloadState;
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            requestSwipeables();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            downloadState.downloadEnded();
+        }
+
+        public void requestSwipeables(){
+
+            LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                try {
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    int latitude = (int) location.getLatitude();
+                    int longitude = (int) location.getLatitude();
+
+                    Swipe.getSwipeable(sharedPref.getString("auth", ""), longitude, latitude, sharedPref.getInt("distance",1), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+
+                            if(ResponseCode.checkResponseCode(response.code())){
+
+                                String swipeableString = response.body().string();
+                                FileOutputStream fileOutputStream = mContext.openFileOutput("swipeables.json",Context.MODE_PRIVATE);
+                                fileOutputStream.write(swipeableString.getBytes(Charset.forName("UTF-8")));
+                            }
+                        }
+                    });
+
+                }
+                catch (Exception e){
+
+                }
+            }
+        }
     }
 }

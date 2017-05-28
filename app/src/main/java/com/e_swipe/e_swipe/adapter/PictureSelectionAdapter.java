@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.e_swipe.e_swipe.R;
-import com.e_swipe.e_swipe.objects.Picture;
+import com.e_swipe.e_swipe.model.Image;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class PictureSelectionAdapter extends BaseAdapter{
 
     private static LayoutInflater inflater = null;
-    ArrayList<Picture> pictures;
+    ArrayList<Image> pictures;
     Context context;
     PictureSelection pictureSelection = null;
 
@@ -29,7 +29,7 @@ public class PictureSelectionAdapter extends BaseAdapter{
         public void pictureUnselected(Bitmap bitmap, int position);
     }
 
-    public PictureSelectionAdapter(Context context, ArrayList<Picture> pictures, PictureSelection pictureSelection){
+    public PictureSelectionAdapter(Context context, ArrayList<Image> pictures, PictureSelection pictureSelection){
         Log.d("TAG","getView");
         this.pictures = pictures;
         this.context = context;
@@ -54,7 +54,7 @@ public class PictureSelectionAdapter extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         Log.d("TAG","getView");
-        final Picture picture = (Picture) getItem(i);
+        final Image picture = (Image) getItem(i);
         final int position = i;
         View vi = view;
 
@@ -64,17 +64,17 @@ public class PictureSelectionAdapter extends BaseAdapter{
 
         vi = inflater.inflate(R.layout.row_grid_small_image, null);
         ImageView imageView = (ImageView)vi.findViewById(R.id.small_image);
-        imageView.setImageBitmap(picture.getImage());
+        imageView.setImageBitmap(picture.getBitmap());
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(picture.isSelected()){
-                    pictureSelection.pictureUnselected(picture.getImage(),position);
+                    pictureSelection.pictureUnselected(picture.getBitmap(),position);
                     picture.setSelected(false);
                 }
                 else {
-                    pictureSelection.pictureSelected(picture.getImage(),position);
+                    pictureSelection.pictureSelected(picture.getBitmap(),position);
                 }
             }
         });
@@ -83,7 +83,7 @@ public class PictureSelectionAdapter extends BaseAdapter{
 
     }
 
-    public void setPictures(ArrayList<Picture> pictures){
+    public void setPictures(ArrayList<Image> pictures){
         this.pictures = pictures;
     }
 }

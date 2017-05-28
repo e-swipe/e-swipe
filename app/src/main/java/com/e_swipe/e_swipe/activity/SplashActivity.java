@@ -46,6 +46,8 @@ public class SplashActivity extends AppCompatActivity  implements GoogleApiClien
     private static final int REQUEST_CHECK_SETTINGS = 1000;
     private static final int REQUEST_PERMISSIONS = 100;
     private static final String TAG = "Debug";
+
+    SharedPreferences sharedPreferences;
     /**
      * onCreate Method that call LoginActivity when the app is fully charged
      */
@@ -54,26 +56,27 @@ public class SplashActivity extends AppCompatActivity  implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        sharedPreferences = getApplicationContext().getSharedPreferences(
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
+
         initGoogleApi();
+        Log.d("YOLO",sharedPreferences.getString("auth",""));
+
+        requestPermissions();
+
         imageView=(ImageView)findViewById(R.id.imageView2); //declaring imageView to show animation
         anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in); //creating animation
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
-
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
-        requestPermissions();
         startService(new Intent(getApplicationContext(), LocalisationListener.class));
     }
 
@@ -107,8 +110,14 @@ public class SplashActivity extends AppCompatActivity  implements GoogleApiClien
                         case LocationSettingsStatusCodes.SUCCESS:
                             // All location settings are satisfied. The client can initialize location
                             // requests here.
-                            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                            finish();
+                            if(sharedPreferences.getString("auth","").equals("")){
+                                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                                finish();
+                            }
+                            else {
+                                startActivity(new Intent(getApplicationContext(),TabbedActivity.class));
+                                finish();
+                            }
                             break;
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             // Location settings are not satisfied. But could be fixed by showing the user

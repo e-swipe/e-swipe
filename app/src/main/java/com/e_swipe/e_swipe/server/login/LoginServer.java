@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.e_swipe.e_swipe.model.UserFacebook;
+import com.e_swipe.e_swipe.utils.PhotoUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import java.net.URL;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -144,13 +146,16 @@ public class LoginServer {
                     .build();
 
             OkHttpClient client = new OkHttpClient();
-            RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                    .addFormDataPart("photo", "default_picture.png", RequestBody.create(MEDIA_TYPE_PNG, saveImage(bitmap)))
+
+            String myBase64Image = PhotoUtils.encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("search",myBase64Image)
                     .build();
 
             Request request = new Request.Builder()
                     .url(httpUrl)
-                    .post(requestBody)
+                    .post(formBody)
                     .build();
 
             try {

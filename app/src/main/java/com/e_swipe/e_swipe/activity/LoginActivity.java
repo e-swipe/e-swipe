@@ -104,7 +104,6 @@ public class LoginActivity extends Activity {
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email", "public_profile", "user_birthday,user_photos");
 
-
         if(!sharedPref.getString("auth","").equals("")){
             //Get user infos from shared preferences
             Intent intent = new Intent(context,TabbedActivity.class);
@@ -113,7 +112,6 @@ public class LoginActivity extends Activity {
         }
         else {
             //If user isn't connected init Facebook connexion and Email/Password Connexion
-
             //Init Register
             register = (Button) findViewById(R.id.register);
             register.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +173,7 @@ public class LoginActivity extends Activity {
                         JSONObject mainObject = new JSONObject(response.body().string());
                         auth = mainObject.getString("auth");
                         editor.putString("auth",auth);
-
+                        editor.commit();
                         Intent intent = new Intent(getApplicationContext(),TabbedActivity.class);
                         startActivity(intent);
                     } catch (JSONException e) {
@@ -232,6 +230,7 @@ public class LoginActivity extends Activity {
                                                 public void onCompleted(GraphResponse response) {
                                                     JSONObject picture = response.getJSONObject();
                                                     try {
+                                                        Log.d("Debug",picture.getJSONObject("data").toString());
                                                         picturesUrl.add(picture.getJSONObject("data").getString("url"));
                                                         Log.d("Debug",picture.getJSONObject("data").getString("url"));
                                                             //Facebook profile
@@ -253,11 +252,12 @@ public class LoginActivity extends Activity {
                                                                                     String body = response.body().string();
                                                                                     Log.d("Login",body);
                                                                                     mainObject = new JSONObject(body);
+                                                                                    auth = mainObject.getString("auth");
                                                                                     switch (response.code()){
                                                                                         case 200:
                                                                                             //User Connected
-                                                                                            auth = mainObject.getString("auth");
                                                                                             editor.putString("auth",auth);
+                                                                                            editor.commit();
                                                                                             if(auth != null){
                                                                                                 //Go to next Activity
                                                                                                 Intent intent = new Intent(context,TabbedActivity.class);
@@ -267,8 +267,9 @@ public class LoginActivity extends Activity {
                                                                                             break;
                                                                                         case 201:
                                                                                             //User Created
-                                                                                            auth = mainObject.getString("token");
                                                                                             Bitmap bitmap = LoginServer.getFacebookProfilePicture(profile.getId());
+                                                                                            editor.putString("auth",auth);
+                                                                                            editor.commit();
                                                                                             if(auth != null){
                                                                                                 //Go to next Activity
                                                                                                 Intent intent = new Intent(context,TabbedActivity.class);

@@ -9,10 +9,16 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.System.in;
 
 /**
  * Class related to Json loading, it will load profiles from "profiles.json", "events.json"
@@ -87,6 +93,52 @@ public class JsonLoader {
             ex.printStackTrace();
             return null;
         }
+        return json;
+    }
+
+
+    /**
+     * Load profiles.json file to extract the profiles
+     * @param context Context of the App
+     * @return the list of profiles in profiles.json
+     */
+    public static List<ProfilTinderCard> loadProfilesFromFile(Context context){
+        try{
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            JSONArray array = new JSONArray(loadJSONFromFile(context, "profiles.json"));
+            List<ProfilTinderCard> profilTinderCardList = new ArrayList<>();
+            Log.d("Array", String.valueOf(array.length()));
+            for(int i=0;i<array.length();i++){
+                ProfilTinderCard profilTinderCard = gson.fromJson(array.getString(i), ProfilTinderCard.class);
+                profilTinderCardList.add(profilTinderCard);
+            }
+            return profilTinderCardList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String loadJSONFromFile(Context context, String fileName){
+
+        String json = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream in = context.openFileInput(fileName);
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        json = sb.toString();
         return json;
     }
 }

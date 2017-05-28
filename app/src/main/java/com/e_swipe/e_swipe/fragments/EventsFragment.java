@@ -117,6 +117,9 @@ public class EventsFragment extends Fragment {
             }
         });
 
+        getEvents();
+
+        //Ajout gestion bdd
         listEvent.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -167,7 +170,7 @@ public class EventsFragment extends Fragment {
                     public void onResponse(Call call, Response response) throws IOException {
                         Gson gson = new Gson();
                         EventCard[] eventCards = gson.fromJson(response.body().toString(), EventCard[].class);
-                        eventList = new ArrayList<>(Arrays.asList(eventCards));
+                        eventList.addAll(Arrays.asList(eventCards));
                         eventAdapter.notifyDataSetChanged();
                         loading = false;
                         offset++;

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,7 @@ public class ProfilFragment extends Fragment {
          * SharedPreferences
          */
         final SharedPreferences sharedPref = mContext.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPref.edit();
 
         /**
@@ -187,7 +188,26 @@ public class ProfilFragment extends Fragment {
         rangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
+                List<String> lookingFor = new ArrayList<String>();
+                if(switchFemme.isChecked()) lookingFor.add("female");
+                if(switchHomme.isChecked()) lookingFor.add("male");
+                try {
+                    patch(sharedPref.getString("auth", ""), new UserPatch(profil.getFirst_name(), profil.getLast_name(),
+                            profil.getDate_of_birth(), profil.getDescription(), profil.getGender(), lookingFor,
+                            rangeSeekBar.getSelectedMinValue(), rangeSeekBar.getSelectedMaxValue(), true), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
 
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -216,11 +236,11 @@ public class ProfilFragment extends Fragment {
         });
 
         //Get the new profil user
-        try {
+        /*try {
             getProfil(sharedPref.getString("auth",""));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         return v;
     }
 
@@ -233,8 +253,11 @@ public class ProfilFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                /*profil = new Gson().fromJson(response.body().string(), Profil.class);
-                initSubViewsWithProfilAndPreferences(profil);*/
+                Log.d("Profil", String.valueOf(response.code()));
+                String body = response.body().string();
+                Log.d("Profil",body);
+                profil = new Gson().fromJson(body, Profil.class);
+                initSubViewsWithProfilAndPreferences(profil);
             }
         });
     }

@@ -137,6 +137,7 @@ public class ChatFragment extends Fragment {
                                 if(ResponseCode.checkResponseCode(response.code())){
                                     ChatCard[] chatCards = new Gson().fromJson(response.body().string(), ChatCard[].class);
                                     chatRooms.addAll(Arrays.asList(chatCards));
+                                    offset++;
                                 }
                             }
                         });

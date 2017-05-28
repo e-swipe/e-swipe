@@ -1,12 +1,12 @@
 package com.e_swipe.e_swipe.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -96,7 +96,6 @@ public class UserProfileActivity extends Activity {
         final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-
         ProfilServer.getUserPhotos(sharedPref.getString("auth",""), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -106,7 +105,7 @@ public class UserProfileActivity extends Activity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Image [] imageList = new Gson().fromJson(response.body().toString(),Image[].class);
-                images = new ArrayList<Image>(Arrays.asList(imageList));
+                images = new ArrayList<>(Arrays.asList(imageList));
                 ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(),images);
                 viewPager.setAdapter(imageAdapter);
                 imageAdapter.notifyDataSetChanged();
