@@ -1,6 +1,7 @@
 package com.e_swipe.e_swipe.layout;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,6 +64,12 @@ public class TinderCard {
     private onSwipeListener onSwipeListener;
 
     /**
+     * SharedPreferences
+     */
+
+    SharedPreferences sharedPreferences;
+
+    /**
      * Constructor
      * @param context Application Context
      * @param profilTinderCard ProfilTinderCard displayed in tinderCard
@@ -72,6 +79,8 @@ public class TinderCard {
         mContext = context;
         mProfilTinderCard = profilTinderCard;
         mSwipeView = swipeView;
+        sharedPreferences = context.getSharedPreferences(
+                    context.getString(R.string.user_file_key), Context.MODE_PRIVATE);
     }
 
     @Resolve
@@ -98,7 +107,7 @@ public class TinderCard {
         mSwipeView.addView(this);
         mSwipeView.clearAnimation();
         mSwipeView.clearFocus();
-        Swipe.decline(FirebaseInstanceId.getInstance().getToken(), mProfilTinderCard.getUuid(), new Callback() {
+        Swipe.decline(sharedPreferences.getString("auth",""), mProfilTinderCard.getUuid(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -120,7 +129,8 @@ public class TinderCard {
     @SwipeIn
     private void onSwipeIn(){
         onSwipeListener.onSwipeCancel();
-        Swipe.accept(FirebaseInstanceId.getInstance().getToken(), mProfilTinderCard.getUuid(), new Callback() {
+        Log.d("SwipeIn" , mProfilTinderCard.getUuid());
+        Swipe.accept(sharedPreferences.getString("auth",""), mProfilTinderCard.getUuid(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -128,7 +138,7 @@ public class TinderCard {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                Log.d("SwipeIn" , String.valueOf(response.code()));
             }
         });
         Log.d("EVENT", "onSwipedIn");

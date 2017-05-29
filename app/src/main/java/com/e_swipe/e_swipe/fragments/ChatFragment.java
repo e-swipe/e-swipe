@@ -112,8 +112,7 @@ public class ChatFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        loading = false;
+        loading = true;
         offset = 0;
 
         ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 10, new Callback() {
@@ -128,6 +127,7 @@ public class ChatFragment extends Fragment {
                 String body = response.body().string();
                 if(ResponseCode.checkResponseCode(response.code())){
                     ChatCard[] chatCards = new Gson().fromJson(body, ChatCard[].class);
+                    chatRooms.clear();
                     chatRooms.addAll(Arrays.asList(chatCards));
                     offset++;
                 }
@@ -146,7 +146,7 @@ public class ChatFragment extends Fragment {
                     if(!loading){
                         //Get SharedPreferences for radius
                         final SharedPreferences sharedPref = mContext.getSharedPreferences(
-                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                getString(R.string.user_file_key), Context.MODE_PRIVATE);
                         ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 10, new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
@@ -155,8 +155,10 @@ public class ChatFragment extends Fragment {
 
                             @Override
                             public void onResponse(Call call, Response response) throws IOException {
+                                String body = response.body().string();
+                                Log.d("Chat",body);
                                 if(ResponseCode.checkResponseCode(response.code())){
-                                    ChatCard[] chatCards = new Gson().fromJson(response.body().string(), ChatCard[].class);
+                                    ChatCard[] chatCards = new Gson().fromJson(body, ChatCard[].class);
                                     chatRooms.addAll(Arrays.asList(chatCards));
                                     offset++;
                                 }

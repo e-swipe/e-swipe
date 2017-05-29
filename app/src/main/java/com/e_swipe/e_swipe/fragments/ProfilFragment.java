@@ -333,7 +333,7 @@ public class ProfilFragment extends Fragment{
     }
 
     public void initSubViewsWithProfilAndPreferences(Profil profil){
-        nameAndImage.setText(profil.getFirst_name()+","+DateUtils.getAge(profil.getDate_of_birth()));
+        nameAndImage.setText(profil.getFirst_name()+","+profil.getAge());
         Glide.with(mContext).load(profil.getPicture_url()).into(circleImageView);
         if(profil.getLooking_for().contains("male")){
             switchHomme.setChecked(true);

@@ -16,26 +16,27 @@ public class Swipe {
     public static final String BASE_URL =  "api.stardis.blue";
 
     public static void getSwipeable(String auth, double longitude, double latitude, int radius, Callback callback){
+        if(!auth.equals("")){
+            HttpUrl httpUrl = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host(BASE_URL)
+                    .addPathSegment("v1")
+                    .addPathSegment("profils")
+                    .addQueryParameter("latitude",Double.toString(latitude))
+                    .addQueryParameter("longitude",Double.toString(longitude))
+                    .addQueryParameter("radius",Integer.toString(radius))
+                    .build();
 
-        HttpUrl httpUrl = new HttpUrl.Builder()
-                .scheme("https")
-                .host(BASE_URL)
-                .addPathSegment("v1")
-                .addPathSegment("profils")
-                .addQueryParameter("latitude",Double.toString(latitude))
-                .addQueryParameter("longitude",Double.toString(longitude))
-                .addQueryParameter("radius",Integer.toString(radius))
-                .build();
+            OkHttpClient client = new OkHttpClient();
 
-        OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .addHeader("auth",auth)
+                    .url(httpUrl)
+                    .build();
 
-        Request request = new Request.Builder()
-                .addHeader("auth",auth)
-                .url(httpUrl)
-                .build();
-
-        Call call = client.newCall(request);
-        call.enqueue(callback);
+            Call call = client.newCall(request);
+            call.enqueue(callback);
+        }
     }
 
     public static void accept(String auth, String uuid, Callback callback){
