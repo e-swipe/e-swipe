@@ -229,9 +229,9 @@ public class LoginActivity extends Activity {
                                                 public void onCompleted(GraphResponse response) {
                                                     JSONObject picture = response.getJSONObject();
                                                     try {
-                                                        Log.d("Debug",picture.getJSONObject("data").toString());
+                                                        Log.d("DebugFacebook",picture.getJSONObject("data").toString());
                                                         picturesUrl.add(picture.getJSONObject("data").getString("url"));
-                                                        Log.d("Debug",picture.getJSONObject("data").getString("url"));
+                                                        Log.d("DebugFacebook",picture.getJSONObject("data").getString("url"));
                                                             //Facebook profile
                                                             final Profile profile = Profile.getCurrentProfile();
                                                             Log.d("Debug", String.valueOf(cpt));

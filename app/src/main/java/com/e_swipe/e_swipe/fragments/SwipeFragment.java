@@ -118,7 +118,7 @@ public class SwipeFragment extends Fragment {
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
                 //Needs to fetch data a little bit before the end of count
-                if(count == 2){
+                if(count == 1){
                     SwipeDownloader swipeDownloader = new SwipeDownloader(new SwipeDownloader.DownloadState() {
                         @Override
                         public void downloadEnded() {
@@ -297,7 +297,7 @@ public class SwipeFragment extends Fragment {
 
         public void getSwipeables(double longitude, double latitude){
             Log.d("Distance", String.valueOf(sharedPref.getInt("distance",1)));
-            Swipe.getSwipeable(sharedPref.getString("auth", ""), longitude, latitude, sharedPref.getInt("distance",1), new Callback() {
+            Swipe.getSwipeable(sharedPref.getString("auth",""), longitude, latitude, sharedPref.getInt("distance",1), new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 

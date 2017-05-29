@@ -12,7 +12,7 @@ public class Profil implements Serializable {
     String uuid;
     String first_name;
     String last_name;
-    String date_of_birth;
+    String age;
     String description;
     String picture_url;
     String gender;
@@ -26,7 +26,7 @@ public class Profil implements Serializable {
     ArrayList<EventCard> events;
 
     public Profil(String uuid, String first_name, String last_name,
-                  String date_of_birth, String description,
+                  String age, String description,
                   String picture_url, String gender, ArrayList<String> looking_for,
                   int looking_for_age_min, int looking_for_age_max,
                   boolean isVisible, position position, ArrayList<Image> pictures, ArrayList<EventCard> eventCards){
@@ -34,7 +34,7 @@ public class Profil implements Serializable {
         this.uuid = uuid;
         this.first_name = first_name;
         this.last_name = last_name;
-        this.date_of_birth = date_of_birth;
+        this.age = age;
         this.description = description;
         this.picture_url = picture_url;
         this.gender = gender;
@@ -69,14 +69,6 @@ public class Profil implements Serializable {
 
     public void setLast_name(String last_name) {
         this.last_name = last_name;
-    }
-
-    public String getDate_of_birth() {
-        return date_of_birth;
-    }
-
-    public void setDate_of_birth(String date_of_birth) {
-        this.date_of_birth = date_of_birth;
     }
 
     public String getDescription() {
@@ -159,6 +151,16 @@ public class Profil implements Serializable {
     public void setEventCards(ArrayList<EventCard> eventCards) {
         this.events = eventCards;
     }
+
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
 
 
     /*public Profil(Parcel in){

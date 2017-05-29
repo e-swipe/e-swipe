@@ -90,9 +90,9 @@ public class UserProfileActivity extends Activity {
                                 Log.d("me", "Code : " + String.valueOf(newResponse.code()));
                                 profil = new Gson().fromJson(body,Profil.class);
                                 description.setText(profil.getDescription());
-                                Log.d("me",profil.getDate_of_birth());
+                                Log.d("me",profil.getAge());
                                 Log.d("me", String.valueOf(profil.getEventCards()));
-                                nameAge.setText(profil.getFirst_name()+","+ DateUtils.getAge(profil.getDate_of_birth()));
+                                nameAge.setText(profil.getFirst_name()+","+ profil.getAge());
                                 for (EventCard eventCard : profil.getEventCards()){
                                     flowLayout.addView(inflateTextview(eventCard.getName()),
                                             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));

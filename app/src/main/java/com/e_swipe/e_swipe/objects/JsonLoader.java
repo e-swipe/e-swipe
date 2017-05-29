@@ -126,12 +126,15 @@ public class JsonLoader {
                     Location locationEvent = new Location("pointUser");
 
                     JSONObject position = jsonObject.getJSONObject("position");
+                    Log.d("ProfilTinderCard", "TinderCard " + position.toString());
+                    locationEvent.setLatitude((Double) position.get("latitude"));
+                    locationEvent.setLongitude((Double) position.get("longitude"));
 
-                    location.setLatitude((Double) position.get("latitude"));
-                    location.setLongitude((Double) position.get("lontitude"));
+                    Log.d("ProfilTinderCard","Me" + location.toString());
                     float meters = location.distanceTo(locationEvent);
-                    int distance = (int) (meters/1000);
-                    jsonObject.put("location",distance);
+                    Log.d("ProfilTinderCard", String.valueOf(meters));
+                    int distance = (int) Math.ceil(meters/1000);
+                    jsonObject.put("location",distance +"km");
                     Log.d("ProfilTinderCard", String.valueOf(jsonObject.get("location")));
                     ProfilTinderCard profilTinderCard = gson.fromJson(jsonObject.toString(), ProfilTinderCard.class);
                     Log.d("ProfilTinderCard",profilTinderCard.toString());
