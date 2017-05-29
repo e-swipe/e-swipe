@@ -15,15 +15,15 @@ public class Swipe {
 
     public static final String BASE_URL =  "api.stardis.blue";
 
-    public static void getSwipeable(String auth, int longitude, int latitude, int radius, Callback callback){
+    public static void getSwipeable(String auth, double longitude, double latitude, int radius, Callback callback){
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
                 .host(BASE_URL)
                 .addPathSegment("v1")
                 .addPathSegment("profils")
-                .addQueryParameter("latitude",Integer.toString(latitude))
-                .addQueryParameter("longitude",Integer.toString(longitude))
+                .addQueryParameter("latitude",Double.toString(latitude))
+                .addQueryParameter("longitude",Double.toString(longitude))
                 .addQueryParameter("radius",Integer.toString(radius))
                 .build();
 

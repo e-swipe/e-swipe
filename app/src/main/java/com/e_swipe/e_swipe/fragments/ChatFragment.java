@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static com.e_swipe.e_swipe.fragments.SwipeFragment.sharedPref;
 
 /**
  * Class that represents the fragment related to chatRooms rooms
@@ -112,6 +115,24 @@ public class ChatFragment extends Fragment {
 
         loading = false;
         offset = 0;
+
+        ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 10, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("Chat", String.valueOf(response.code()));
+                String body = response.body().string();
+                if(ResponseCode.checkResponseCode(response.code())){
+                    ChatCard[] chatCards = new Gson().fromJson(body, ChatCard[].class);
+                    chatRooms.addAll(Arrays.asList(chatCards));
+                    offset++;
+                }
+            }
+        });
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override

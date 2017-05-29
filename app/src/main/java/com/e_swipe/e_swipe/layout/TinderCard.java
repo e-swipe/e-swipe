@@ -98,40 +98,6 @@ public class TinderCard {
         mSwipeView.addView(this);
         mSwipeView.clearAnimation();
         mSwipeView.clearFocus();
-    }
-
-    @SwipeCancelState
-    private void onSwipeCancelState(){
-        Log.d("EVENT", "onSwipeCancelState");
-        onSwipeListener.onSwipeCancel();
-    }
-
-    @SwipeIn
-    private void onSwipeIn(){
-        onSwipeListener.onSwipeCancel();
-        Log.d("EVENT", "onSwipedIn");
-    }
-
-    @SwipeInState
-    private void onSwipeInState(){
-        onSwipeListener.onSwipeStarted();
-        Swipe.accept(FirebaseInstanceId.getInstance().getToken(), mProfilTinderCard.getUuid(), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
-        Log.d("EVENT", "onSwipeInState");
-    }
-
-    @SwipeOutState
-    private void onSwipeOutState(){
-        onSwipeListener.onSwipeStarted();
         Swipe.decline(FirebaseInstanceId.getInstance().getToken(), mProfilTinderCard.getUuid(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -143,6 +109,40 @@ public class TinderCard {
 
             }
         });
+    }
+
+    @SwipeCancelState
+    private void onSwipeCancelState(){
+        Log.d("EVENT", "onSwipeCancelState");
+        onSwipeListener.onSwipeCancel();
+    }
+
+    @SwipeIn
+    private void onSwipeIn(){
+        onSwipeListener.onSwipeCancel();
+        Swipe.accept(FirebaseInstanceId.getInstance().getToken(), mProfilTinderCard.getUuid(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+        Log.d("EVENT", "onSwipedIn");
+    }
+
+    @SwipeInState
+    private void onSwipeInState(){
+        onSwipeListener.onSwipeStarted();
+        Log.d("EVENT", "onSwipeInState");
+    }
+
+    @SwipeOutState
+    private void onSwipeOutState(){
+        onSwipeListener.onSwipeStarted();
         Log.d("EVENT", "onSwipeOutState");
     }
 

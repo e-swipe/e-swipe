@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ProfilTinderCard {
 
-    @SerializedName("name")
+    @SerializedName("first_name")
     @Expose
     private String name;
 
-    @SerializedName("url")
+    @SerializedName("picture_url")
     @Expose
     private String imageUrl;
 

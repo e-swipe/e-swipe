@@ -1,13 +1,19 @@
 package com.e_swipe.e_swipe.objects;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -26,46 +32,48 @@ import static java.lang.System.in;
 public class JsonLoader {
 
     private static final String TAG = "Utils";
+    static LocationManager locationManager;
 
     /**
      * Load profiles.json file to extract the profiles
      * @param context Context of the App
      * @return the list of profiles in profiles.json
      */
-    public static List<ProfilTinderCard> loadProfiles(Context context){
-        try{
+    public static List<ProfilTinderCard> loadProfiles(Context context) {
+        try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "profiles.json"));
             List<ProfilTinderCard> profilTinderCardList = new ArrayList<>();
             Log.d("Array", String.valueOf(array.length()));
-            for(int i=0;i<array.length();i++){
+            for (int i = 0; i < array.length(); i++) {
                 ProfilTinderCard profilTinderCard = gson.fromJson(array.getString(i), ProfilTinderCard.class);
                 profilTinderCardList.add(profilTinderCard);
             }
             return profilTinderCardList;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
     /**
      * Load events.json file to extract the profiles
      * @param context Context of the App
      * @return the list of events in events.json
      */
-    public static List<Event> loadEvents(Context context){
-        try{
+    public static List<Event> loadEvents(Context context) {
+        try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromAsset(context, "events.json"));
             List<Event> eventList = new ArrayList<>();
-            for(int i=0;i<array.length();i++){
+            for (int i = 0; i < array.length(); i++) {
                 Event event = gson.fromJson(array.getString(i), Event.class);
                 eventList.add(event);
             }
             return eventList;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -79,10 +87,10 @@ public class JsonLoader {
      */
     private static String loadJSONFromAsset(Context context, String jsonFileName) {
         String json = null;
-        InputStream is=null;
+        InputStream is = null;
         try {
             AssetManager manager = context.getAssets();
-            Log.d(TAG,"path "+jsonFileName);
+            Log.d(TAG, "path " + jsonFileName);
             is = manager.open(jsonFileName);
             int size = is.available();
             byte[] buffer = new byte[size];
@@ -102,17 +110,35 @@ public class JsonLoader {
      * @param context Context of the App
      * @return the list of profiles in profiles.json
      */
-    public static List<ProfilTinderCard> loadProfilesFromFile(Context context){
-        try{
+    public static List<ProfilTinderCard> loadProfilesFromFile(Context context) {
+        locationManager = ((LocationManager) context.getSystemService(Context.LOCATION_SERVICE));
+        try {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             JSONArray array = new JSONArray(loadJSONFromFile(context, "profiles.json"));
             List<ProfilTinderCard> profilTinderCardList = new ArrayList<>();
             Log.d("Array", String.valueOf(array.length()));
-            for(int i=0;i<array.length();i++){
-                ProfilTinderCard profilTinderCard = gson.fromJson(array.getString(i), ProfilTinderCard.class);
-                profilTinderCardList.add(profilTinderCard);
+            for (int i = 0; i < array.length(); i++) {
+                Log.d("Array", array.getString(i));
+                JSONObject jsonObject = new JSONObject(array.getString(i));
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    Location locationEvent = new Location("pointUser");
+
+                    JSONObject position = jsonObject.getJSONObject("position");
+
+                    location.setLatitude((Double) position.get("latitude"));
+                    location.setLongitude((Double) position.get("lontitude"));
+                    float meters = location.distanceTo(locationEvent);
+                    int distance = (int) (meters/1000);
+                    jsonObject.put("location",distance);
+                    Log.d("ProfilTinderCard", String.valueOf(jsonObject.get("location")));
+                    ProfilTinderCard profilTinderCard = gson.fromJson(jsonObject.toString(), ProfilTinderCard.class);
+                    Log.d("ProfilTinderCard",profilTinderCard.toString());
+                    profilTinderCardList.add(profilTinderCard);
+                }
             }
+            Log.d("ProfilTinderCard", String.valueOf(profilTinderCardList.size()));
             return profilTinderCardList;
         }catch (Exception e){
             e.printStackTrace();

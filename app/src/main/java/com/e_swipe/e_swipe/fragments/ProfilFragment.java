@@ -136,7 +136,28 @@ public class ProfilFragment extends Fragment{
         switchHomme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                List<String> lookingFor = new ArrayList<String>();
+                if(switchFemme.isChecked()) lookingFor.add("female");
+                if(switchHomme.isChecked()) lookingFor.add("male");
+                try {
+                    UserPatch userPatch = new UserPatch();
+                    userPatch.setLooking_for_age_min(rangeSeekBar.getSelectedMinValue());
+                    userPatch.setLooking_for_age_max(rangeSeekBar.getSelectedMaxValue());
+                    userPatch.setLooking_for(lookingFor);
+                    patch(sharedPref.getString("auth", ""), userPatch, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
 
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            Log.d("PATCH", String.valueOf(response.code()));
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -144,11 +165,36 @@ public class ProfilFragment extends Fragment{
         switchFemme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                List<String> lookingFor = new ArrayList<String>();
+                if(switchFemme.isChecked()) lookingFor.add("female");
+                if(switchHomme.isChecked()) lookingFor.add("male");
+                try {
+                    UserPatch userPatch = new UserPatch();
+                    userPatch.setLooking_for_age_min(rangeSeekBar.getSelectedMinValue());
+                    userPatch.setLooking_for_age_max(rangeSeekBar.getSelectedMaxValue());
+                    userPatch.setLooking_for(lookingFor);
+                    patch(sharedPref.getString("auth", ""), userPatch, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
 
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            Log.d("PATCH", String.valueOf(response.code()));
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         seekbarDistance = (SeekBar) v.findViewById(R.id.seekBar_distance);
+        seekbarDistance.setProgress(0);
+        seekbarDistance.setMax(200);
+        Log.d("Distance", String.valueOf(sharedPref.getInt("distance",1)));
+        seekbarDistance.setProgress(sharedPref.getInt("distance",1));
         seekbarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -163,11 +209,10 @@ public class ProfilFragment extends Fragment{
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 editor.putInt("distance",seekBar.getProgress());
+                editor.commit();
                 distance.setText(String.valueOf(seekBar.getProgress()+"km"));
             }
         });
-        seekbarDistance.setMax(1);
-        seekbarDistance.setMax(200);
 
         //Init RangeSeekBar
         rangeSeekBar = (RangeSeekBar) v.findViewById(R.id.rangeSeekBar_age);
@@ -261,7 +306,6 @@ public class ProfilFragment extends Fragment{
                                 editor.putString("auth","");
                                 editor.commit();
                                 Intent intent = new Intent(mContext,LoginActivity.class);
-
                                 startActivity(intent);
                             }else{
                                 profil = new Gson().fromJson(body, Profil.class);

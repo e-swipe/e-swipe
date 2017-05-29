@@ -19,6 +19,7 @@ import android.widget.Switch;
 import com.e_swipe.e_swipe.R;
 import com.e_swipe.e_swipe.adapter.PictureSelectionAdapter;
 import com.e_swipe.e_swipe.model.Image;
+import com.e_swipe.e_swipe.model.Profil;
 import com.e_swipe.e_swipe.model.UserPatch;
 import com.e_swipe.e_swipe.server.Profil.ProfilServer;
 import com.e_swipe.e_swipe.server.login.LoginServer;
@@ -77,11 +78,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //Get Images from server
         gridView = (GridView) findViewById(R.id.grid_pictures);
-        pictures = new ArrayList<>();
-        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.drawable.com_facebook_button_icon_blue);
-        Bitmap test = BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.mipmap.ic_accept);
+        pictures = new ArrayList<>(5);
 
         final Image image = new Image("1","http://cdn.cavemancircus.com//wp-content/uploads/images/2015/march/pretty_girls_2/pretty_girls_12.jpg","1");
         Image image2 = new Image("2","http://cdn.cavemancircus.com//wp-content/uploads/images/2015/june/pretty_girls_3/pretty_girls_20.jpg","2");
@@ -117,43 +114,12 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("PictureSelection", String.valueOf(positionsToSwap));
                 if (positionsToSwap.size() == 1) {
-                    /*Image picture = pictures.get(positionsToSwap.get(0)); //1,2,3,4
-                    Image firstPicture = pictures.get(0); // 0
-
-                    pictures.set(0, picture);
-                    pictures.set(positionsToSwap.get(0), firstPicture);
-
-                    pictures.get(0).setOrder(picture.getOrder());
-                    pictures.get(positionsToSwap.get(0)).setOrder(firstPicture.getOrder());
-                    positionsToSwap.clear();
-
-                    Log.d("Debug", String.valueOf(positionsToSwap) + "2");
-                    pictureSelectionAdapter.setPictures(pictures);
-                    Log.d("Pictures", String.valueOf(pictures));
-                    gridView.setAdapter(pictureSelectionAdapter);*/
                     Collections.swap(pictures,0,positionsToSwap.get(0));
                     pictures.get(positionsToSwap.get(0)).setOrder("0");
                     pictures.get(0).setOrder(pictures.get(positionsToSwap.get(0)).getOrder());
                     positionsToSwap.clear();
                     pictureSelectionAdapter.notifyDataSetChanged();
                 } else if (positionsToSwap.size() == 2) {
-
-                    /*Image picture = pictures.get(positionsToSwap.get(1)); //1,2,3,4
-                    Image firstPicture = pictures.get(positionsToSwap.get(0)); // 0
-
-                    pictures.set(positionsToSwap.get(1), firstPicture);
-                    pictures.set(positionsToSwap.get(0), picture);
-
-                    pictures.get(positionsToSwap.get(1)).setOrder(firstPicture.getOrder());
-                    pictures.get(positionsToSwap.get(0)).setOrder(picture.getOrder());
-
-                    positionsToSwap.clear();
-
-                    //pictureSelectionAdapter.setPictures(pictures);
-                    Log.d("Debug", String.valueOf(positionsToSwap));
-                    Log.d("Pictures", String.valueOf(pictures));
-                    pictures.add(image);
-                    //gridView.setAdapter(pictureSelectionAdapter);*/
                     Collections.swap(pictures,positionsToSwap.get(0),positionsToSwap.get(1));
                     pictures.get(positionsToSwap.get(0)).setOrder(pictures.get(positionsToSwap.get(1)).getOrder());
                     pictures.get(positionsToSwap.get(1)).setOrder(pictures.get(positionsToSwap.get(0)).getOrder());
@@ -163,7 +129,36 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        //Get Profil
 
+        try {
+            ProfilServer.getProfil(sharedPreferences.getString("auth", ""), new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if(ResponseCode.checkResponseCode(response.code())){
+                        final String body = response.body().string();
+                        EditProfileActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Profil profil = new Gson().fromJson(body, Profil.class);
+                                description.setText(profil.getDescription());
+                                if(profil.getGender().equals("male")) gender.setChecked(false);
+                                else gender.setChecked(true);
+                            }
+                        });
+                    }
+                }
+                });
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Get user photos
         try {
             ProfilServer.getUserPhotos(sharedPreferences.getString("auth", ""), new Callback() {
                 @Override

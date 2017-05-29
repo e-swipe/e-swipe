@@ -217,10 +217,10 @@ public class Profil implements Serializable {
     };*/
 
     public class position {
-        int latitude;
-        int longitude;
+        float latitude;
+        float longitude;
 
-        position(int latitude,int longitude){
+        position(float latitude,float longitude){
             this.latitude = latitude;
             this.longitude = longitude;
         }
