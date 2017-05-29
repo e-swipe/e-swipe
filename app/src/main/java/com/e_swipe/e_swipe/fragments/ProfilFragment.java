@@ -38,6 +38,8 @@ import com.google.gson.Gson;
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
@@ -71,6 +73,7 @@ public class ProfilFragment extends Fragment{
     Button signOutButton;
     ImageButton editProfilButton;
     TextView distance;
+    TextView age;
     /**
      * Listener to event over the fragment
      */
@@ -123,6 +126,7 @@ public class ProfilFragment extends Fragment{
         /**
          * Init subviews
          */
+        age = (TextView) v.findViewById(R.id.textView_age);
         distance = (TextView) v.findViewById(R.id.test);
         editProfilButton = (ImageButton) v.findViewById(R.id.edit_profile_btn);
         editProfilButton.setOnClickListener(new View.OnClickListener() {
@@ -213,10 +217,10 @@ public class ProfilFragment extends Fragment{
                 distance.setText(String.valueOf(seekBar.getProgress()+"km"));
             }
         });
-
         //Init RangeSeekBar
         rangeSeekBar = (RangeSeekBar) v.findViewById(R.id.rangeSeekBar_age);
         rangeSeekBar.setRangeValues(18,100);
+        //age.setText(rangeSeekBar.getSelectedMinValue() + "-" + rangeSeekBar.getSelectedMaxValue());
         rangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
@@ -236,6 +240,12 @@ public class ProfilFragment extends Fragment{
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             Log.d("PATCH", String.valueOf(response.code()));
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    age.setText(rangeSeekBar.getSelectedMinValue() + "-" + rangeSeekBar.getSelectedMaxValue());
+                                }
+                            });
                         }
                     });
                 } catch (IOException e) {
@@ -246,6 +256,7 @@ public class ProfilFragment extends Fragment{
 
         //Init CircleImageView
         circleImageView = (de.hdodenhof.circleimageview.CircleImageView) v.findViewById(R.id.profile_image);
+
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

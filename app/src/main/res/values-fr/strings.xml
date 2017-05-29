@@ -66,7 +66,7 @@
     <string name="profil_males">Hommes</string>
     <string name="profil_females">Femmes</string>
     <string name="profil_labelDistance">Distance</string>
-    <string name="profil_distance">plein de km</string>
+    <string name="profil_distance">0km</string>
     <string name="profil_labelAge">Age</string>
     <string name="profil_age">des années</string>
     <string name="profil_visible">Rendre votre profil visible</string>

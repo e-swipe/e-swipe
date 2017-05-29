@@ -80,7 +80,7 @@
     <string name="profil_males">Men</string>
     <string name="profil_females">Women</string>
     <string name="profil_labelDistance">Distance</string>
-    <string name="profil_distance">lot of miles</string>
+    <string name="profil_distance">0km</string>
     <string name="profil_labelAge">Age</string>
     <string name="profil_age">lot of years</string>
     <string name="profil_visible">Visibility of profile</string>
