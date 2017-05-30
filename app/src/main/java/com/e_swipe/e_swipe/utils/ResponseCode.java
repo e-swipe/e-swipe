@@ -22,9 +22,9 @@ public class ResponseCode {
             case REQUEST_SUCCESS_NO_CONTENT:
                 return true;
             case REQUEST_UNAUTHAURIZED:
-                return true;
+                return false;
             case REQUEST_INCORECT_PARAMETERS:
-                return true;
+                return false;
         }
         return false;
     }

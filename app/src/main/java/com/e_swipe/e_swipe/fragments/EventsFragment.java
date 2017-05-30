@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class EventsFragment extends Fragment {
      * currentOffset
      */
     int offset;
+    int offsetTemp;
 
     /**
      * isLoading ?
@@ -130,14 +132,18 @@ public class EventsFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount !=0){
                     if(!loading){
-                        getEvents();
-                        loading = true;
+                        if(offsetTemp != offset){
+                            getEvents();
+                            loading=true;
+                        }
                     }
                 }
             }
         });
+        offset = 0;
+        offsetTemp = -1;
 
-        getEvents();
+       // getEvents();
 
         return view;
     }
@@ -146,18 +152,18 @@ public class EventsFragment extends Fragment {
     public void getEvents() {
         //Get Events from Server
         LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
-        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             try {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                int latitude = (int) location.getLatitude();
-                int longitude = (int) location.getLatitude();
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
 
                 int radius;
-                int limit = 10;
+                final int limit = 10;
 
                 //Get SharedPreferences for radius
                 final SharedPreferences sharedPref = mContext.getSharedPreferences(
-                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                        getString(R.string.user_file_key), Context.MODE_PRIVATE);
 
                 radius = sharedPref.getInt(getString(R.string.distance), 1);
                 EventServer.getAllEvents(sharedPref.getString("auth", ""), latitude, longitude, radius, offset, limit, new Callback() {
@@ -168,12 +174,26 @@ public class EventsFragment extends Fragment {
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        Gson gson = new Gson();
-                        EventCard[] eventCards = gson.fromJson(response.body().toString(), EventCard[].class);
-                        eventList.addAll(Arrays.asList(eventCards));
-                        eventAdapter.notifyDataSetChanged();
-                        loading = false;
-                        offset++;
+                        final String body = response.body().string();
+                        Log.d("Events", String.valueOf(response.code()));
+                        Log.d("Events", body);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                EventCard[] eventCards = gson.fromJson(body, EventCard[].class);
+                                eventList.addAll(Arrays.asList(eventCards));
+
+                                Location eventLocation = new Location("eventLocation");
+                                eventAdapter.notifyDataSetChanged();
+                                offsetTemp = offset;
+                                if(eventCards.length != 0){
+                                    offset+= limit;
+                                }
+                                loading = false;
+                            }
+                        });
+
                     }
                 });
             } catch (JSONException e) {

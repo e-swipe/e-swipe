@@ -51,12 +51,21 @@ public class EventCard {
     }
 
     public class position{
-        int latitude;
-        int longitude;
+        double latitude;
+        double longitude;
 
-        position(int latitude, int longitude){
+        position(double latitude, double longitude){
             this.latitude = latitude;
             this.longitude = longitude;
         }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
     }
 }

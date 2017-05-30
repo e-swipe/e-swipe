@@ -70,7 +70,12 @@
             android:name=".activity.ChatActivity"
             android:label="@string/title_activity_chat"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="com.e_swipe.e_swipe_CHAT_ACTIVITY"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activity.EventProfilActivity"
@@ -82,8 +87,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activity.TabbedActivity">
-
-
 
         </activity>
         <service android:name=".services.gps.LocalisationListener"/>

@@ -118,10 +118,39 @@ public class SwipeFragment extends Fragment {
                 //do something when the count changes to some specific value.
                 //For Example: Call server to fetch more data when count is zero
                 //Needs to fetch data a little bit before the end of count
-                if(count == 1){
+                if(count == 2){
                     SwipeDownloader swipeDownloader = new SwipeDownloader(new SwipeDownloader.DownloadState() {
                         @Override
                         public void downloadEnded() {
+                            List<ProfilTinderCard> profilTinderCards = JsonLoader.loadProfilesFromFile(mContext);
+                            if(profilTinderCards != null){
+                                for(ProfilTinderCard profilTinderCard : profilTinderCards){
+                                    final TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
+                                    tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
+                                        @Override
+                                        public void onCardChange(TinderCard tinderCard) {
+                                            onSwipeEventListener.onCardChange(tinderCard);
+                                        }
+
+                                        @Override
+                                        public void onSwipeCancel() {
+                                            onSwipeEventListener.onSwipeCancel();
+                                        }
+
+                                        @Override
+                                        public void onSwipeStarted() {
+                                            onSwipeEventListener.onSwipeStarted();
+                                        }
+                                    });
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mSwipeView.addView(tinderCard);
+                                        }
+                                    });
+
+                                }
+                            }
 
                         }
                     });
@@ -161,6 +190,7 @@ public class SwipeFragment extends Fragment {
                     List<ProfilTinderCard> profilTinderCards = JsonLoader.loadProfilesFromFile(mContext);
                     if(profilTinderCards != null){
                         for(ProfilTinderCard profilTinderCard : profilTinderCards){
+                            profilTinderCard.setImageUrl("http://cdn.cavemancircus.com//wp-content/uploads/images/2015/june/pretty_girls_3/pretty_girls_15.jpg");
                             final TinderCard tinderCard = new TinderCard(mContext, profilTinderCard, mSwipeView);
                             tinderCard.setOnSwipeListener(new TinderCard.onSwipeListener() {
                                 @Override

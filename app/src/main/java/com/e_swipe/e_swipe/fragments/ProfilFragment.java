@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -75,12 +77,17 @@ public class ProfilFragment extends Fragment{
     TextView distance;
     TextView age;
     /**
+     * Anims
+     */
+    Animation animfadeOutImage;
+    Animation animfadeInImage;
+    Animation animfadeInText;
+
+    /**
      * Listener to event over the fragment
      */
     private OnFragmentInteractionListener mListener;
     private FragmentListenerCallback fragmentListenerCallback;
-
-
     /**
      * UserProfil
      */
@@ -126,6 +133,10 @@ public class ProfilFragment extends Fragment{
         /**
          * Init subviews
          */
+        animfadeOutImage = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+        animfadeInImage = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_image);
+        animfadeInText = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_text_view);
+
         age = (TextView) v.findViewById(R.id.textView_age);
         distance = (TextView) v.findViewById(R.id.test);
         editProfilButton = (ImageButton) v.findViewById(R.id.edit_profile_btn);
@@ -199,6 +210,7 @@ public class ProfilFragment extends Fragment{
         seekbarDistance.setMax(200);
         Log.d("Distance", String.valueOf(sharedPref.getInt("distance",1)));
         seekbarDistance.setProgress(sharedPref.getInt("distance",1));
+        distance.setText(String.valueOf(seekbarDistance.getProgress()+"km"));
         seekbarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -310,16 +322,19 @@ public class ProfilFragment extends Fragment{
                         try {
                             body = newResponse.body().string();
                             Log.d("Profil",body);
+                            final SharedPreferences sharedPref = mContext.getSharedPreferences(
+                                    getString(R.string.user_file_key), Context.MODE_PRIVATE);
+                            final SharedPreferences.Editor editor = sharedPref.edit();
                             if(response.code() == ResponseCode.REQUEST_UNAUTHAURIZED){
-                                final SharedPreferences sharedPref = mContext.getSharedPreferences(
-                                        getString(R.string.user_file_key), Context.MODE_PRIVATE);
-                                final SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString("auth","");
+                                editor.putString("uuid","");
                                 editor.commit();
                                 Intent intent = new Intent(mContext,LoginActivity.class);
                                 startActivity(intent);
                             }else{
                                 profil = new Gson().fromJson(body, Profil.class);
+                                editor.putString("uuid",profil.getUuid());
+                                editor.commit();
                                 initSubViewsWithProfilAndPreferences(profil);
 
                             }
@@ -332,9 +347,28 @@ public class ProfilFragment extends Fragment{
         });
     }
 
-    public void initSubViewsWithProfilAndPreferences(Profil profil){
-        nameAndImage.setText(profil.getFirst_name()+","+profil.getAge());
-        Glide.with(mContext).load(profil.getPicture_url()).into(circleImageView);
+    public void initSubViewsWithProfilAndPreferences(final Profil profil){
+        nameAndImage.startAnimation(animfadeInText);
+        nameAndImage.setText(profil.getFirst_name()+" , "+profil.getAge());
+        circleImageView.startAnimation(animfadeOutImage);
+        animfadeOutImage.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                String imageUrl = "http://i.imgur.com/hES7D98.jpg";
+                Glide.with(mContext).load(imageUrl).into(circleImageView);
+                circleImageView.startAnimation(animfadeInImage);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         if(profil.getLooking_for().contains("male")){
             switchHomme.setChecked(true);
         }
@@ -348,7 +382,7 @@ public class ProfilFragment extends Fragment{
          * SharedPreferences
          */
         final SharedPreferences sharedPref = mContext.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.user_file_key), Context.MODE_PRIVATE);
         seekbarDistance.setProgress(sharedPref.getInt("distance",1));
 
         rangeSeekBar.setSelectedMinValue(profil.getLooking_for_age_min());

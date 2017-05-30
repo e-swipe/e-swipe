@@ -13,7 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:paddingBottom="?android:attr/actionBarSize"
             android:scrollbars="vertical">
 
             <RelativeLayout
@@ -33,6 +32,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:paddingBottom="10dp"
                         tools:ignore="UselessParent">
 
                         <RelativeLayout
@@ -47,7 +47,6 @@
                                 android:layout_height="150dp"
                                 android:layout_gravity="center"
                                 android:layout_margin="10dp"
-                                android:src="@mipmap/ic_oktamer"
                                 app:civ_border_color="#F5F5F5"
                                 app:civ_border_width="1dp" />
 
@@ -66,18 +65,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="@string/ActUserProfil_name_age"
+                            android:text=""
                             android:textSize="20dp"
-                            android:textStyle="bold"
                             android:textColor="#000000"/>
-
-                        <View
-                            android:id="@+id/view"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_margin="25dp"
-                            android:background="#000000" />
 
                     </LinearLayout>
 
@@ -88,17 +78,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/image_container"
-                    android:orientation="vertical">
+                    android:background="#F5F5F5"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
 
                     <TextView
                         android:id="@+id/SettingsLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
-                        android:textColor="#000000"
                         android:gravity="center"
-                        android:text="@string/profil_setting" />
+                        android:paddingTop="10dp"
+                        android:text="@string/profil_setting"
+                        android:textColor="#000000"
+                        android:textSize="20dp" />
 
                     <LinearLayout
                         android:id="@+id/showMe_container"
@@ -106,18 +99,18 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:background="@drawable/rounded_border"
-                        android:elevation="5dp"
                         android:orientation="vertical"
+                        android:elevation="1dp"
                         android:paddingBottom="7dp"
                         android:paddingLeft="5dp"
-                        android:paddingRight="10dp"
+                        android:paddingRight="5dp"
                         android:paddingTop="7dp">
 
                         <TextView
                             android:id="@+id/ShowmeLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:paddingLeft="5dp"
                             android:text="@string/profil_showMe"
                             android:textColor="#FF4500" />
 
@@ -125,12 +118,16 @@
                             android:id="@+id/switch_homme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:text="@string/profil_males" />
 
                         <Switch
                             android:id="@+id/switch_femme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:text="@string/profil_females" />
 
                     </LinearLayout>
@@ -138,37 +135,39 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/rounded_border"
-                        android:elevation="5dp">
+                        android:layout_margin="7dp"
+                        android:elevation="1dp"
+                        android:background="@drawable/rounded_border">
 
                         <LinearLayout
                             android:id="@+id/distance_container"
-                            android:layout_width="wrap_content"
+                            android:background="@drawable/rounded_border"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="7dp">
 
                             <RelativeLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
                                 <TextView
                                     android:id="@+id/DistanceLabel"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#FF4500"
-                                    android:text="@string/profil_labelDistance" />
+                                    android:padding="5dp"
+                                    android:text="@string/profil_labelDistance"
+                                    android:textColor="#FF4500" />
 
                                 <TextView
                                     android:id="@+id/test"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#FF4500"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentTop="true"
                                     android:gravity="right"
                                     android:text="@string/profil_distance"
-                                    android:layout_alignParentTop="true"
-                                    android:layout_alignParentStart="true" />
+                                    android:textColor="#FF4500" />
 
                             </RelativeLayout>
 
@@ -190,17 +189,18 @@
                             android:id="@+id/age_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:elevation="1dp"
                             android:layout_margin="10dp"
                             android:background="@drawable/rounded_border"
-                            android:elevation="5dp"
                             android:padding="7dp">
 
                             <TextView
                                 android:id="@+id/AgeLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="#FF4500"
-                                android:text="@string/profil_labelAge" />
+                                android:paddingLeft="5dp"
+                                android:text="@string/profil_labelAge"
+                                android:textColor="#FF4500" />
 
                             <TextView
                                 android:id="@+id/textView_age"
@@ -208,13 +208,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentTop="true"
-                                android:textColor="#FF4500"
-                                android:text="@string/profil_age" />
+                                android:paddingRight="5dp"
+                                android:text="@string/profil_age"
+                                android:textColor="#FF4500" />
 
                             <org.florescu.android.rangeseekbar.RangeSeekBar
                                 android:id="@+id/rangeSeekBar_age"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:paddingRight="5dp" />
 
 
                         </RelativeLayout>
@@ -226,8 +228,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
+                        android:elevation="1dp"
                         android:background="@drawable/rounded_border"
-                        android:elevation="5dp"
                         android:orientation="vertical"
                         android:padding="7dp">
 
@@ -235,12 +237,17 @@
                             android:id="@+id/switch_visible"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/profil_visible" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:text="@string/profil_visible"
+                            android:textColor="#FF4500" />
 
                         <Button
                             android:id="@+id/sign_out"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:text="@string/profil_signOut" />
 
                     </LinearLayout>

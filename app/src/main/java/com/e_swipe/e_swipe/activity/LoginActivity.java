@@ -236,6 +236,7 @@ public class LoginActivity extends Activity {
                                                             final Profile profile = Profile.getCurrentProfile();
                                                             Log.d("Debug", String.valueOf(cpt));
                                                             try {
+                                                                Log.d("FirebaseToken",FirebaseInstanceId.getInstance().getToken());
                                                                 UserFacebook userFacebook = new UserFacebook(profile.getFirstName(),profile.getLastName(),birthdayObject.getString("birthday"),gender,email);
                                                                 LoginServer.withFacebook(accessToken.getToken(), FirebaseInstanceId.getInstance().getToken(),
                                                                         profile.getId(), userFacebook, new Callback() {

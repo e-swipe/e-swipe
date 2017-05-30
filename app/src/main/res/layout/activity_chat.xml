@@ -37,7 +37,8 @@
                     android:textSize="10dp"
                     android:layout_below="@+id/chat_name"
                     android:textColor="#FFFFFF"
-                    android:text="Since" />
+                    android:text="Since"
+                    android:id="@+id/toolbar_last_message"/>
 
             </RelativeLayout>
 

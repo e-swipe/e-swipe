@@ -59,6 +59,13 @@ public class UserProfileActivity extends Activity {
 
         getProfil();
         //getPhotos();
+        Image image = new Image("1","http://i.imgur.com/hES7D98.jpg","1");
+        Image image2 = new Image("2","http://i.imgur.com/giL1wvz.jpg","2");
+        Image image3 = new Image("3","http://i.imgur.com/9ULpnjR.jpg","3");
+
+        images.add(image);
+        images.add(image2);
+        images.add(image3);
 
         imageAdapter = new ImageAdapter(getApplicationContext(),images);
         Log.d("Debug", imageAdapter.toString());

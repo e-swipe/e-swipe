@@ -23,7 +23,7 @@ public class EventServer {
 
     public static final String BASE_URL =  "api.stardis.blue";
 
-    public static void getAllEvents(String auth, int latitude, int longitude, int radius,
+    public static void getAllEvents(String auth, double latitude, double longitude, int radius,
                                     int offset, int limit, Callback callback) throws IOException, JSONException {
 
         HttpUrl httpUrl = new HttpUrl.Builder()
@@ -31,8 +31,8 @@ public class EventServer {
                 .host(BASE_URL)
                 .addPathSegment("v1")
                 .addPathSegment("events")
-                .addQueryParameter("latitude",Integer.toString(latitude))
-                .addQueryParameter("longitude",Integer.toString(longitude))
+                .addQueryParameter("latitude",Double.toString(latitude))
+                .addQueryParameter("longitude",Double.toString(longitude))
                 .addQueryParameter("radius",Integer.toString(radius))
                 .addQueryParameter("offset",Integer.toString(offset))
                 .addQueryParameter("limit",Integer.toString(limit))

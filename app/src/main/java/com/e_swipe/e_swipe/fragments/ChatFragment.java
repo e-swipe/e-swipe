@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.e_swipe.e_swipe.activity.ChatActivity;
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.activity.TabbedActivity;
 import com.e_swipe.e_swipe.adapter.ChatRoomAdapter;
 import com.e_swipe.e_swipe.model.ChatCard;
 import com.e_swipe.e_swipe.objects.ChatRoom;
@@ -66,8 +67,12 @@ public class ChatFragment extends Fragment {
     /**
      * Current Offset
      */
-
     int offset;
+
+    /**
+     * Current Adapter
+     */
+    ChatRoomAdapter chatRoomAdapter;
     /**
      * Empty constructor
      */
@@ -97,50 +102,32 @@ public class ChatFragment extends Fragment {
     /**
      * @return inflated views and subviews
      */
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
         listView = (ListView) view.findViewById(R.id.chat_list);
         //Set Adapter
-        listView.setAdapter(new ChatRoomAdapter(getContext(), chatRooms));
+        chatRoomAdapter = new ChatRoomAdapter(getContext(),chatRooms);
+        listView.setAdapter(chatRoomAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), ChatActivity.class);
+                intent.putExtra("uuid",chatRooms.get(i).getUuid());
                 startActivity(intent);
             }
         });
         loading = true;
         offset = 0;
 
-        ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 10, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("Chat", String.valueOf(response.code()));
-                String body = response.body().string();
-                if(ResponseCode.checkResponseCode(response.code())){
-                    ChatCard[] chatCards = new Gson().fromJson(body, ChatCard[].class);
-                    chatRooms.clear();
-                    chatRooms.addAll(Arrays.asList(chatCards));
-                    offset++;
-                }
-            }
-        });
-
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        /*listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
             }
 
-            @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount !=0){
                     if(!loading){
@@ -167,8 +154,40 @@ public class ChatFragment extends Fragment {
                     }
                 }
             }
-        });
+        });*/
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Resume","resume");
+        ChatServer.getAllChats(sharedPref.getString("auth", ""), offset, 150, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("Chat", String.valueOf(response.code()));
+                final String body = response.body().string();
+                Log.d("Chat",body);
+                if(ResponseCode.checkResponseCode(response.code())){
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ChatCard[] chatCards = new Gson().fromJson(body, ChatCard[].class);
+                            chatRooms.clear();
+                            chatRoomAdapter.notifyDataSetChanged();
+                            chatRooms.addAll(Arrays.asList(chatCards));
+                            chatRoomAdapter.notifyDataSetInvalidated();
+                            chatRoomAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

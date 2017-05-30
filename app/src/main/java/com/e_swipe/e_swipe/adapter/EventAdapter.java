@@ -85,13 +85,16 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
             TextView eventLocalisation = (TextView) convertView.findViewById(R.id.event_localisation);
             //TODO
             LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 //Current User Location
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 Location locationEvent = new Location("pointUser");
+                locationEvent.setLatitude(getItem(position).getPosition().getLatitude());
+                locationEvent.setLongitude(getItem(position).getPosition().getLongitude());
 
                 float meters = location.distanceTo(locationEvent);
-                eventLocalisation.setHint(Float.toString(meters/1000));
+                int km = (int) Math.ceil(meters/1000);
+                eventLocalisation.setText(km+"km");
             }
 
             ImageView imageView =  (ImageView) convertView.findViewById(R.id.event_image);

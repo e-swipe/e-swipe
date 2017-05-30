@@ -1,7 +1,9 @@
 package com.e_swipe.e_swipe.services.firebase;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -10,8 +12,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.e_swipe.e_swipe.R;
+import com.e_swipe.e_swipe.activity.ChatActivity;
+import com.e_swipe.e_swipe.model.Message;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +29,6 @@ import java.net.URL;
  */
 public class FirebaseMessageService extends FirebaseMessagingService {
 
-    private static final String TAG_TOKEN = "TOKEN";
-    private RemoteMessage lastMessageReceived;
-    private Bitmap bitmap;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,34 +36,10 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG_TOKEN, "From: " + remoteMessage.getFrom());
-        lastMessageReceived = remoteMessage;
-        // Check if message contains a data payload.
-
-        if (remoteMessage.getData().size() > 0) {
-            if (remoteMessage.getData().get("Type") != null) {
-                switch (remoteMessage.getData().get("Type")) {
-                    case "Match":
-                        break;
-                    case "Message":
-                        break;
-                    case "Events":
-                        break;
-                }
-            }
-        }
-        Log.d(TAG_TOKEN, "Message data payload: " + remoteMessage.getData());
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-
-        }
-
-        sendNotification(remoteMessage.getNotification().getBody());
-
+        sendNotification(remoteMessage);
+        Log.d("Test","Test");
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
@@ -70,29 +47,27 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
-
-        final String personName = lastMessageReceived.getNotification().getTitle();
-        final String bitmapURL = lastMessageReceived.getData().get("URL");
-        final Context context = getApplicationContext();
-
-        ImageDownloader imageDownloader = new ImageDownloader(bitmapURL, new ImageDownloader.DownloadResponse() {
-            @Override
-            public void downloadEnded(Bitmap bitmap) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(context)
-                                .setLargeIcon(bitmap)
-                                .setContentTitle(personName)
-                                .setContentText("You have Matched with " + personName);
-
-                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(001, mBuilder.build());
-            }
-        });
-        imageDownloader.execute();
+    private void sendNotification(RemoteMessage message) {
+        if(message.getData().size() > 0) {
+            Message messageJson = new Gson().fromJson(message.getData().get("message"), Message.class);
+            String title = message.getNotification().getTitle();
+            String body = message.getNotification().getBody();
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("uuid", message.getData().get("uuid"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            mBuilder.setContentTitle(title);
+            mBuilder.setContentText(body);
+            mBuilder.setSmallIcon(R.mipmap.ic_eswipe_logo);
+            mBuilder.setAutoCancel(true);
+            mBuilder.setContentIntent(pendingIntent);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(0, mBuilder.build());
+        }
     }
+
 
     public static class ImageDownloader extends AsyncTask<Void,Void,Bitmap>{
 

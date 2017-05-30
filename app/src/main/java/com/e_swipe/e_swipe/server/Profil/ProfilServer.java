@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.e_swipe.e_swipe.model.Image;
 import com.e_swipe.e_swipe.model.Message;
+import com.e_swipe.e_swipe.model.MessageCard;
 import com.e_swipe.e_swipe.model.Profil;
 import com.e_swipe.e_swipe.model.UserCreate;
 import com.e_swipe.e_swipe.model.UserPatch;
@@ -222,6 +223,7 @@ public class ProfilServer {
         RequestBody body = RequestBody.create(null, new byte[]{});
 
         Request request = new Request.Builder()
+                .addHeader("auth",auth)
                 .url(httpUrl)
                 .post(body)
                 .build();
@@ -247,6 +249,7 @@ public class ProfilServer {
         RequestBody body = RequestBody.create(null, new byte[]{});
 
         Request request = new Request.Builder()
+                .addHeader("auth",auth)
                 .url(httpUrl)
                 .post(body)
                 .build();
@@ -255,7 +258,7 @@ public class ProfilServer {
         call.enqueue(callback);
     }
 
-    public static void writeMessage(String auth, String uuid, Message message, Callback callback){
+    public static void writeMessage(String auth, String uuid, MessageCard message, Callback callback){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -273,6 +276,7 @@ public class ProfilServer {
         RequestBody requestBody = RequestBody.create(JSON,messageJson);
 
         Request request = new Request.Builder()
+                .addHeader("auth",auth)
                 .url(httpUrl)
                 .post(requestBody)
                 .build();

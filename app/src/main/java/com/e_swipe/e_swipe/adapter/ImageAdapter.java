@@ -42,7 +42,7 @@ public class ImageAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.image_pager, container, false);
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.image_pager);
-        Glide.with(mContext).load(images.get(position)).into(imageView);
+        Glide.with(mContext).load(images.get(position).getUrl()).into(imageView);
 
         container.addView(itemView);
 

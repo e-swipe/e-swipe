@@ -80,9 +80,10 @@ public class EditProfileActivity extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.grid_pictures);
         pictures = new ArrayList<>(5);
 
-        final Image image = new Image("1","http://cdn.cavemancircus.com//wp-content/uploads/images/2015/march/pretty_girls_2/pretty_girls_12.jpg","1");
-        Image image2 = new Image("2","http://cdn.cavemancircus.com//wp-content/uploads/images/2015/june/pretty_girls_3/pretty_girls_20.jpg","2");
-        Image image3 = new Image("3","http://i.imgur.com/wqsvWT4.jpg","2");
+        Image image = new Image("1","http://i.imgur.com/hES7D98.jpg","1");
+        Image image2 = new Image("2","http://i.imgur.com/giL1wvz.jpg","2");
+        Image image3 = new Image("3","http://i.imgur.com/9ULpnjR.jpg","3");
+
 
         pictures.add(image);
         pictures.add(image2);

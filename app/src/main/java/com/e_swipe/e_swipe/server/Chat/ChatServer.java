@@ -41,7 +41,7 @@ public class ChatServer {
         call.enqueue(callback);
     }
 
-    public static void getChatInfo(String uuid, String auth, int offset, int limit, int since, Callback callback){
+    public static void getChatInfo(String uuid, String auth, int offset, int limit, String since, Callback callback){
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
@@ -51,7 +51,7 @@ public class ChatServer {
                 .addPathSegment(uuid)
                 .addQueryParameter("offset",Integer.toString(offset))
                 .addQueryParameter("limit",Integer.toString(limit))
-                .addQueryParameter("since",Integer.toString(since))
+                .addQueryParameter("since",since)
                 .build();
 
         OkHttpClient client = new OkHttpClient();
