@@ -1,7 +1,9 @@
 package com.e_swipe.e_swipe.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -64,7 +67,7 @@ public class ChatActivity extends AppCompatActivity {
 
         chatName = (TextView) toolbar.findViewById(R.id.chat_name);
         lastMessage = (TextView) toolbar.findViewById(R.id.toolbar_last_message);
-
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
@@ -75,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         final String chatUuid =  intent.getStringExtra("uuid");
 
         Log.d("ChatActivity","Uuid " + chatUuid);
-        //init chat
+        //init chat1
         chatMessage = new ArrayList<>();
 
         listMessage = (ListView) findViewById(R.id.msgListView);
@@ -116,6 +119,7 @@ public class ChatActivity extends AppCompatActivity {
                             if(messages.size()!=0){
                                 lastMessage.setText(messages.get(messages.size()-1).getContent());
                             }
+                            else lastMessage.setText("");
                             chatName.setText(chat.getUser().getFirst_name());
                         }
                     });
@@ -162,6 +166,28 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Broadcast","OnReceive");
+            Message messageJson = new Gson().fromJson(intent.getStringExtra("message"), Message.class);
+            addNewMessage(messageJson);
+
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageReceiver,new IntentFilter("com.e_swipe.com_BROADCAST"));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(messageReceiver);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -172,13 +198,25 @@ public class ChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void addNewMessage(Message message){
+    public void addNewMessage(final Message message){
         Log.d("ChatActivity","UserId" + message.getUser_id());
         Log.d("ChatActivity","Me" + sharedPref.getString("uuid",""));
         if(message.getUser_id().equals(sharedPref.getString("uuid",""))){
-            chatAdapter.addChatMessage(new ChatMessage(sharedPref.getString("uuid",""), message.getContent(),true));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    chatAdapter.addChatMessage(new ChatMessage(sharedPref.getString("uuid",""), message.getContent(),true));
+                    chatAdapter.notifyDataSetChanged();
+                }
+            });
         }else {
-            chatAdapter.addChatMessage(new ChatMessage(sharedPref.getString("uuid",""), message.getContent(),false));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    chatAdapter.addChatMessage(new ChatMessage(sharedPref.getString("uuid",""), message.getContent(),false));
+                    chatAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

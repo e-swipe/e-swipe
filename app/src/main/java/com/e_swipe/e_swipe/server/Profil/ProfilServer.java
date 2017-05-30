@@ -47,6 +47,8 @@ public class ProfilServer {
                 .host(BASE_URL)
                 .addPathSegment("v1")
                 .addPathSegment("users")
+                .addQueryParameter("password",userCreate.getPassword())
+                .addQueryParameter("email",userCreate.getEmail())
                 .addQueryParameter("instance_id",instanceId)
                 .build();
 

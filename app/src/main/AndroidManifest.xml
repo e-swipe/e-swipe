@@ -75,6 +75,10 @@
                 <action android:name="com.e_swipe.e_swipe_CHAT_ACTIVITY"></action>
                 <category android:name="android.intent.category.DEFAULT"></category>
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.e_swipe.com_BROADCAST"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
         </activity>
 
         <activity

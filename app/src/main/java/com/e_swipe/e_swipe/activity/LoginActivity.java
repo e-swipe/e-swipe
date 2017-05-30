@@ -168,6 +168,7 @@ public class LoginActivity extends Activity {
                 }
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    Log.d("MailPassword", String.valueOf(response.code()));
                     try {
                         JSONObject mainObject = new JSONObject(response.body().string());
                         auth = mainObject.getString("auth");

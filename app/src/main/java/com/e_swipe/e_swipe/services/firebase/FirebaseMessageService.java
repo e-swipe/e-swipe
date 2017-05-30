@@ -51,6 +51,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage message) {
         if(message.getData().size() > 0) {
             Message messageJson = new Gson().fromJson(message.getData().get("message"), Message.class);
+            Log.d("Message", String.valueOf(message.getData().get("message")));
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
             Intent intent = new Intent(this, ChatActivity.class);
@@ -65,7 +66,14 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             mBuilder.setContentIntent(pendingIntent);
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(0, mBuilder.build());
+            update(getApplicationContext(),message);
         }
+    }
+
+    static void update(Context context,RemoteMessage message){
+        Intent intent = new Intent("com.e_swipe.com_BROADCAST");
+        intent.putExtra("message",message.getData().get("message"));
+        context.sendBroadcast(intent);
     }
 
 

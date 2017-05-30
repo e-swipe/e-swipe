@@ -209,7 +209,7 @@ public class ProfilFragment extends Fragment{
         seekbarDistance.setProgress(0);
         seekbarDistance.setMax(200);
         Log.d("Distance", String.valueOf(sharedPref.getInt("distance",1)));
-        seekbarDistance.setProgress(sharedPref.getInt("distance",1));
+        seekbarDistance.setProgress(sharedPref.getInt("distance",10));
         distance.setText(String.valueOf(seekbarDistance.getProgress()+"km"));
         seekbarDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -312,20 +312,20 @@ public class ProfilFragment extends Fragment{
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                final Response newResponse = response;
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("Profil", String.valueOf(newResponse.code()));
+                        Log.d("Profil", String.valueOf(response.code()));
                         String body = null;
                         try {
-                            body = newResponse.body().string();
+                            body = response.body().string();
                             Log.d("Profil",body);
                             final SharedPreferences sharedPref = mContext.getSharedPreferences(
                                     getString(R.string.user_file_key), Context.MODE_PRIVATE);
                             final SharedPreferences.Editor editor = sharedPref.edit();
                             if(response.code() == ResponseCode.REQUEST_UNAUTHAURIZED){
+                                Log.d("REQUEST_UNAUTHAURIZED","REQUEST_UNAUTHAURIZED");
                                 editor.putString("auth","");
                                 editor.putString("uuid","");
                                 editor.commit();
@@ -383,7 +383,7 @@ public class ProfilFragment extends Fragment{
          */
         final SharedPreferences sharedPref = mContext.getSharedPreferences(
                 getString(R.string.user_file_key), Context.MODE_PRIVATE);
-        seekbarDistance.setProgress(sharedPref.getInt("distance",1));
+        seekbarDistance.setProgress(sharedPref.getInt("distance",10));
 
         rangeSeekBar.setSelectedMinValue(profil.getLooking_for_age_min());
         rangeSeekBar.setSelectedMaxValue(profil.getLooking_for_age_max());

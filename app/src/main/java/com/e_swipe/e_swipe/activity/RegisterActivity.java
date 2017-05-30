@@ -120,15 +120,18 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.d("Register", String.valueOf(response.code()));
+                String body = response.body().string();
+                Log.d("Register", body);
                 if(ResponseCode.checkResponseCode(response.code())){
                     final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
                             getString(R.string.user_file_key), Context.MODE_PRIVATE);
                     final SharedPreferences.Editor editor = sharedPref.edit();
 
                     try {
-                        JSONObject jsonResponse = new JSONObject(response.body().string());
+                        JSONObject jsonResponse = new JSONObject(body);
                         String auth = jsonResponse.getString("auth");
                         editor.putString("auth",auth);
+                        editor.commit();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
