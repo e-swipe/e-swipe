@@ -50,11 +50,11 @@ public class UserProfileActivity extends Activity {
         flowLayout = (FlowLayout) findViewById(R.id.flow_container);
 
         description = (TextView) findViewById(R.id.textViewDescribing);
-        for (int i=0;i<15;i++){
+        /*for (int i=0;i<15;i++){
             flowLayout.addView(inflateTextview("TEST : " + i),
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        }
+        }*/
         nameAge = (TextView) findViewById(R.id.textView_user);
 
         getProfil();

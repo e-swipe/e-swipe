@@ -113,7 +113,9 @@ public class ChatActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            lastMessage.setText(messages.get(messages.size()-1).getContent());
+                            if(messages.size()!=0){
+                                lastMessage.setText(messages.get(messages.size()-1).getContent());
+                            }
                             chatName.setText(chat.getUser().getFirst_name());
                         }
                     });
