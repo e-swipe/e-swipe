@@ -143,7 +143,6 @@ public class EventsFragment extends Fragment {
         offset = 0;
         offsetTemp = -1;
 
-       // getEvents();
 
         return view;
     }
@@ -151,8 +150,10 @@ public class EventsFragment extends Fragment {
 
     public void getEvents() {
         //Get Events from Server
+        Log.d("Event","Before Access");
         LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
         if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("Event","After Access");
             try {
                 Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 double latitude = location.getLatitude();
@@ -183,8 +184,6 @@ public class EventsFragment extends Fragment {
                                 Gson gson = new Gson();
                                 EventCard[] eventCards = gson.fromJson(body, EventCard[].class);
                                 eventList.addAll(Arrays.asList(eventCards));
-
-                                Location eventLocation = new Location("eventLocation");
                                 eventAdapter.notifyDataSetChanged();
                                 offsetTemp = offset;
                                 if(eventCards.length != 0){

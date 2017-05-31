@@ -7,14 +7,15 @@
     <string name="prompt_email">Mail</string>
     <string name="prompt_password">Mot de Passe</string>
     <string name="action_sign_in">Connectez vous</string>
+    <string name="action_register">Enregistrer</string>
     <string name="action_sign_in_short">Connexion</string>
     <string name="error_invalid_email">Cette adresse mail est invalide</string>
     <string name="error_invalid_password">Ce mot de passe estt trop court</string>
     <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
     <string name="error_field_required">Ce champ est necessaire</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <!--
-    <string name="facebook_app_id">1116195745174631</string> !-->
+
+    <string name="facebook_app_id">1116195745174631</string>
     <string name="title_activity_profile">Profil</string>
     <string name="title_activity_tabbed">Tabbed Activity</string>
     <string name="action_settings">Parametres</string>
@@ -77,5 +78,20 @@
     <string name="row_chat_lastMessage">Dernier message</string>
     <string name="row_event_name">Nom evenement</string>
     <string name="row_event_location">Localisation evenement</string>
+
+    <string name="preference_file_key"> com.e_swipe.e_swipe.PREFERENCE_FILE_KEY</string>
+    <string name="user_file_key">com.e_swipe.e_swipe.USER_FILE_KEY</string>
+    <string name="isManWanted">isManWanted</string>
+    <string name="isWomenWanted">isWomenWanted</string>
+    <string name="distance">distance</string>
+    <string name="ageMin">ageMin</string>
+    <string name="ageMax">ageMax</string>
+
+    <string name="title_activity_user_profile">UserProfile</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_chat_">Chat_Activity</string>
+    <string name="title_activity_event_profil">EventProfilActivity</string>
+    <string name="title_activity_edit_profile">EditProfile</string>
 
 </resources>

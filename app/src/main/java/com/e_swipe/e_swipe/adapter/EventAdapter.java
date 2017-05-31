@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +76,7 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
     /**
      * @return the view inflated with subviews
      */
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             //We must create a View:
@@ -82,19 +85,53 @@ public class EventAdapter extends BaseAdapter implements AdapterView.OnItemClick
             //Init subViews
             TextView eventName = (TextView) convertView.findViewById(R.id.event_name);
             eventName.setText(getItem(position).getName());
-            TextView eventLocalisation = (TextView) convertView.findViewById(R.id.event_localisation);
+            final TextView eventLocalisation = (TextView) convertView.findViewById(R.id.event_localisation);
             //TODO
-            LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+            LocationManager locationManager = ((LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE));
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 //Current User Location
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Location locationEvent = new Location("pointUser");
-                locationEvent.setLatitude(getItem(position).getPosition().getLatitude());
-                locationEvent.setLongitude(getItem(position).getPosition().getLongitude());
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(location != null){
+                    Location locationEvent = new Location("pointUser");
+                    locationEvent.setLatitude(getItem(position).getPosition().getLatitude());
+                    locationEvent.setLongitude(getItem(position).getPosition().getLongitude());
 
-                float meters = location.distanceTo(locationEvent);
-                int km = (int) Math.ceil(meters/1000);
-                eventLocalisation.setText(km+"km");
+                    float meters = location.distanceTo(locationEvent);
+                    int km = (int) Math.ceil(meters/1000);
+                    eventLocalisation.setText(km+"km");
+                }
+                else {
+                    locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            Log.d("Event","Single Request");
+                            Location locationEvent = new Location("pointUser");
+                            locationEvent.setLatitude(getItem(position).getPosition().getLatitude());
+                            locationEvent.setLongitude(getItem(position).getPosition().getLongitude());
+
+                            float meters = location.distanceTo(locationEvent);
+                            int km = (int) Math.ceil(meters/1000);
+                            eventLocalisation.setText(km+"km");
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+
+                        }
+                    }, null);
+                }
+
+
             }
 
             ImageView imageView =  (ImageView) convertView.findViewById(R.id.event_image);

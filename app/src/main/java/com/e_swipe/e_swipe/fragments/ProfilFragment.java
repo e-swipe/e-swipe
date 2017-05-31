@@ -376,7 +376,7 @@ public class ProfilFragment extends Fragment{
         if (profil.getLooking_for().contains("female")){
             switchFemme.setChecked(true);
         }
-        else switchFemme.setChecked(false);
+        else switchHomme.setChecked(false);
 
         /**
          * SharedPreferences
