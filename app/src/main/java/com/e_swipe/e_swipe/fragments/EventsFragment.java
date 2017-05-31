@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,8 +71,12 @@ public class EventsFragment extends Fragment {
     /**
      * isLoading ?
      */
-
     boolean loading;
+
+    /**
+     * RefreshSwipe
+     */
+    private SwipeRefreshLayout swipeContainer;
 
     /**
      * Empty constructor
@@ -118,6 +123,28 @@ public class EventsFragment extends Fragment {
                 // Create Intent to new Activity
             }
         });
+        // Lookup the swipe container view
+
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
+        // Setup refresh listener which triggers new data loading
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                getAllEvents();
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         getEvents();
 
@@ -131,6 +158,7 @@ public class EventsFragment extends Fragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount !=0){
+                    Log.d("Event","onScroll");
                     if(!loading){
                         if(offsetTemp != offset){
                             getEvents();
@@ -145,6 +173,62 @@ public class EventsFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void fetchTimelineAsync(int i) {
+    }
+
+    public void getAllEvents(){
+        Log.d("Event","Before Access");
+        LocationManager locationManager = ((LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE));
+        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("Event", "After Access");
+            try {
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                //Get SharedPreferences for radius
+                final SharedPreferences sharedPref = mContext.getSharedPreferences(
+                        getString(R.string.user_file_key), Context.MODE_PRIVATE);
+
+                int radius = sharedPref.getInt(getString(R.string.distance), 1);
+                EventServer.getAllEvents(sharedPref.getString("auth", ""), latitude, longitude, radius, 0, 200, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, final Response response) throws IOException {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                final String body;
+                                try {
+                                    body = response.body().string();
+                                    Gson gson = new Gson();
+                                    EventCard[] eventCards = gson.fromJson(body, EventCard[].class);
+                                    if(eventCards.length != 0){
+                                        eventList.clear();
+                                        eventList.addAll(Arrays.asList(eventCards));
+                                        eventAdapter.notifyDataSetChanged();
+                                        swipeContainer.setRefreshing(false);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        });
+                    }
+
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -183,13 +267,15 @@ public class EventsFragment extends Fragment {
                             public void run() {
                                 Gson gson = new Gson();
                                 EventCard[] eventCards = gson.fromJson(body, EventCard[].class);
-                                eventList.addAll(Arrays.asList(eventCards));
-                                eventAdapter.notifyDataSetChanged();
-                                offsetTemp = offset;
                                 if(eventCards.length != 0){
-                                    offset+= limit;
+                                    eventList.addAll(Arrays.asList(eventCards));
+                                    eventAdapter.notifyDataSetChanged();
+                                    offsetTemp = offset;
+                                    if(eventCards.length != 0){
+                                        offset+= limit;
+                                    }
+                                    loading = false;
                                 }
-                                loading = false;
                             }
                         });
 
